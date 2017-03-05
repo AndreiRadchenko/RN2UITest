@@ -9,6 +9,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -23,6 +27,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -118,14 +125,14 @@ public class RN_USSD extends AppCompatActivity
         }
     }
 
-/*    @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_rn__ussd, menu);
         return true;
-    }*/
+    }
 
-/*    @Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -138,7 +145,7 @@ public class RN_USSD extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -175,6 +182,10 @@ public class RN_USSD extends AppCompatActivity
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+/*        private RecyclerView recyclerView;
+        private MyAdapter adapter;
+        private List<RecyclerItem> listItems;*/
+
         public PlaceholderFragment() {
         }
 
@@ -189,14 +200,39 @@ public class RN_USSD extends AppCompatActivity
             fragment.setArguments(args);
             return fragment;
         }
-
+//*****************************************************************************************************************************
+//Заполнение фрагментов USSD и SMS
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
             View rootView = inflater.inflate(R.layout.fragment_rn__ussd, container, false);
+
+            RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+            //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2, StaggeredGridLayoutManager.VERTICAL, false));
+
+            List<RecyclerItem> listItems = new ArrayList<>();
+            //Generate sample data
+
+            for (int i = 0; i<10; i++) {
+                listItems.add(new RecyclerItem("Item " + (i + 1), "Welcome to Torisan channel, this is description of item " + (i+1)));
+            }
+
+            //Set adapter
+            MyAdapter adapter = new MyAdapter(listItems, getActivity());
+//            MyAdapter adapter = new MyAdapter(getActivity());
+            recyclerView.setAdapter(adapter);
+
+
+/*    View rootView = inflater.inflate(R.layout.fragment_rn__sms, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)) +
-                    "\n" + getString(R.string.large_text));
+                    "\n" + getString(R.string.large_text));*/
+
+
             return rootView;
         }
     }
@@ -220,7 +256,7 @@ public class RN_USSD extends AppCompatActivity
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 2 total pages.
             return 2;
         }
 
