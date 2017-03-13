@@ -14,19 +14,51 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
+import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
+import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
+
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+import static android.support.v7.recyclerview.R.styleable.RecyclerView;
+
+public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
+        implements DraggableItemAdapter<MyAdapter.ViewHolder> {
 
     private List<RecyclerItem> listItems;
     private Context mContext;
 
     public MyAdapter(List<RecyclerItem> listItems, Context mContext) {
+        setHasStableIds(true); // this is required for D&D feature.
         this.listItems = listItems;
         this.mContext = mContext;
     }
+// Методы интерфейса DraggableItemAdapter
+//==========================================================================================================
+    @Override
+    public boolean onCheckCanStartDrag(MyAdapter.ViewHolder holder, int position, int x, int y) {
+        return true;
+    }
 
+    @Override
+    public ItemDraggableRange onGetItemDraggableRange(MyAdapter.ViewHolder holder, int position) {
 
+        ItemDraggableRange draggableRangenew = new ItemDraggableRange(0, getItemCount() - 1);
+        return draggableRangenew;
+    }
+
+    @Override
+    public boolean onCheckCanDrop(int draggingPosition, int dropPosition) {
+        return true;
+    }
+
+    @Override
+    public void onMoveItem(int fromPosition, int toPosition) {
+        RecyclerItem movedItem = listItems.remove(fromPosition);
+        listItems.add(toPosition, movedItem);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+//==========================================================================================================
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
@@ -76,7 +108,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         return listItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends AbstractDraggableItemViewHolder {
 
         public TextView txtTitle;
         public TextView txtDescription;

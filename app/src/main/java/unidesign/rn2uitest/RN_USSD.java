@@ -194,8 +194,8 @@ public class RN_USSD extends AppCompatActivity
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        private RecyclerView recyclerView;
-        private List<RecyclerItem> listItems;
+        //private RecyclerView recyclerView;
+        //private List<RecyclerItem> listItems;
         // Setup D&D feature and RecyclerView
 
         public PlaceholderFragment() {
@@ -220,7 +220,7 @@ public class RN_USSD extends AppCompatActivity
 
             View rootView = inflater.inflate(R.layout.fragment_rn__ussd, container, false);
 
-            recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+            RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             RecyclerViewDragDropManager dragMgr = new RecyclerViewDragDropManager();
@@ -230,16 +230,17 @@ public class RN_USSD extends AppCompatActivity
 
             //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2, StaggeredGridLayoutManager.VERTICAL, false));
 
-            listItems = new ArrayList<>();
+            List<RecyclerItem> listItems = new ArrayList<>();
             //Generate sample data
 
-            for (int i = 0; i<10; i++) {
-                listItems.add(new RecyclerItem("Item " + (i + 1), "Welcome to Torisan channel, this is description of item " + (i+1)));
+            for (int k = 0; k<15; k++) {
+                listItems.add(new RecyclerItem("Item " + (k + 1), "Welcome to Torisan channel, this is description of item " + (k+1)));
             }
 
             //Set adapter
-            recyclerView.setAdapter(dragMgr.createWrappedAdapter(new MyAdapter(listItems, getActivity())));
-
+            MyAdapter adapter = new MyAdapter(listItems, getActivity());
+            recyclerView.setAdapter(dragMgr.createWrappedAdapter(adapter));
+            //recyclerView.setAdapter(adapter);
             dragMgr.attachRecyclerView(recyclerView);
 
             //adapter = new MyAdapter(listItems, getActivity());
@@ -249,9 +250,9 @@ public class RN_USSD extends AppCompatActivity
             // drag & drop manager
      // wrap for dragging
 
-            final GeneralItemAnimator animator = new DraggableItemAnimator();
+            //final GeneralItemAnimator animator = new DraggableItemAnimator();
 
-            recyclerView.setItemAnimator(animator);
+            //recyclerView.setItemAnimator(animator);
             return rootView;
         }
     }

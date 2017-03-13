@@ -12,33 +12,6 @@
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\25.2.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="cb454b52545859ed2f24a6c01366805b0fa04b22">
-        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-25.2.0_1226d5bd7f0a14aaf6e3bada9f7ba97d847e32e6\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\design\25.1.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="30103d98fa5ed824b54af839c85e2111f9bde8ec">
-        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-25.1.0_3291c7977719644980e3be0ab65293cf9d5fbd5a\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\support-fragment\25.2.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="8fe8a8f77d651982ce5e18f6187dc4daf914ac57">
-        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-25.2.0_8f9cad59862b6d9dbbedb9820e497375ebd7dfa0\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.h6ah4i.android.widget.advrecyclerview\advrecyclerview\0.10.4\jars\classes.jar"
         jumboMode="true"
         optimize="true"
@@ -52,7 +25,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="5176e8aeda8b5a7b8a123294089d169759eb546b">
+        sha1="4305387e8103c6befcc4d6044875c360a34c1f5b">
         <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_753ee49502702d61a7722285b5690b290a5a737e\classes.dex" />
     </item>
     <item
@@ -81,33 +54,6 @@
         revision="25.0.2"
         sha1="d38084015027549951cbaea5d5f6fb795cc81151">
         <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-transition-25.1.0_f0aa4d88f81cf7bb1d89a20b90ca525ddc80760a\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\25.2.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="810f41e5b7fd99f196ebeabe865ba2c54e7e76dc">
-        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-25.2.0_6ecdede3c59ce49db775406651adad65a5c4efa2\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\25.0.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="1108575c7dc7b7f5b378b3290ac90de81a9b8830">
-        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-cardview-v7-25.0.1_b2a714d4928529da7dd01e5cdb0b9410c732f7ca\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="9cf1f32fca4cd572ac4d650f465ecbe20986f16a">
-        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_32ab14e3500dd896b4f995178991361767106e4d\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -144,6 +90,60 @@
         revision="25.0.2"
         sha1="e820b7be8c035dd522da4bc822e8a76c8e27921a">
         <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-utils-25.2.0_e56dae2c6e47e4d2126bb8447386fcf0d934c5fa\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\25.2.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="cb454b52545859ed2f24a6c01366805b0fa04b22">
+        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-25.2.0_1226d5bd7f0a14aaf6e3bada9f7ba97d847e32e6\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\design\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="30103d98fa5ed824b54af839c85e2111f9bde8ec">
+        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-25.1.0_3291c7977719644980e3be0ab65293cf9d5fbd5a\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\support-fragment\25.2.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="8fe8a8f77d651982ce5e18f6187dc4daf914ac57">
+        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-25.2.0_8f9cad59862b6d9dbbedb9820e497375ebd7dfa0\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\25.2.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="810f41e5b7fd99f196ebeabe865ba2c54e7e76dc">
+        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-25.2.0_6ecdede3c59ce49db775406651adad65a5c4efa2\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\25.0.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1108575c7dc7b7f5b378b3290ac90de81a9b8830">
+        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-cardview-v7-25.0.1_b2a714d4928529da7dd01e5cdb0b9410c732f7ca\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="3f72cd32dc56ccf72e83bc44e44db957b04a6cf6">
+        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_32ab14e3500dd896b4f995178991361767106e4d\classes.dex" />
     </item>
     <item
         is-multidex="true"
