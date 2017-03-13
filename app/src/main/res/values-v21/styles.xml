@@ -12,5 +12,9 @@
     <!--@android:color/colorPrimaryDark
     <item name="android:windowTranslucentStatus">false</item>
     -->
+    <style name="commonListItemStyle">
+        <item name="android:elevation">@dimen/list_item_elevation</item>
+        <item name="android:outlineProvider">bounds</item>
+    </style>
 
 </resources>

@@ -1,10 +1,12 @@
 package unidesign.rn2uitest;
 
+import android.graphics.drawable.NinePatchDrawable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,6 +29,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+
+//import com.h6ah4i.android.example.advrecyclerview.R;
+
+import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -182,9 +194,9 @@ public class RN_USSD extends AppCompatActivity
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-/*        private RecyclerView recyclerView;
-        private MyAdapter adapter;
-        private List<RecyclerItem> listItems;*/
+        private RecyclerView recyclerView;
+        private List<RecyclerItem> listItems;
+        // Setup D&D feature and RecyclerView
 
         public PlaceholderFragment() {
         }
@@ -208,13 +220,17 @@ public class RN_USSD extends AppCompatActivity
 
             View rootView = inflater.inflate(R.layout.fragment_rn__ussd, container, false);
 
-            RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+            recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            RecyclerViewDragDropManager dragMgr = new RecyclerViewDragDropManager();
+
+            dragMgr.setInitiateOnMove(false);
+            dragMgr.setInitiateOnLongPress(true);
 
             //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2, StaggeredGridLayoutManager.VERTICAL, false));
 
-            List<RecyclerItem> listItems = new ArrayList<>();
+            listItems = new ArrayList<>();
             //Generate sample data
 
             for (int i = 0; i<10; i++) {
@@ -222,17 +238,20 @@ public class RN_USSD extends AppCompatActivity
             }
 
             //Set adapter
-            MyAdapter adapter = new MyAdapter(listItems, getActivity());
+            recyclerView.setAdapter(dragMgr.createWrappedAdapter(new MyAdapter(listItems, getActivity())));
+
+            dragMgr.attachRecyclerView(recyclerView);
+
+            //adapter = new MyAdapter(listItems, getActivity());
 //            MyAdapter adapter = new MyAdapter(getActivity());
-            recyclerView.setAdapter(adapter);
+            //recyclerView.setAdapter(adapter);
 
+            // drag & drop manager
+     // wrap for dragging
 
-/*    View rootView = inflater.inflate(R.layout.fragment_rn__sms, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)) +
-                    "\n" + getString(R.string.large_text));*/
+            final GeneralItemAnimator animator = new DraggableItemAnimator();
 
-
+            recyclerView.setItemAnimator(animator);
             return rootView;
         }
     }
