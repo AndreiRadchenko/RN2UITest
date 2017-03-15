@@ -1,6 +1,7 @@
 package unidesign.rn2uitest;
 
 import android.graphics.drawable.NinePatchDrawable;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -11,10 +12,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -28,13 +27,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.TextView;
-
 //import com.h6ah4i.android.example.advrecyclerview.R;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
@@ -194,7 +190,11 @@ public class RN_USSD extends AppCompatActivity
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        //private RecyclerView recyclerView;
+        private RecyclerView recyclerView;
+        private RecyclerView.LayoutManager mLayoutManager;
+        private RecyclerViewDragDropManager dragMgr;
+        private RecyclerView.Adapter mWrappedAdapter;
+        private RecyclerView.Adapter adapter;
         //private List<RecyclerItem> listItems;
         // Setup D&D feature and RecyclerView
 
@@ -220,41 +220,86 @@ public class RN_USSD extends AppCompatActivity
 
             View rootView = inflater.inflate(R.layout.fragment_rn__ussd, container, false);
 
-            RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            RecyclerViewDragDropManager dragMgr = new RecyclerViewDragDropManager();
+            recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+            mLayoutManager = new LinearLayoutManager(getContext());
+           // recyclerView.setHasFixedSize(true);
+            //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            dragMgr.setInitiateOnMove(false);
+            // drag & drop manager
+            dragMgr = new RecyclerViewDragDropManager();
+            dragMgr.setDraggingItemShadowDrawable(
+                    (NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z3));
+            // Start dragging after long press
             dragMgr.setInitiateOnLongPress(true);
+            dragMgr.setInitiateOnMove(false);
 
             //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2, StaggeredGridLayoutManager.VERTICAL, false));
 
-            List<RecyclerItem> listItems = new ArrayList<>();
+            List<MyAdapter.RecyclerItem> listItems = new ArrayList<>();
             //Generate sample data
 
-            for (int k = 0; k<15; k++) {
-                listItems.add(new RecyclerItem("Item " + (k + 1), "Welcome to Torisan channel, this is description of item " + (k+1)));
+            for (int k = 0; k<10; k++) {
+                listItems.add(new MyAdapter.RecyclerItem("Item " + (k), "Welcome to Torisan channel, this is description of item " + (k)));
             }
 
             //Set adapter
-            MyAdapter adapter = new MyAdapter(listItems, getActivity());
-            recyclerView.setAdapter(dragMgr.createWrappedAdapter(adapter));
+            final MyAdapter mAdapter = new MyAdapter(listItems, getActivity());
+            adapter = mAdapter;
+            mWrappedAdapter = dragMgr.createWrappedAdapter(adapter);
+
+            final GeneralItemAnimator animator = new DraggableItemAnimator();
+
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(mWrappedAdapter);
+            //recyclerView.setItemAnimator(animator);
             //recyclerView.setAdapter(adapter);
+            // additional decorations
+            //noinspection StatementWithEmptyBody
+            if (supportsViewElevation()) {
+                // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
+            } else {
+                recyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z1)));
+            }
+            recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.list_divider_h), true));
+
             dragMgr.attachRecyclerView(recyclerView);
 
-            //adapter = new MyAdapter(listItems, getActivity());
-//            MyAdapter adapter = new MyAdapter(getActivity());
-            //recyclerView.setAdapter(adapter);
-
-            // drag & drop manager
-     // wrap for dragging
-
-            //final GeneralItemAnimator animator = new DraggableItemAnimator();
-
-            //recyclerView.setItemAnimator(animator);
             return rootView;
         }
+
+        @Override
+        public void onPause() {
+            dragMgr.cancelDrag();
+            super.onPause();
+        }
+
+        @Override
+        public void onDestroyView() {
+            if (dragMgr != null) {
+                dragMgr.release();
+                dragMgr = null;
+            }
+
+            if (recyclerView != null) {
+                recyclerView.setItemAnimator(null);
+                recyclerView.setAdapter(null);
+                recyclerView = null;
+            }
+
+            if (mWrappedAdapter != null) {
+                WrapperAdapterUtils.releaseAll(mWrappedAdapter);
+                mWrappedAdapter = null;
+            }
+            adapter = null;
+            mLayoutManager = null;
+
+            super.onDestroyView();
+        }
+
+        private boolean supportsViewElevation() {
+            return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+        }
+
     }
 
     /**
