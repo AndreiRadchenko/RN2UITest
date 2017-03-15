@@ -6,6 +6,7 @@ package unidesign.rn2uitest;
 import android.content.Context;
 //import android.support.v7.widget.PopupMenu;
 //import android.support.v7.widget.DrawableUtils;
+import android.graphics.Color;
 import android.support.v4.view.ViewCompat;
 import android.widget.FrameLayout;
 import android.widget.PopupMenu;
@@ -19,6 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.drawable.Drawable;
 
+import unidesign.rn2uitest.helper.ItemTouchHelperViewHolder;
+import unidesign.rn2uitest.helper.ItemTouchHelperAdapter;
+
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
@@ -29,7 +33,7 @@ import java.util.List;
 import static android.support.v7.recyclerview.R.styleable.RecyclerView;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
-        implements DraggableItemAdapter<MyAdapter.ViewHolder> {
+        implements ItemTouchHelperAdapter  {
 
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
@@ -39,51 +43,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     private Context mContext;
 
     public MyAdapter(List<RecyclerItem> listItems, Context mContext) {
-        setHasStableIds(true); // this is required for D&D feature.
+        //setHasStableIds(true); // this is required for D&D feature.
         this.listItems = listItems;
         this.mContext = mContext;
     }
 // Методы интерфейса DraggableItemAdapter
 //==========================================================================================================
-    @Override
-    public boolean onCheckCanStartDrag(MyAdapter.ViewHolder holder, int position, int x, int y) {
-        // x, y --- relative from the itemView's top-left
-        final View containerView = holder.mContainer;
-        final View dragHandleView = holder.mDragHandle;
-
-        final int offsetX = containerView.getLeft() + (int) (ViewCompat.getTranslationX(containerView) + 0.5f);
-        final int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
-
-        return ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY);
-    }
-
-    @Override
-    public ItemDraggableRange onGetItemDraggableRange(MyAdapter.ViewHolder holder, int position) {
-
-/*        ItemDraggableRange draggableRangenew = new ItemDraggableRange(0, getItemCount() - 1);
-        return draggableRangenew;*/
-        return null;
-    }
-
-    @Override
-    public boolean onCheckCanDrop(int draggingPosition, int dropPosition) {
-        return true;
-    }
-
-/*    @Override
-    public void onMoveItem(int fromPosition, int toPosition) {
-        RecyclerItem movedItem = listItems.remove(fromPosition);
-        listItems.add(toPosition, movedItem);
-        notifyItemMoved(fromPosition, toPosition);
-    }*/
-
-    @Override
-    public void onMoveItem(int fromPosition, int toPosition) {
-        RecyclerItem prev = listItems.remove(fromPosition);
-        listItems.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
-        notifyItemMoved(fromPosition, toPosition);
-    }
-
 
     //==========================================================================================================
     @Override
@@ -155,7 +120,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         return listItems.size();
     }
 
-   public static class ViewHolder extends AbstractDraggableItemViewHolder {
+    @Override
+    public void onItemDismiss(int position) {
+        listItems.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        RecyclerItem prev = listItems.remove(fromPosition);
+        listItems.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+   public static class ViewHolder extends AbstractDraggableItemViewHolder implements
+           ItemTouchHelperViewHolder {
 
        public FrameLayout mContainer;
        public View mDragHandle;
@@ -171,34 +150,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
             txtOptionDigit = (TextView) itemView.findViewById(R.id.txtOptionDigit);
         }
+
+       @Override
+       public void onItemSelected() {
+           itemView.setBackgroundColor(Color.MAGENTA);
+           itemView.setScaleY(.95f);
+           itemView.setScaleX(.95f);
+       }
+
+       @Override
+       public void onItemClear() {
+           itemView.setBackgroundColor(0);
+           itemView.setScaleY(1f );
+           itemView.setScaleX(1f);
+       }
     }
 
-    static class RecyclerItem {
-
-        private String title;
-        private String description;
-
-        public RecyclerItem(String title, String description) {
-            this.title = title;
-            this.description = description;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-    }
 
     public static class DrawableUtils {
         private static final int[] EMPTY_STATE = new int[] {};

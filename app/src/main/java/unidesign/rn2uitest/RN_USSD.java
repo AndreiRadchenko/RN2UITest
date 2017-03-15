@@ -26,7 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.support.v7.widget.helper.ItemTouchHelper;
 //import com.h6ah4i.android.example.advrecyclerview.R;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
@@ -38,6 +38,8 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import unidesign.rn2uitest.helper.SimpleItemTouchHelperCallback;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -190,11 +192,13 @@ public class RN_USSD extends AppCompatActivity
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+        private ItemTouchHelper mItemTouchHelper;
+
         private RecyclerView recyclerView;
         private RecyclerView.LayoutManager mLayoutManager;
-        private RecyclerViewDragDropManager dragMgr;
-        private RecyclerView.Adapter mWrappedAdapter;
-        private RecyclerView.Adapter adapter;
+        //private RecyclerViewDragDropManager dragMgr;
+        //private RecyclerView.Adapter mWrappedAdapter;
+        private MyAdapter adapter;
         //private List<RecyclerItem> listItems;
         // Setup D&D feature and RecyclerView
 
@@ -226,31 +230,31 @@ public class RN_USSD extends AppCompatActivity
             //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             // drag & drop manager
-            dragMgr = new RecyclerViewDragDropManager();
-            dragMgr.setDraggingItemShadowDrawable(
-                    (NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z3));
+            //dragMgr = new RecyclerViewDragDropManager();
+            //dragMgr.setDraggingItemShadowDrawable(
+            //        (NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z3));
             // Start dragging after long press
-            dragMgr.setInitiateOnLongPress(true);
-            dragMgr.setInitiateOnMove(false);
+            //dragMgr.setInitiateOnLongPress(true);
+            //dragMgr.setInitiateOnMove(false);
 
             //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2, StaggeredGridLayoutManager.VERTICAL, false));
 
-            List<MyAdapter.RecyclerItem> listItems = new ArrayList<>();
+            List<RecyclerItem> listItems = new ArrayList<>();
             //Generate sample data
 
             for (int k = 0; k<10; k++) {
-                listItems.add(new MyAdapter.RecyclerItem("Item " + (k), "Welcome to Torisan channel, this is description of item " + (k)));
+                listItems.add(new RecyclerItem("Item " + (k), "Welcome to Torisan channel, this is description of item " + (k)));
             }
 
             //Set adapter
             final MyAdapter mAdapter = new MyAdapter(listItems, getActivity());
             adapter = mAdapter;
-            mWrappedAdapter = dragMgr.createWrappedAdapter(adapter);
+            //mWrappedAdapter = dragMgr.createWrappedAdapter(adapter);
 
-            final GeneralItemAnimator animator = new DraggableItemAnimator();
+            //final GeneralItemAnimator animator = new DraggableItemAnimator();
 
             recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setAdapter(mWrappedAdapter);
+            recyclerView.setAdapter(adapter);
             //recyclerView.setItemAnimator(animator);
             //recyclerView.setAdapter(adapter);
             // additional decorations
@@ -262,12 +266,15 @@ public class RN_USSD extends AppCompatActivity
             }
             recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.list_divider_h), true));
 
-            dragMgr.attachRecyclerView(recyclerView);
+            //dragMgr.attachRecyclerView(recyclerView);
+            ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
+            mItemTouchHelper = new ItemTouchHelper(callback);
+            mItemTouchHelper.attachToRecyclerView(recyclerView);
 
             return rootView;
         }
 
-        @Override
+/*        @Override
         public void onPause() {
             dragMgr.cancelDrag();
             super.onPause();
@@ -294,7 +301,7 @@ public class RN_USSD extends AppCompatActivity
             mLayoutManager = null;
 
             super.onDestroyView();
-        }
+        }*/
 
         private boolean supportsViewElevation() {
             return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
