@@ -97,7 +97,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();
 
-        if (((dragState & Draggable.STATE_FLAG_IS_UPDATED) != 0)) {
+/*       if (((dragState & Draggable.STATE_FLAG_IS_UPDATED) != 0)) {
             int bgResId;
 
             if ((dragState & Draggable.STATE_FLAG_IS_ACTIVE) != 0) {
@@ -112,7 +112,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             }
 
             holder.mContainer.setBackgroundResource(bgResId);
-        }
+        }*/
     }
 
     @Override
@@ -154,8 +154,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
        @Override
        public void onItemSelected() {
            itemView.setBackgroundColor(Color.MAGENTA);
-           itemView.setScaleY(.95f);
-           itemView.setScaleX(.95f);
+           itemView.setScaleY(1.05f);
+           itemView.setScaleX(1.05f);
        }
 
        @Override
