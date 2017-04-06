@@ -1,5 +1,6 @@
 package unidesign.rn2uitest;
 
+import android.content.Intent;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
@@ -21,6 +22,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +46,7 @@ import unidesign.rn2uitest.helper.SimpleItemTouchHelperCallback;
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    static final String LOG_TAG = "myLogs";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -106,8 +109,10 @@ public class RN_USSD extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent("intent.action.newussd");
+                startActivity(intent);
+/*              Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
             }
         });
 
@@ -191,17 +196,10 @@ public class RN_USSD extends AppCompatActivity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-
         private ItemTouchHelper mItemTouchHelper;
-
         private RecyclerView recyclerView;
         private RecyclerView.LayoutManager mLayoutManager;
-        //private RecyclerViewDragDropManager dragMgr;
-        //private RecyclerView.Adapter mWrappedAdapter;
         private MyAdapter adapter;
-        //private List<RecyclerItem> listItems;
-        // Setup D&D feature and RecyclerView
-
         public PlaceholderFragment() {
         }
 
@@ -226,18 +224,8 @@ public class RN_USSD extends AppCompatActivity
 
             recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
             mLayoutManager = new LinearLayoutManager(getContext());
-           // recyclerView.setHasFixedSize(true);
-            //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            // drag & drop manager
-            //dragMgr = new RecyclerViewDragDropManager();
-            //dragMgr.setDraggingItemShadowDrawable(
-            //        (NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z3));
-            // Start dragging after long press
-            //dragMgr.setInitiateOnLongPress(true);
-            //dragMgr.setInitiateOnMove(false);
-
-            //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2, StaggeredGridLayoutManager.VERTICAL, false));
+            Log.d(LOG_TAG, "--- In OnCreateView() PlaceholderFragment ---");
 
             List<RecyclerItem> listItems = new ArrayList<>();
             //Generate sample data
@@ -249,16 +237,10 @@ public class RN_USSD extends AppCompatActivity
             //Set adapter
             final MyAdapter mAdapter = new MyAdapter(listItems, getActivity());
             adapter = mAdapter;
-            //mWrappedAdapter = dragMgr.createWrappedAdapter(adapter);
-
-            //final GeneralItemAnimator animator = new DraggableItemAnimator();
 
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(adapter);
-            //recyclerView.setItemAnimator(animator);
-            //recyclerView.setAdapter(adapter);
-            // additional decorations
-            //noinspection StatementWithEmptyBody
+
             if (supportsViewElevation()) {
                 // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
             } else {
@@ -272,6 +254,14 @@ public class RN_USSD extends AppCompatActivity
             mItemTouchHelper.attachToRecyclerView(recyclerView);
 
             return rootView;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
+            Log.d(LOG_TAG, "--- In onResume() sectionNumber: ---" + sectionNumber);
+
         }
 
 /*        @Override
