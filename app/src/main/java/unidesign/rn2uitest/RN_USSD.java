@@ -1,14 +1,18 @@
 package unidesign.rn2uitest;
 
+import android.support.v4.content.Loader;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.app.LoaderManager;
+import android.database.Cursor;
+
 import android.content.Intent;
-import android.graphics.drawable.NinePatchDrawable;
+
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -41,6 +45,10 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
+import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
+import unidesign.rn2uitest.MySQLight.USSD_Template;
+import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 import unidesign.rn2uitest.helper.SimpleItemTouchHelperCallback;
 
 public class RN_USSD extends AppCompatActivity
@@ -190,16 +198,20 @@ public class RN_USSD extends AppCompatActivity
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment
+                                implements LoaderManager.LoaderCallbacks<Cursor> {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
+        TemplatesDataSource dbHelper;
+        View rootView;
         private static final String ARG_SECTION_NUMBER = "section_number";
         private ItemTouchHelper mItemTouchHelper;
         private RecyclerView recyclerView;
         private RecyclerView.LayoutManager mLayoutManager;
         private MyAdapter adapter;
+        //private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
         public PlaceholderFragment() {
         }
 
@@ -220,35 +232,18 @@ public class RN_USSD extends AppCompatActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            View rootView = inflater.inflate(R.layout.fragment_rn__ussd, container, false);
-
+            rootView = inflater.inflate(R.layout.fragment_rn__ussd, container, false);
             recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
             mLayoutManager = new LinearLayoutManager(getContext());
 
             Log.d(LOG_TAG, "--- In OnCreateView() PlaceholderFragment ---");
+            getLoaderManager().initLoader(0, null, this);
 
-            List<RecyclerItem> listItems = new ArrayList<>();
-            //Generate sample data
-
-            for (int k = 0; k<10; k++) {
-                listItems.add(new RecyclerItem("Item " + (k), "Welcome to Torisan channel, this is description of item " + (k)));
-            }
-
-            //Set adapter
-            final MyAdapter mAdapter = new MyAdapter(listItems, getActivity());
+            final MyAdapter mAdapter = new MyAdapter(getActivity());
             adapter = mAdapter;
 
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(adapter);
-
-            if (supportsViewElevation()) {
-                // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
-            } else {
-                recyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z1)));
-            }
-            recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.list_divider_h), true));
-
-            //dragMgr.attachRecyclerView(recyclerView);
             ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
             mItemTouchHelper = new ItemTouchHelper(callback);
             mItemTouchHelper.attachToRecyclerView(recyclerView);
@@ -257,44 +252,48 @@ public class RN_USSD extends AppCompatActivity
         }
 
         @Override
+        public void onPause(){
+            super.onPause();
+        // внесу изменения в базу данных произведенные в UI
+            adapter.updateDB();
+        }
+
+        @Override
         public void onResume() {
             super.onResume();
             int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
             Log.d(LOG_TAG, "--- In onResume() sectionNumber: ---" + sectionNumber);
+            //getLoaderManager().initLoader(0, null, this);
 
         }
-
-/*        @Override
-        public void onPause() {
-            dragMgr.cancelDrag();
-            super.onPause();
-        }
-
-        @Override
-        public void onDestroyView() {
-            if (dragMgr != null) {
-                dragMgr.release();
-                dragMgr = null;
-            }
-
-            if (recyclerView != null) {
-                recyclerView.setItemAnimator(null);
-                recyclerView.setAdapter(null);
-                recyclerView = null;
-            }
-
-            if (mWrappedAdapter != null) {
-                WrapperAdapterUtils.releaseAll(mWrappedAdapter);
-                mWrappedAdapter = null;
-            }
-            adapter = null;
-            mLayoutManager = null;
-
-            super.onDestroyView();
-        }*/
 
         private boolean supportsViewElevation() {
             return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+        }
+
+        // Called when a previously created loader has finished loading
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            // Swap the new cursor in.  (The framework will take care of closing the
+            // old cursor once we return.)
+            Log.d(LOG_TAG, "--- In OnLoadFinishad() PlaceholderFragment ---");
+            adapter.swapCursor(data);
+        }
+        public void onLoaderReset(Loader<Cursor> loader) {
+            // This is called when the last Cursor provided to onLoadFinished()
+            // above is about to be closed.  We need to make sure we are no
+            // longer using it.
+            Log.d(LOG_TAG, "--- In OnLoaderReset() PlaceholderFragment ---");
+            adapter.swapCursor(null);
+        }
+        // creates a new loader after the initLoader () call
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            String[] projection = { USSDSQLiteHelper.COLUMN_ID, USSDSQLiteHelper.COLUMN_NAME,
+                                    USSDSQLiteHelper.COLUMN_COMMENT, USSDSQLiteHelper.COLUMN_TEMPLATE};
+            CursorLoader cursorLoader = new CursorLoader(getContext(),
+                    TempContentProvider.CONTENT_URI, projection, null, null, null);
+            return cursorLoader;
         }
 
     }

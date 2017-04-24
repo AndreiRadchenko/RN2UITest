@@ -30,6 +30,12 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name=".TempContentProvider.TempContentProvider"
+            android:authorities="unidesign.rn2uitest.TempContentProvider"
+            android:label="USSD/SMS Templates Provider" >
+        </provider>
+
     </application>
 
 </manifest>

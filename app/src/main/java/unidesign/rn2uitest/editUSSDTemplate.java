@@ -1,5 +1,6 @@
 package unidesign.rn2uitest;
 
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.content.ContentValues;
 import android.os.Bundle;
@@ -10,7 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
+import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 import unidesign.rn2uitest.MySQLight.USSD_Template;
+import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 
 /**
  * Created by United on 4/5/2017.
@@ -24,6 +27,8 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
     EditText etName, etComment, etTemplate;
 
     TemplatesDataSource dbHelper;
+
+    private Uri todoUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +48,22 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
         etComment = (EditText) findViewById(R.id.etComment);
         etTemplate = (EditText) findViewById(R.id.etTemplate);
 
+        Bundle extras = getIntent().getExtras();
+
+        // check from the saved Instance
+        todoUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState
+                .getParcelable(TempContentProvider.CONTENT_ITEM_TYPE);
+
+        // Or passed from the other activity
+        if (extras != null) {
+            todoUri = extras
+                    .getParcelable(TempContentProvider.CONTENT_ITEM_TYPE);
+
+            //fillData(todoUri);
+        }
+
         // создаем объект для создания и управления версиями БД
-        dbHelper = new TemplatesDataSource(this);
+        //dbHelper = new TemplatesDataSource(this);
 
     }
 
@@ -60,17 +79,39 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
         String template = etTemplate.getText().toString();
 
         // подключаемся к БД
-        dbHelper.open();
+        //dbHelper.open();
 
 
         switch (v.getId()) {
             case R.id.btnAdd:
                 Log.d(LOG_TAG, "--- Insert in mytable: ---");
                 // подготовим данные для вставки в виде пар: наименование столбца - значение
-                USSD_Template ussd_template = dbHelper.createTemplate(name, comment, template);
+                //USSD_Template ussd_template = dbHelper.createTemplate(name, comment, template);
                 //dbHelper.createTemplate(name, comment, template);
-                Log.d(LOG_TAG, "row inserted, ID = " + ussd_template.getId());
-                dbHelper.close();
+                //Log.d(LOG_TAG, "row inserted, ID = " + ussd_template.getId());
+
+                // only save if either summary or description
+                // is available
+
+                if (name.length() == 0 && template.length() == 0) {
+                    return;
+                }
+
+                ContentValues values = new ContentValues();
+                values.put(USSDSQLiteHelper.COLUMN_NAME, name);
+                values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment);
+                values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template);
+
+                if (todoUri == null) {
+                    // New todo
+                    todoUri = getContentResolver().insert(
+                            TempContentProvider.CONTENT_URI, values);
+                } else {
+                    // Update todo
+                    getContentResolver().update(todoUri, values, null, null);
+                }
+
+                //dbHelper.close();
                 finish();
                 break;
             case R.id.btnRead:
@@ -80,12 +121,12 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
             case R.id.btnCancel:
                 Log.d(LOG_TAG, "--- Cancel Button Pressed: ---");
 
-                dbHelper.close();
+                //dbHelper.close();
                 finish();
                 break;
         }
         // закрываем подключение к БД
-        dbHelper.close();
+        //dbHelper.close();
     }
 
 }

@@ -3,11 +3,15 @@ package unidesign.rn2uitest;
 /**
  * Created by United on 2/25/2017.
  */
+import android.content.ContentValues;
 import android.content.Context;
 //import android.support.v7.widget.PopupMenu;
 //import android.support.v7.widget.DrawableUtils;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v4.view.ViewCompat;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.drawable.Drawable;
 
+import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
+import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
+import unidesign.rn2uitest.MySQLight.USSD_Template;
+import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 import unidesign.rn2uitest.helper.ItemTouchHelperViewHolder;
 import unidesign.rn2uitest.helper.ItemTouchHelperAdapter;
 
@@ -28,25 +36,109 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstant
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.support.v7.recyclerview.R.styleable.RecyclerView;
+import static java.security.AccessController.getContext;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         implements ItemTouchHelperAdapter  {
 
+    static final String LOG_TAG = "myLogs";
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
     }
 
-    private List<RecyclerItem> listItems;
+    private List<RecyclerItem> listItems = new ArrayList<>();
+    List<USSD_Template> templates;
     private Context mContext;
+    TemplatesDataSource dbHelper;
 
     public MyAdapter(List<RecyclerItem> listItems, Context mContext) {
         //setHasStableIds(true); // this is required for D&D feature.
         this.listItems = listItems;
         this.mContext = mContext;
     }
+
+    public MyAdapter(Context mContext) {
+        //setHasStableIds(true); // this is required for D&D feature.
+        this.mContext = mContext;
+    }
+/*    public void setlistItems(List<RecyclerItem> mlistItems){
+        listItems = mlistItems;
+    }*/
+
+    public void swap(List<RecyclerItem> mlistItems){
+        listItems.clear();
+        listItems.addAll(mlistItems);
+        notifyDataSetChanged();
+    }
+
+    public void updateDB(){
+
+        Uri uri;
+        ContentValues values = new ContentValues();
+
+        for (int k  = 0 ; k < listItems.size(); k++){
+            if (listItems.get(k).getID() != templates.get(k).getId()){
+
+                uri = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+                        + templates.get(k).getId());
+
+                values.put(USSDSQLiteHelper.COLUMN_NAME, listItems.get(k).getTitle());
+                values.put(USSDSQLiteHelper.COLUMN_COMMENT, listItems.get(k).getDescription());
+                values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, listItems.get(k).getTemplate());
+
+                mContext.getContentResolver().update(uri, values, null, null);
+                //Log.d(LOG_TAG, "--- In MyAdapter updateDB() ---");
+            }
+        }
+    };
+
+    public void swapCursor(Cursor cursor){
+
+        if (cursor != null) {
+            templates = getAllTemplates(cursor);
+
+            List<RecyclerItem> mlistItems = new ArrayList<>();
+            //Generate sample data
+            for (int k = 0; k < templates.size(); k++) {
+                mlistItems.add(new RecyclerItem(templates.get(k).getId(),
+                                    templates.get(k).getName(), templates.get(k).getComment(),
+                                    templates.get(k).getTemplate()));
+            }
+
+            listItems.clear();
+            listItems.addAll(mlistItems);
+            notifyDataSetChanged();
+        }
+        else {
+            notifyDataSetChanged();
+        }
+    }
+
+    private USSD_Template cursorToTemplate(Cursor cursor) {
+        USSD_Template template = new USSD_Template();
+        template.setId(cursor.getLong(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_ID)));
+        template.setName(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_NAME)));
+        template.setComment(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_COMMENT)));
+        template.setTemplate(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_TEMPLATE)));
+        return template;
+    }
+
+    public List<USSD_Template> getAllTemplates(Cursor cursor) {
+        List<USSD_Template> templates = new ArrayList<USSD_Template>();
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            USSD_Template template = cursorToTemplate(cursor);
+            templates.add(template);
+            cursor.moveToNext();
+        }
+        return templates;
+    }
+
 // Методы интерфейса DraggableItemAdapter
 //==========================================================================================================
 
@@ -59,6 +151,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+
+        //dbHelper = new TemplatesDataSource(getActivity());
+        //dbHelper.open();
 
         final RecyclerItem itemList = listItems.get(position);
         holder.txtTitle.setText(itemList.getTitle());
@@ -80,7 +175,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                                 break;
                             case R.id.mnu_item_delete:
                                 //Delete item
-                                listItems.remove(position);
+                                Uri uri = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+                                        + listItems.get(position).getID());
+                                mContext.getContentResolver().delete(uri, null, null);
+                                //fillData();
+                                Log.d(LOG_TAG, "--- In MyAdapter() delete item ---");
+                                Log.d(LOG_TAG, uri.toString());
+                                //listItems.remove(position);
                                 notifyDataSetChanged();
                                 Toast.makeText(mContext, "Deleted", Toast.LENGTH_LONG).show();
                                 break;
@@ -96,23 +197,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();
-
-/*       if (((dragState & Draggable.STATE_FLAG_IS_UPDATED) != 0)) {
-            int bgResId;
-
-            if ((dragState & Draggable.STATE_FLAG_IS_ACTIVE) != 0) {
-                bgResId = R.drawable.bg_item_dragging_active_state;
-
-                // need to clear drawable state here to get correct appearance of the dragging item.
-                DrawableUtils.clearState(holder.mContainer.getForeground());
-            } else if ((dragState & Draggable.STATE_FLAG_DRAGGING) != 0) {
-                bgResId = R.drawable.bg_item_dragging_state;
-            } else {
-                bgResId = R.drawable.bg_item_normal_state;
-            }
-
-            holder.mContainer.setBackgroundResource(bgResId);
-        }*/
     }
 
     @Override
@@ -124,13 +208,38 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public void onItemDismiss(int position) {
         listItems.remove(position);
         notifyItemRemoved(position);
+        Log.d(LOG_TAG, "--- In MyAdapter() onItemDismiss --- position = " + position);
     }
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
         RecyclerItem prev = listItems.remove(fromPosition);
-        listItems.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
+        //listItems.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
+        listItems.add(toPosition, prev);
         notifyItemMoved(fromPosition, toPosition);
+        //Log.d(LOG_TAG, "--- In MyAdapter() onItemMove --- fromPosition = " + fromPosition + ", toPosition = " + toPosition);
+
+// swap rows in  database ========================================================================
+/*        Uri uri = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+                + listItems.get(toPosition).getID());
+
+        ContentValues values = new ContentValues();
+        values.put(USSDSQLiteHelper.COLUMN_NAME, listItems.get(fromPosition).getTitle());
+        values.put(USSDSQLiteHelper.COLUMN_COMMENT, listItems.get(fromPosition).getDescription());
+        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, listItems.get(fromPosition).getTemplate());
+
+        mContext.getContentResolver().update(uri, values, null, null);
+
+        uri = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+                + listItems.get(fromPosition).getID());
+
+        values = new ContentValues();
+        values.put(USSDSQLiteHelper.COLUMN_NAME, listItems.get(toPosition).getTitle());
+        values.put(USSDSQLiteHelper.COLUMN_COMMENT, listItems.get(toPosition).getDescription());
+        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, listItems.get(toPosition).getTemplate());
+
+        mContext.getContentResolver().update(uri, values, null, null);*/
+
     }
 
    public static class ViewHolder extends AbstractDraggableItemViewHolder implements
@@ -166,29 +275,5 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
        }
     }
 
-
-    public static class DrawableUtils {
-        private static final int[] EMPTY_STATE = new int[] {};
-
-        public static void clearState(Drawable drawable) {
-            if (drawable != null) {
-                drawable.setState(EMPTY_STATE);
-            }
-        }
-    }
-
-    public static class ViewUtils {
-        public static boolean hitTest(View v, int x, int y) {
-            final int tx = (int) (ViewCompat.getTranslationX(v) + 0.5f);
-            final int ty = (int) (ViewCompat.getTranslationY(v) + 0.5f);
-            final int left = v.getLeft() + tx;
-            final int right = v.getRight() + tx;
-            final int top = v.getTop() + ty;
-            final int bottom = v.getBottom() + ty;
-
-            return (x >= left) && (x <= right) && (y >= top) && (y <= bottom);
-        }
-
-    }
 }
 
