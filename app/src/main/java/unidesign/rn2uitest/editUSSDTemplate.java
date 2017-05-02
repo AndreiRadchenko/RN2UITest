@@ -1,5 +1,6 @@
 package unidesign.rn2uitest;
 
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.content.ContentValues;
@@ -27,8 +28,10 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
     EditText etName, etComment, etTemplate;
 
     TemplatesDataSource dbHelper;
+   // String[] projection = TemplatesDataSource.allColumns;
 
     private Uri todoUri;
+    USSD_Template template = new USSD_Template();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,19 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
         if (extras != null) {
             todoUri = extras
                     .getParcelable(TempContentProvider.CONTENT_ITEM_TYPE);
-
+            //Log.d(LOG_TAG, "--- In OnCreate() editUSSDTemplate ---" + todoUri);
+            Cursor cursor = getContentResolver().query(todoUri, TemplatesDataSource.allColumns, null, null, null);
+            cursor.moveToFirst();
+            //template = MyAdapter.cursorToTemplate(cursor);
+            //etName.setText(template.getName());
+            //etComment.setText(template.getComment());
+            //etTemplate.setText(template.getTemplate());
+            etName.setText(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_NAME)));
+            etComment.setText(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_COMMENT)));
+            etTemplate.setText(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_TEMPLATE)));
+            //etName.setText("USSD");
+            //etComment.setText("Comment");
+            //etTemplate.setText("*111#");
             //fillData(todoUri);
         }
 
@@ -71,7 +86,7 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
     public void onClick(View v) {
 
         // создаем объект для данных
-        ContentValues cv = new ContentValues();
+        ContentValues values = new ContentValues();
 
         // получаем данные из полей ввода
         String name = etName.getText().toString();
@@ -97,7 +112,7 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
                     return;
                 }
 
-                ContentValues values = new ContentValues();
+                //ContentValues values = new ContentValues();
                 values.put(USSDSQLiteHelper.COLUMN_NAME, name);
                 values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment);
                 values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template);

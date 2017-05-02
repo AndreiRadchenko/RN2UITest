@@ -255,7 +255,14 @@ public class RN_USSD extends AppCompatActivity
         public void onPause(){
             super.onPause();
         // внесу изменения в базу данных произведенные в UI
-            adapter.updateDB();
+        //    adapter.updateDB();
+        }
+
+        @Override
+        public void onSaveInstanceState (Bundle outState){
+            super.onSaveInstanceState(outState);
+            // внесу изменения в базу данных произведенные в UI
+            //adapter.updateDB();
         }
 
         @Override

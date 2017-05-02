@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 //import android.support.v7.widget.PopupMenu;
 //import android.support.v7.widget.DrawableUtils;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -91,7 +92,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                 values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, listItems.get(k).getTemplate());
 
                 mContext.getContentResolver().update(uri, values, null, null);
-                //Log.d(LOG_TAG, "--- In MyAdapter updateDB() ---");
+                Log.d(LOG_TAG, "--- In MyAdapter updateDB() ---");
             }
         }
     };
@@ -118,7 +119,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         }
     }
 
-    private USSD_Template cursorToTemplate(Cursor cursor) {
+    public static USSD_Template cursorToTemplate(Cursor cursor) {
         USSD_Template template = new USSD_Template();
         template.setId(cursor.getLong(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_ID)));
         template.setName(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_NAME)));
@@ -171,7 +172,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
                         switch (item.getItemId()) {
                             case R.id.mnu_item_save:
-                                Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent("intent.action.editussd");
+                                Uri uri2edit = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+                                        + listItems.get(position).getID());
+                                intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE, uri2edit);
+                                /*Log.d(LOG_TAG, "--- In MyAdapter() mnu_item_save ---" + uri2edit);*/
+
+                                mContext.startActivity(intent);
                                 break;
                             case R.id.mnu_item_delete:
                                 //Delete item
@@ -179,7 +187,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                                         + listItems.get(position).getID());
                                 mContext.getContentResolver().delete(uri, null, null);
                                 //fillData();
-                                Log.d(LOG_TAG, "--- In MyAdapter() delete item ---");
                                 Log.d(LOG_TAG, uri.toString());
                                 //listItems.remove(position);
                                 notifyDataSetChanged();
@@ -217,6 +224,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         //listItems.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
         listItems.add(toPosition, prev);
         notifyItemMoved(fromPosition, toPosition);
+        //updateDB();
         //Log.d(LOG_TAG, "--- In MyAdapter() onItemMove --- fromPosition = " + fromPosition + ", toPosition = " + toPosition);
 
 // swap rows in  database ========================================================================

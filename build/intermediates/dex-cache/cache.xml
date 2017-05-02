@@ -25,7 +25,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="603e19a4fcfc862c8f9902bb00540db31b811563">
+        sha1="bdb60eb8ab9ab3cde055bb2b8c9ada7402d2d1e1">
         <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_753ee49502702d61a7722285b5690b290a5a737e\classes.dex" />
     </item>
     <item
@@ -102,21 +102,21 @@
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\support-fragment\25.2.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="8fe8a8f77d651982ce5e18f6187dc4daf914ac57">
-        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-25.2.0_8f9cad59862b6d9dbbedb9820e497375ebd7dfa0\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\design\25.1.0\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
         sha1="30103d98fa5ed824b54af839c85e2111f9bde8ec">
         <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-25.1.0_3291c7977719644980e3be0ab65293cf9d5fbd5a\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\exploded-aar\com.android.support\support-fragment\25.2.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="8fe8a8f77d651982ce5e18f6187dc4daf914ac57">
+        <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-25.2.0_8f9cad59862b6d9dbbedb9820e497375ebd7dfa0\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -142,7 +142,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="8650ed3a8b77b52e41494d22fd12368398f09843">
+        sha1="87efd5f92ae537b6d7e730aeaeddcbb83232902a">
         <dex dex="C:\Users\United\AndroidStudioProjects\RN2UITest\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_32ab14e3500dd896b4f995178991361767106e4d\classes.dex" />
     </item>
     <item
