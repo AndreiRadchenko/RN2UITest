@@ -51,9 +51,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     private interface Draggable extends DraggableItemConstants {
     }
 
-    private List<RecyclerItem> listItems = new ArrayList<>();
-    List<USSD_Template> templates;
-    private Context mContext;
+    public List<RecyclerItem> listItems = new ArrayList<>();
+    public List<USSD_Template> templates;
+    public Context mContext;
     TemplatesDataSource dbHelper;
 
     public MyAdapter(List<RecyclerItem> listItems, Context mContext) {
