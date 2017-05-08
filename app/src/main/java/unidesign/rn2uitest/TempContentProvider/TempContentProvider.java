@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 
 /**
@@ -27,25 +26,36 @@ public class TempContentProvider extends ContentProvider {
     static final String LOG_TAG = "myProviderLogs";
 
     // used for the UriMacher
-    private static final int TODOS = 10;
-    private static final int TODO_ID = 20;
+    private static final int USSD = 10;
+    private static final int USSD_ID = 20;
+    private static final int SMS = 30;
+    private static final int SMS_ID = 40;
 
     private static final String AUTHORITY = "unidesign.rn2uitest.TempContentProvider";
 
-    private static final String BASE_PATH = "USSD_templates";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
-            + "/" + BASE_PATH);
+    private static final String BASE_PATH_USSD = "USSD_templates";
+    private static final String BASE_PATH_SMS = "SMS_templates";
+    public static final Uri CONTENT_URI_USSD = Uri.parse("content://" + AUTHORITY
+            + "/" + BASE_PATH_USSD);
+    public static final Uri CONTENT_URI_SMS = Uri.parse("content://" + AUTHORITY
+            + "/" + BASE_PATH_SMS);
 
-    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+    public static final String CONTENT_TYPE_USSD = ContentResolver.CURSOR_DIR_BASE_TYPE
             + "/USSD_templates";
-    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+    public static final String CONTENT_ITEM_TYPE_USSD = ContentResolver.CURSOR_ITEM_BASE_TYPE
             + "/USSD_templates";
+    public static final String CONTENT_TYPE_SMS = ContentResolver.CURSOR_DIR_BASE_TYPE
+            + "/SMS_templates";
+    public static final String CONTENT_ITEM_TYPE_SMS = ContentResolver.CURSOR_ITEM_BASE_TYPE
+            + "/SMS_templates ";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(
             UriMatcher.NO_MATCH);
     static {
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH, TODOS);
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", TODO_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_USSD, USSD);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_USSD + "/#", USSD_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_SMS, SMS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_SMS + "/#", SMS_ID);
     }
 
     @Override
@@ -64,17 +74,31 @@ public class TempContentProvider extends ContentProvider {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
         // check if the caller has requested a column which does not exists
-        checkColumns(projection);
-
-        // Set the table
-        queryBuilder.setTables(USSDSQLiteHelper.TABLE_USSD);
+        //checkColumns(projection);
 
         int uriType = sURIMatcher.match(uri);
+
         switch (uriType) {
-            case TODOS:
+            case USSD:
+                // Set the table
+                queryBuilder.setTables(USSDSQLiteHelper.TABLE_USSD);
                 Log.d(LOG_TAG, "--- In TempContentProvider query(all)---");
                 break;
-            case TODO_ID:
+            case USSD_ID:
+                // Set the table
+                queryBuilder.setTables(USSDSQLiteHelper.TABLE_USSD);
+                // adding the ID to the original query
+                queryBuilder.appendWhere(USSDSQLiteHelper.COLUMN_ID + "="
+                        + uri.getLastPathSegment());
+                break;
+            case SMS:
+                // Set the table
+                queryBuilder.setTables(USSDSQLiteHelper.TABLE_SMS);
+                Log.d(LOG_TAG, "--- In TempContentProvider query(all)---");
+                break;
+            case SMS_ID:
+                // Set the table
+                queryBuilder.setTables(USSDSQLiteHelper.TABLE_SMS);
                 // adding the ID to the original query
                 queryBuilder.appendWhere(USSDSQLiteHelper.COLUMN_ID + "="
                         + uri.getLastPathSegment());
@@ -102,15 +126,35 @@ public class TempContentProvider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         long id = 0;
+        Uri mUri;
+
         switch (uriType) {
-            case TODOS:
+            case USSD:
+                id = sqlDB.insert(USSDSQLiteHelper.TABLE_USSD, null, values);
+                mUri = Uri.parse(BASE_PATH_USSD + "/" + id);
+                break;
+            case SMS:
+                id = sqlDB.insert(USSDSQLiteHelper.TABLE_SMS, null, values);
+                mUri = Uri.parse(BASE_PATH_SMS + "/" + id);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return mUri;
+
+/*        long id = 0;
+        switch (uriType) {
+            case USSD:
                 id = sqlDB.insert(USSDSQLiteHelper.TABLE_USSD, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
-        return Uri.parse(BASE_PATH + "/" + id);
+        return Uri.parse(BASE_PATH_USSD + "/" + id);*/
     }
 
     @Override
@@ -120,11 +164,11 @@ public class TempContentProvider extends ContentProvider {
         int rowsDeleted = 0;
         Log.d(LOG_TAG, "--- In TempContentProvider delete---");
         switch (uriType) {
-            case TODOS:
+            case USSD:
                 rowsDeleted = sqlDB.delete(USSDSQLiteHelper.TABLE_USSD, selection,
                         selectionArgs);
                 break;
-            case TODO_ID:
+            case USSD_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     Log.d(LOG_TAG, "--- In TempContentProvider delete id = ---" + id);
@@ -155,13 +199,13 @@ public class TempContentProvider extends ContentProvider {
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsUpdated = 0;
         switch (uriType) {
-            case TODOS:
+            case USSD:
                 rowsUpdated = sqlDB.update(USSDSQLiteHelper.TABLE_USSD,
                         values,
                         selection,
                         selectionArgs);
                 break;
-            case TODO_ID:
+            case USSD_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     rowsUpdated = sqlDB.update(USSDSQLiteHelper.TABLE_USSD,

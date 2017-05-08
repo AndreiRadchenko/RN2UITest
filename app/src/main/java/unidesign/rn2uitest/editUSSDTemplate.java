@@ -28,7 +28,7 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
     EditText etName, etComment, etTemplate;
 
     TemplatesDataSource dbHelper;
-   // String[] projection = TemplatesDataSource.allColumns;
+   // String[] projection = TemplatesDataSource.allUSSDColumns;
 
     private Uri todoUri;
     USSD_Template template = new USSD_Template();
@@ -55,14 +55,14 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
 
         // check from the saved Instance
         todoUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState
-                .getParcelable(TempContentProvider.CONTENT_ITEM_TYPE);
+                .getParcelable(TempContentProvider.CONTENT_ITEM_TYPE_USSD);
 
         // Or passed from the other activity
         if (extras != null) {
             todoUri = extras
-                    .getParcelable(TempContentProvider.CONTENT_ITEM_TYPE);
+                    .getParcelable(TempContentProvider.CONTENT_ITEM_TYPE_USSD);
             //Log.d(LOG_TAG, "--- In OnCreate() editUSSDTemplate ---" + todoUri);
-            Cursor cursor = getContentResolver().query(todoUri, TemplatesDataSource.allColumns, null, null, null);
+            Cursor cursor = getContentResolver().query(todoUri, TemplatesDataSource.allUSSDColumns, null, null, null);
             cursor.moveToFirst();
             //template = MyAdapter.cursorToTemplate(cursor);
             //etName.setText(template.getName());
@@ -120,7 +120,7 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
                 if (todoUri == null) {
                     // New todo
                     todoUri = getContentResolver().insert(
-                            TempContentProvider.CONTENT_URI, values);
+                            TempContentProvider.CONTENT_URI_USSD, values);
                 } else {
                     // Update todo
                     getContentResolver().update(todoUri, values, null, null);

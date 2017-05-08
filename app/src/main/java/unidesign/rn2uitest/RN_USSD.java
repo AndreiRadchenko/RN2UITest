@@ -1,5 +1,6 @@
 package unidesign.rn2uitest;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.app.LoaderManager;
@@ -35,21 +36,13 @@ import android.view.ViewGroup;
 import android.support.v7.widget.helper.ItemTouchHelper;
 //import com.h6ah4i.android.example.advrecyclerview.R;
 
-import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
-import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
-import unidesign.rn2uitest.MySQLight.USSD_Template;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 import unidesign.rn2uitest.helper.SimpleItemTouchHelperCallback;
+
+import static android.R.attr.fragment;
+import static unidesign.rn2uitest.RN_USSD.PlaceholderFragment.ARG_SECTION_NUMBER;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -117,8 +110,21 @@ public class RN_USSD extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent("intent.action.newussd");
-                startActivity(intent);
+                int sectionNumber = mViewPager.getCurrentItem();
+                switch (sectionNumber) {
+                    case 0:
+/*                        Snackbar.make(view, "FAB pressed in USSD fragment", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();*/
+                        startActivity(new Intent("intent.action.newussd"));
+                        break;
+                    case 1:
+/*                        Snackbar.make(view, "FAB pressed in SMS fragment", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();*/
+                        startActivity(new Intent("intent.action.newsms"));
+                        break;
+                }
+/*                Intent intent = new Intent("intent.action.newussd");
+                startActivity(intent);*/
 /*              Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
             }
@@ -206,7 +212,7 @@ public class RN_USSD extends AppCompatActivity
          */
         TemplatesDataSource dbHelper;
         View rootView;
-        private static final String ARG_SECTION_NUMBER = "section_number";
+        public static final String ARG_SECTION_NUMBER = "section_number";
         private ItemTouchHelper mItemTouchHelper;
         private RecyclerView recyclerView;
         private RecyclerView.LayoutManager mLayoutManager;
@@ -236,8 +242,18 @@ public class RN_USSD extends AppCompatActivity
             recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
             mLayoutManager = new LinearLayoutManager(getContext());
 
-            Log.d(LOG_TAG, "--- In OnCreateView() PlaceholderFragment ---");
-            getLoaderManager().initLoader(0, null, this);
+            //Log.d(LOG_TAG, "--- In OnCreateView() PlaceholderFragment ---");
+            int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
+            switch (sectionNumber) {
+                case 1:
+                    Log.d(LOG_TAG, "--- OnCreateView() PlaceholderFragment sectionNumber: ---" + sectionNumber);
+                    getLoaderManager().initLoader(0, null, this);
+                    break;
+                case 2:
+                    Log.d(LOG_TAG, "--- OnCreateView() PlaceholderFragment sectionNumber: ---" + sectionNumber);
+                    getLoaderManager().initLoader(1, null, this);
+                    break;
+            }
 
             final MyAdapter mAdapter = new MyAdapter(getActivity());
             adapter = mAdapter;
@@ -283,23 +299,47 @@ public class RN_USSD extends AppCompatActivity
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             // Swap the new cursor in.  (The framework will take care of closing the
             // old cursor once we return.)
-            Log.d(LOG_TAG, "--- In OnLoadFinishad() PlaceholderFragment ---");
-            adapter.swapCursor(data);
+            switch (loader.getId()) {
+                case 0:
+                        Log.d(LOG_TAG, "--- In OnLoadFinished() PlaceholderFragmentUSSD ---");
+                        adapter.swapCursorUSSD(data);
+                    break;
+                case 1:
+                        Log.d(LOG_TAG, "--- In OnLoadFinished() PlaceholderFragmentSMS ---");
+                        adapter.swapCursorSMS(data);
+                    break;
+
+            }
         }
         public void onLoaderReset(Loader<Cursor> loader) {
             // This is called when the last Cursor provided to onLoadFinished()
             // above is about to be closed.  We need to make sure we are no
             // longer using it.
             Log.d(LOG_TAG, "--- In OnLoaderReset() PlaceholderFragment ---");
-            adapter.swapCursor(null);
+            adapter.swapCursorUSSD(null);
+            adapter.swapCursorSMS(null);
         }
         // creates a new loader after the initLoader () call
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            String[] projection = { USSDSQLiteHelper.COLUMN_ID, USSDSQLiteHelper.COLUMN_NAME,
-                                    USSDSQLiteHelper.COLUMN_COMMENT, USSDSQLiteHelper.COLUMN_TEMPLATE};
-            CursorLoader cursorLoader = new CursorLoader(getContext(),
-                    TempContentProvider.CONTENT_URI, projection, null, null, null);
+            CursorLoader cursorLoader = null;
+            switch (id) {
+                case 0:
+                    String[] projection0 = { USSDSQLiteHelper.COLUMN_ID, USSDSQLiteHelper.COLUMN_NAME,
+                            USSDSQLiteHelper.COLUMN_COMMENT, USSDSQLiteHelper.COLUMN_TEMPLATE};
+                    cursorLoader = new CursorLoader(getContext(),
+                            TempContentProvider.CONTENT_URI_USSD, projection0, null, null, null);
+                    //cursorLoader = cursorLoader0;
+                break;
+                case 1:
+                    String[] projection1 = { USSDSQLiteHelper.COLUMN_ID, USSDSQLiteHelper.COLUMN_NAME,
+                                            USSDSQLiteHelper.COLUMN_COMMENT, USSDSQLiteHelper.COLUMN_PHONE_NUMBER,
+                                            USSDSQLiteHelper.COLUMN_TEMPLATE};
+                    cursorLoader = new CursorLoader(getContext(),
+                            TempContentProvider.CONTENT_URI_SMS, projection1, null, null, null);
+                    //return cursorLoader1;
+                break;
+            }
             return cursorLoader;
         }
 

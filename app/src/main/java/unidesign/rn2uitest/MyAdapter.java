@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.PopupMenu;
@@ -20,10 +19,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.graphics.drawable.Drawable;
 
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
@@ -32,16 +29,11 @@ import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 import unidesign.rn2uitest.helper.ItemTouchHelperViewHolder;
 import unidesign.rn2uitest.helper.ItemTouchHelperAdapter;
 
-import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.support.v7.recyclerview.R.styleable.RecyclerView;
-import static java.security.AccessController.getContext;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         implements ItemTouchHelperAdapter  {
@@ -84,7 +76,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         for (int k  = 0 ; k < listItems.size(); k++){
             if (listItems.get(k).getID() != templates.get(k).getId()){
 
-                uri = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+                uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                         + templates.get(k).getId());
 
                 values.put(USSDSQLiteHelper.COLUMN_NAME, listItems.get(k).getTitle());
@@ -97,7 +89,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         }
     };
 
-    public void swapCursor(Cursor cursor){
+    public void swapCursorUSSD(Cursor cursor){
 
         if (cursor != null) {
             templates = getAllTemplates(cursor);
@@ -118,6 +110,29 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             notifyDataSetChanged();
         }
     }
+
+    public void swapCursorSMS(Cursor cursor){
+
+        if (cursor != null) {
+            templates = getAllTemplates(cursor);
+
+            List<RecyclerItem> mlistItems = new ArrayList<>();
+            //Generate sample data
+            for (int k = 0; k < templates.size(); k++) {
+                mlistItems.add(new RecyclerItem(templates.get(k).getId(),
+                        templates.get(k).getName(), templates.get(k).getComment(),
+                        templates.get(k).getTemplate()));
+            }
+
+            listItems.clear();
+            listItems.addAll(mlistItems);
+            notifyDataSetChanged();
+        }
+        else {
+            notifyDataSetChanged();
+        }
+    }
+
 
     public static USSD_Template cursorToTemplate(Cursor cursor) {
         USSD_Template template = new USSD_Template();
@@ -174,16 +189,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                             case R.id.mnu_item_save:
                                 //Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent("intent.action.editussd");
-                                Uri uri2edit = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+                                Uri uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                                         + listItems.get(position).getID());
-                                intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE, uri2edit);
+                                intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
                                 /*Log.d(LOG_TAG, "--- In MyAdapter() mnu_item_save ---" + uri2edit);*/
 
                                 mContext.startActivity(intent);
                                 break;
                             case R.id.mnu_item_delete:
                                 //Delete item
-                                Uri uri = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+                                Uri uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                                         + listItems.get(position).getID());
                                 mContext.getContentResolver().delete(uri, null, null);
                                 //fillData();
@@ -228,7 +243,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         //Log.d(LOG_TAG, "--- In MyAdapter() onItemMove --- fromPosition = " + fromPosition + ", toPosition = " + toPosition);
 
 // swap rows in  database ========================================================================
-/*        Uri uri = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+/*        Uri uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                 + listItems.get(toPosition).getID());
 
         ContentValues values = new ContentValues();
@@ -238,7 +253,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         mContext.getContentResolver().update(uri, values, null, null);
 
-        uri = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+        uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                 + listItems.get(fromPosition).getID());
 
         values = new ContentValues();

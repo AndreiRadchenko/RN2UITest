@@ -110,7 +110,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         for (int k  = 0 ; k < adapter.listItems.size(); k++){
             if (adapter.listItems.get(k).getID() != adapter.templates.get(k).getId()){
 
-                uri = Uri.parse(TempContentProvider.CONTENT_URI + "/"
+                uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                         + adapter.templates.get(k).getId());
 
                 values.put(USSDSQLiteHelper.COLUMN_NAME, adapter.listItems.get(k).getTitle());
