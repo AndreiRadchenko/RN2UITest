@@ -62,7 +62,7 @@ public class RN_USSD extends AppCompatActivity
      * The {@link ViewPager} that will host the section contents.
      */
     //rrtyuuyty
-    private ViewPager mViewPager;
+    public ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,6 +232,11 @@ public class RN_USSD extends AppCompatActivity
             fragment.setArguments(args);
             return fragment;
         }
+
+        public int getSectionNumber() {
+
+            return getArguments().getInt(ARG_SECTION_NUMBER);
+        }
 //*****************************************************************************************************************************
 //Заполнение фрагментов USSD и SMS
         @Override
@@ -255,7 +260,7 @@ public class RN_USSD extends AppCompatActivity
                     break;
             }
 
-            final MyAdapter mAdapter = new MyAdapter(getActivity());
+            final MyAdapter mAdapter = new MyAdapter(getActivity(),sectionNumber);
             adapter = mAdapter;
 
             recyclerView.setLayoutManager(mLayoutManager);

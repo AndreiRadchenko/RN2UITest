@@ -162,6 +162,7 @@ public class TempContentProvider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsDeleted = 0;
+        String id;
         Log.d(LOG_TAG, "--- In TempContentProvider delete---");
         switch (uriType) {
             case USSD:
@@ -169,7 +170,7 @@ public class TempContentProvider extends ContentProvider {
                         selectionArgs);
                 break;
             case USSD_ID:
-                String id = uri.getLastPathSegment();
+                id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     Log.d(LOG_TAG, "--- In TempContentProvider delete id = ---" + id);
                     rowsDeleted = sqlDB.delete(
@@ -179,6 +180,26 @@ public class TempContentProvider extends ContentProvider {
                 } else {
                     rowsDeleted = sqlDB.delete(
                             USSDSQLiteHelper.TABLE_USSD,
+                            USSDSQLiteHelper.COLUMN_ID + "=" + id
+                                    + " and " + selection,
+                            selectionArgs);
+                }
+                break;
+            case SMS:
+                rowsDeleted = sqlDB.delete(USSDSQLiteHelper.TABLE_SMS, selection,
+                        selectionArgs);
+                break;
+            case SMS_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    Log.d(LOG_TAG, "--- In TempContentProvider delete id = ---" + id);
+                    rowsDeleted = sqlDB.delete(
+                            USSDSQLiteHelper.TABLE_SMS,
+                            USSDSQLiteHelper.COLUMN_ID + "=" + id,
+                            null);
+                } else {
+                    rowsDeleted = sqlDB.delete(
+                            USSDSQLiteHelper.TABLE_SMS,
                             USSDSQLiteHelper.COLUMN_ID + "=" + id
                                     + " and " + selection,
                             selectionArgs);
@@ -198,6 +219,7 @@ public class TempContentProvider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsUpdated = 0;
+        String id;
         switch (uriType) {
             case USSD:
                 rowsUpdated = sqlDB.update(USSDSQLiteHelper.TABLE_USSD,
@@ -206,7 +228,7 @@ public class TempContentProvider extends ContentProvider {
                         selectionArgs);
                 break;
             case USSD_ID:
-                String id = uri.getLastPathSegment();
+                id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     rowsUpdated = sqlDB.update(USSDSQLiteHelper.TABLE_USSD,
                             values,
@@ -214,6 +236,28 @@ public class TempContentProvider extends ContentProvider {
                             null);
                 } else {
                     rowsUpdated = sqlDB.update(USSDSQLiteHelper.TABLE_USSD,
+                            values,
+                            USSDSQLiteHelper.COLUMN_ID + "=" + id
+                                    + " and "
+                                    + selection,
+                            selectionArgs);
+                }
+                break;
+            case SMS:
+                rowsUpdated = sqlDB.update(USSDSQLiteHelper.TABLE_SMS,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
+            case SMS_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqlDB.update(USSDSQLiteHelper.TABLE_SMS,
+                            values,
+                            USSDSQLiteHelper.COLUMN_ID + "=" + id,
+                            null);
+                } else {
+                    rowsUpdated = sqlDB.update(USSDSQLiteHelper.TABLE_SMS,
                             values,
                             USSDSQLiteHelper.COLUMN_ID + "=" + id
                                     + " and "

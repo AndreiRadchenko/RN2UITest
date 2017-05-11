@@ -106,8 +106,46 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         Uri uri;
         ContentValues values = new ContentValues();
         MyAdapter adapter = (MyAdapter) mAdapter;
+        //Log.d(LOG_TAG, "--- In reallyMoved updateDB(), adapter.mSectionNumber = " +  adapter.mSectionNumber );
 
-        for (int k  = 0 ; k < adapter.listItems.size(); k++){
+        switch (adapter.mSectionNumber) {
+            case 1:
+                for (int k  = 0 ; k < adapter.listItems.size(); k++){
+                    if (adapter.listItems.get(k).getID() != adapter.templates.get(k).getId()){
+
+                        uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
+                                + adapter.templates.get(k).getId());
+
+                        values.put(USSDSQLiteHelper.COLUMN_NAME, adapter.listItems.get(k).getTitle());
+                        values.put(USSDSQLiteHelper.COLUMN_COMMENT, adapter.listItems.get(k).getDescription());
+                        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, adapter.listItems.get(k).getTemplate());
+
+                        adapter.mContext.getContentResolver().update(uri, values, null, null);
+                        Log.d(LOG_TAG, "--- In reallyMoved update USSD, from = " + from + ", to = " + to );
+                    }
+                }
+
+                break;
+            case 2:
+                for (int k  = 0 ; k < adapter.listItems.size(); k++){
+                    if (adapter.listItems.get(k).getID() != adapter.templates.get(k).getId()){
+
+                        uri = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
+                                + adapter.templates.get(k).getId());
+
+                        values.put(USSDSQLiteHelper.COLUMN_NAME, adapter.listItems.get(k).getTitle());
+                        values.put(USSDSQLiteHelper.COLUMN_COMMENT, adapter.listItems.get(k).getDescription());
+                        values.put(USSDSQLiteHelper.COLUMN_PHONE_NUMBER, adapter.listItems.get(k).getPhone());
+                        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, adapter.listItems.get(k).getTemplate());
+
+                        adapter.mContext.getContentResolver().update(uri, values, null, null);
+                        Log.d(LOG_TAG, "--- In reallyMoved update SMS, from = " + from + ", to = " + to );
+                    }
+                }
+                break;
+        };
+
+/*        for (int k  = 0 ; k < adapter.listItems.size(); k++){
             if (adapter.listItems.get(k).getID() != adapter.templates.get(k).getId()){
 
                 uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
@@ -120,7 +158,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
                 adapter.mContext.getContentResolver().update(uri, values, null, null);
                 Log.d(LOG_TAG, "--- In reallyMoved updateDB(), from = " + from + ", to = " + to );
             }
-        }
+        }*/
 
     }
 }

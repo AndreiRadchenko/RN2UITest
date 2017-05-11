@@ -35,6 +35,8 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemView
 import java.util.ArrayList;
 import java.util.List;
 
+import static unidesign.rn2uitest.RN_USSD.PlaceholderFragment.ARG_SECTION_NUMBER;
+
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         implements ItemTouchHelperAdapter  {
 
@@ -46,11 +48,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public List<RecyclerItem> listItems = new ArrayList<>();
     public List<USSD_Template> templates;
     public Context mContext;
+    public int mSectionNumber;
     TemplatesDataSource dbHelper;
 
-    public MyAdapter(List<RecyclerItem> listItems, Context mContext) {
+    public MyAdapter(Context mContext, int sectionNumber) {
         //setHasStableIds(true); // this is required for D&D feature.
-        this.listItems = listItems;
+        this.mSectionNumber = sectionNumber;
         this.mContext = mContext;
     }
 
@@ -121,7 +124,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             for (int k = 0; k < templates.size(); k++) {
                 mlistItems.add(new RecyclerItem(templates.get(k).getId(),
                         templates.get(k).getName(), templates.get(k).getComment(),
-                        templates.get(k).getTemplate()));
+                        templates.get(k).getPhone(), templates.get(k).getTemplate()));
             }
 
             listItems.clear();
@@ -135,7 +138,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
 
     public static USSD_Template cursorToTemplate(Cursor cursor) {
+
         USSD_Template template = new USSD_Template();
+
+        try {
+            template.setPhone(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_PHONE_NUMBER)));
+        } catch (Exception e) {
+            template.setPhone(null);
+            Log.d(LOG_TAG, "in cursorToTemplate, template.setPhone(null) ");
+        }
+
+
         template.setId(cursor.getLong(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_ID)));
         template.setName(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_NAME)));
         template.setComment(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_COMMENT)));
@@ -186,26 +199,47 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                     public boolean onMenuItemClick(MenuItem item) {
 
                         switch (item.getItemId()) {
-                            case R.id.mnu_item_save:
-                                //Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent("intent.action.editussd");
-                                Uri uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                                        + listItems.get(position).getID());
-                                intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
-                                /*Log.d(LOG_TAG, "--- In MyAdapter() mnu_item_save ---" + uri2edit);*/
 
+                            case R.id.mnu_item_edit:
+                                //Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
+                                Uri uri2edit = null;
+                                Intent intent = null;
+                                switch (mSectionNumber) {
+                                    case 1:
+                                        intent = new Intent("intent.action.editussd");
+                                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
+                                                + listItems.get(position).getID());
+                                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
+                                        break;
+                                    case 2:
+                                        intent = new Intent("intent.action.editsms");
+                                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
+                                                + listItems.get(position).getID());
+                                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_SMS, uri2edit);
+                                        break;
+                                }
                                 mContext.startActivity(intent);
                                 break;
+
                             case R.id.mnu_item_delete:
                                 //Delete item
-                                Uri uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                                        + listItems.get(position).getID());
+                                Uri uri = null;
+                                switch (mSectionNumber) {
+                                    case 1:
+                                        uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
+                                                + listItems.get(position).getID());
+                                        break;
+                                    case 2:
+                                        uri = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
+                                                + listItems.get(position).getID());
+                                        break;
+                                }
                                 mContext.getContentResolver().delete(uri, null, null);
-                                //fillData();
-                                Log.d(LOG_TAG, uri.toString());
-                                //listItems.remove(position);
                                 notifyDataSetChanged();
                                 Toast.makeText(mContext, "Deleted", Toast.LENGTH_LONG).show();
+                                //Log.d(LOG_TAG, "In MyAdapter Delete");
+                                //Log.d(LOG_TAG, uri.toString());
+                                //Log.d(LOG_TAG, "this.mSectionNumber = " + mSectionNumber);
                                 break;
                             default:
                                 break;
@@ -239,29 +273,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         //listItems.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
         listItems.add(toPosition, prev);
         notifyItemMoved(fromPosition, toPosition);
-        //updateDB();
-        //Log.d(LOG_TAG, "--- In MyAdapter() onItemMove --- fromPosition = " + fromPosition + ", toPosition = " + toPosition);
-
-// swap rows in  database ========================================================================
-/*        Uri uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                + listItems.get(toPosition).getID());
-
-        ContentValues values = new ContentValues();
-        values.put(USSDSQLiteHelper.COLUMN_NAME, listItems.get(fromPosition).getTitle());
-        values.put(USSDSQLiteHelper.COLUMN_COMMENT, listItems.get(fromPosition).getDescription());
-        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, listItems.get(fromPosition).getTemplate());
-
-        mContext.getContentResolver().update(uri, values, null, null);
-
-        uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                + listItems.get(fromPosition).getID());
-
-        values = new ContentValues();
-        values.put(USSDSQLiteHelper.COLUMN_NAME, listItems.get(toPosition).getTitle());
-        values.put(USSDSQLiteHelper.COLUMN_COMMENT, listItems.get(toPosition).getDescription());
-        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, listItems.get(toPosition).getTemplate());
-
-        mContext.getContentResolver().update(uri, values, null, null);*/
 
     }
 
