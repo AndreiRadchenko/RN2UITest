@@ -2,10 +2,15 @@ package unidesign.rn2uitest;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,7 +25,7 @@ import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
  * Created by United on 4/5/2017.
  */
 
-public class editUSSDTemplate extends AppCompatActivity implements OnClickListener{
+public class editUSSDTemplate extends AppCompatActivity{
 
     final String LOG_TAG = "myLogs";
 
@@ -38,14 +43,14 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ussd_template);
 
-        btnAdd = (Button) findViewById(R.id.btnAdd);
-        btnAdd.setOnClickListener(this);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.ussd_toolbar);
+        setSupportActionBar(myToolbar);
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
 
-        btnRead = (Button) findViewById(R.id.btnRead);
-        btnRead.setOnClickListener(this);
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
 
-        btnCancel = (Button) findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(this);
 
         etName = (EditText) findViewById(R.id.etName);
         etComment = (EditText) findViewById(R.id.etComment);
@@ -83,7 +88,17 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
     }
 
     @Override
-    public void onClick(View v) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.ussd_appbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
 
         // создаем объект для данных
         ContentValues values = new ContentValues();
@@ -93,23 +108,14 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
         String comment = etComment.getText().toString();
         String template = etTemplate.getText().toString();
 
-        // подключаемся к БД
-        //dbHelper.open();
-
-
-        switch (v.getId()) {
-            case R.id.btnAdd:
-                Log.d(LOG_TAG, "--- Insert in mytable: ---");
-                // подготовим данные для вставки в виде пар: наименование столбца - значение
-                //USSD_Template ussd_template = dbHelper.createTemplate(name, comment, template);
-                //dbHelper.createTemplate(name, comment, template);
-                //Log.d(LOG_TAG, "row inserted, ID = " + ussd_template.getId());
-
-                // only save if either summary or description
-                // is available
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                // User chose the "Settings" item, show the app settings UI...
+/*                Snackbar.make(findViewById(R.id.ussd_toolbar), "Replace done with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
 
                 if (name.length() == 0 && template.length() == 0) {
-                    return;
+                    return false;
                 }
 
                 //ContentValues values = new ContentValues();
@@ -128,20 +134,27 @@ public class editUSSDTemplate extends AppCompatActivity implements OnClickListen
 
                 //dbHelper.close();
                 finish();
-                break;
-            case R.id.btnRead:
-                Log.d(LOG_TAG, "--- Button Read Pressed ---");
 
-                break;
-            case R.id.btnCancel:
-                Log.d(LOG_TAG, "--- Cancel Button Pressed: ---");
+                return true;
 
-                //dbHelper.close();
-                finish();
-                break;
+            case R.id.action_copy:
+                // User chose the "Settings" item, show the app settings UI...
+                Snackbar.make(findViewById(R.id.ussd_toolbar), "Replace copy with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                return true;
+
+            case R.id.action_settings:
+                // User chose the "Favorite" action, mark the current item
+                // as a favorite...
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
         }
-        // закрываем подключение к БД
-        //dbHelper.close();
     }
 
 }
