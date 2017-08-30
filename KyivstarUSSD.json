@@ -1,25 +1,17 @@
 {
-    "data": "dbfriends",
-    "friends": [
+    "data": "dbUSSDKyivstar",
+    "USSD": [
         {
             "id": "1",
-            "name": "Andrew",               
-            "city": "Moscow",               
-            "contacts": {
-                "mobile": "+7 0000000",
-                "email": "andrew@androiddocs.ru",
-                "skype": "andrew"
-            }
+            "name": "Balance Kyivstar",               
+            "template": "*111#",               
+            "comment": "Check balance"
         },
         {
             "id": "2",
-            "name": "Ivan",
-            "city": "Kiev",
-            "contacts": {
-                "mobile": "+38 0000000",
-                "email": "ivan@androiddocs.ru",
-                "skype": "ivan"
-            }
+            "name": "Balance Kyivstar 2",
+            "template": "*112*1#", 
+            "comment": "Check balance"
         }
     ]
 }
