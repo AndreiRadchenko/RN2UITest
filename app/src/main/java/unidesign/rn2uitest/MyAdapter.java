@@ -40,16 +40,28 @@ import static unidesign.rn2uitest.RN_USSD.PlaceholderFragment.ARG_SECTION_NUMBER
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         implements ItemTouchHelperAdapter  {
 
+    public interface OnItemClickListener {
+        void onItemClick(RecyclerItem item, int mSecNumber);
+    }
+
     static final String LOG_TAG = "myLogs";
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
     }
 
+    public OnItemClickListener listener;
     public List<RecyclerItem> listItems = new ArrayList<>();
     public List<USSD_Template> templates;
     public Context mContext;
     public int mSectionNumber;
     TemplatesDataSource dbHelper;
+
+    public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener) {
+        //setHasStableIds(true); // this is required for D&D feature.
+        this.mSectionNumber = sectionNumber;
+        this.mContext = mContext;
+        this.listener = mListener;
+    }
 
     public MyAdapter(Context mContext, int sectionNumber) {
         //setHasStableIds(true); // this is required for D&D feature.
@@ -183,8 +195,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         //dbHelper = new TemplatesDataSource(getActivity());
         //dbHelper.open();
-
         final RecyclerItem itemList = listItems.get(position);
+        holder.bind(itemList, listener, mSectionNumber);
         holder.txtTitle.setText(itemList.getTitle());
         holder.txtDescription.setText(itemList.getDescription());
         holder.txtOptionDigit.setOnClickListener(new View.OnClickListener() {
@@ -294,6 +306,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             txtOptionDigit = (TextView) itemView.findViewById(R.id.txtOptionDigit);
         }
 
+       public void bind(final RecyclerItem item, final OnItemClickListener listener, final int mSN) {
+
+           mContainer.setOnClickListener(new View.OnClickListener() {
+               @Override public void onClick(View v) {
+                   listener.onItemClick(item, mSN);
+               }
+           });
+       }
+
+
        @Override
        public void onItemSelected() {
            itemView.setBackgroundColor(Color.MAGENTA);
@@ -307,6 +329,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
            itemView.setScaleY(1f );
            itemView.setScaleX(1f);
        }
+
     }
 
 }

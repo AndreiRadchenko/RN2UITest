@@ -1,5 +1,7 @@
 package unidesign.rn2uitest;
 
+import android.net.Uri;
+import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
@@ -34,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.widget.Toast;
 //import com.h6ah4i.android.example.advrecyclerview.R;
 
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
@@ -182,8 +185,10 @@ public class RN_USSD extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_import) {
+            // Handle the import action
+            new ParseTask(getApplicationContext()).execute();
+
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -260,7 +265,47 @@ public class RN_USSD extends AppCompatActivity
                     break;
             }
 
-            final MyAdapter mAdapter = new MyAdapter(getActivity(),sectionNumber);
+            final MyAdapter mAdapter = new MyAdapter(getActivity(), sectionNumber, new MyAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(RecyclerItem item, int mSecNumber) {
+                    Log.d(LOG_TAG, "--- onItemClick in section --- " + mSecNumber);
+                    Intent intent;
+                    switch (mSecNumber) {
+                        case 1:
+                            String ussdCode = item.getTemplate();
+                            intent = new Intent(Intent.ACTION_DIAL);
+                            //Intent intent = new Intent(Intent.ACTION_CALL);
+                            intent.setData(ussdToCallableUri(item.getTemplate()));
+                            try{
+                                startActivity(intent);
+                            } catch (SecurityException e){
+                                e.printStackTrace();
+                            }
+                            break;
+                        case 2:
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // At least KitKat
+                            {
+                                String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getContext());
+                                Uri _uri = Uri.parse("tel:" + item.getPhone());
+                                intent = new Intent(Intent.ACTION_VIEW, _uri);
+                                intent.putExtra("address", item.getPhone());
+                                intent.putExtra("sms_body", item.getTemplate());
+                                intent.setPackage(defaultSmsPackageName);
+                                intent.setType("vnd.android-dir/mms-sms");
+                                startActivity(intent);
+                            } else // For early versions, do what worked for you before.
+                            {
+                                intent = new Intent(android.content.Intent.ACTION_VIEW);
+                                intent.setType("vnd.android-dir/mms-sms");
+                                intent.putExtra("address", item.getPhone());
+                                intent.putExtra("sms_body", item.getTemplate());
+                                startActivity(intent);
+                            }
+                            break;
+                    }
+                    //Toast.makeText(getContext(), "Item Clicked in section ", Toast.LENGTH_LONG).show();
+                }
+            });
             adapter = mAdapter;
 
             recyclerView.setLayoutManager(mLayoutManager);
@@ -270,6 +315,22 @@ public class RN_USSD extends AppCompatActivity
             mItemTouchHelper.attachToRecyclerView(recyclerView);
 
             return rootView;
+        }
+
+        private Uri ussdToCallableUri(String ussd) {
+
+            String uriString = "";
+            if(!ussd.startsWith("tel:"))
+                uriString += "tel:";
+
+            for(char c : ussd.toCharArray()) {
+                if(c == '#')
+                    uriString += Uri.encode("#");
+                else
+                    uriString += c;
+            }
+
+            return Uri.parse(uriString);
         }
 
         @Override
