@@ -187,7 +187,8 @@ public class RN_USSD extends AppCompatActivity
 
         if (id == R.id.nav_import) {
             // Handle the import action
-            new ParseTask(getApplicationContext()).execute();
+            unidesign.rn2uitest.RN_USSD ma = this;
+            new ParseTask(getApplicationContext(), ma).execute();
 
         } else if (id == R.id.nav_gallery) {
 

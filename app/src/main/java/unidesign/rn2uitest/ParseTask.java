@@ -1,5 +1,6 @@
 package unidesign.rn2uitest;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
@@ -28,9 +29,13 @@ import static java.security.AccessController.getContext;
 public class ParseTask extends AsyncTask<Void, Void, String> {
 
     private Context mContext;
+    public ProgressDialog pDialog;
+    public unidesign.rn2uitest.RN_USSD pMA;
+    //private ProgressDialog dialog = new ProgressDialog(mContext);
 
-    public ParseTask (Context context){
+    public ParseTask (Context context, unidesign.rn2uitest.RN_USSD ma){
         mContext = context;
+        pMA = ma;
     }
 
     public static String LOG_TAG = "my_log";
@@ -38,6 +43,18 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
     HttpURLConnection urlConnection = null;
     BufferedReader reader = null;
     String resultJson = "";
+
+    /** progress dialog to show user that the backup is processing. */
+    /** application context. */
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+        pDialog = new ProgressDialog(pMA);
+        pDialog.setMessage("Loading...");
+        pDialog.setCancelable(true);
+        pDialog.show();
+    }
 
     @Override
     protected String doInBackground(Void... params) {
@@ -117,5 +134,7 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        pDialog.dismiss();
     }
 }
