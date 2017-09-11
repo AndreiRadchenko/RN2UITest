@@ -29,24 +29,33 @@
             android:layout_height="wrap_content"
             android:paddingLeft="4dp">
 
-            <View
+            <!--View
                 android:id="@+id/drag_handle"
                 android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|left"
                 android:background="#20000000"
                 android:clickable="true"
+                /-->
+
+            <ImageView
+                android:id="@+id/my_image_view"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="top|left"
+                android:clickable="true"
+                android:paddingTop="5dp"
                 />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="96dp"
                 android:paddingLeft="14dp">
 
                 <TextView
                     android:id="@+id/txtTitle"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="0dp"
                     android:paddingEnd="30dp"
@@ -64,13 +73,15 @@
                     android:id="@+id/txtDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below = "@+id/txtTitle"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:textAppearance="?android:textAppearanceSmall"
                     android:paddingEnd="30dp"
                     android:paddingRight="30dp"
-                    android:paddingTop="30dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:text="Description"
                     />
                 <!--android:textAppearance="?android:textAppearanceSmall"

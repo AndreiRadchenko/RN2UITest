@@ -31,7 +31,7 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
     private Context mContext;
     public ProgressDialog pDialog;
     public unidesign.rn2uitest.RN_USSD pMA;
-    //private ProgressDialog dialog = new ProgressDialog(mContext);
+//    private ProgressDialog dialog = new ProgressDialog(mContext);
 
     public ParseTask (Context context, unidesign.rn2uitest.RN_USSD ma){
         mContext = context;

@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -197,6 +198,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         //dbHelper.open();
         final RecyclerItem itemList = listItems.get(position);
         holder.bind(itemList, listener, mSectionNumber);
+        holder.imgIcon.setImageResource(R.mipmap.ic_kyivstar);
         holder.txtTitle.setText(itemList.getTitle());
         holder.txtDescription.setText(itemList.getDescription());
         holder.txtOptionDigit.setOnClickListener(new View.OnClickListener() {
@@ -296,14 +298,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
          TextView txtTitle;
          TextView txtDescription;
          TextView txtOptionDigit;
+         ImageView imgIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mContainer = (FrameLayout) itemView.findViewById(R.id.container);
-            mDragHandle = itemView.findViewById(R.id.drag_handle);
+            //mDragHandle = itemView.findViewById(R.id.drag_handle);
             txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
             txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
             txtOptionDigit = (TextView) itemView.findViewById(R.id.txtOptionDigit);
+            imgIcon = (ImageView) itemView.findViewById(R.id.my_image_view);
         }
 
        public void bind(final RecyclerItem item, final OnItemClickListener listener, final int mSN) {
