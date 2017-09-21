@@ -6,6 +6,7 @@
     <string name="action_done">Done</string>
     <string name="action_copy">Copy</string> USSD Edit
     <string name="ussd_edit_form">USSD Edit</string>
+    <string name="import_template_form">Import Templates</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"

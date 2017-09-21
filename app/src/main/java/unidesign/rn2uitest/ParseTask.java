@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
@@ -28,14 +30,24 @@ import static java.security.AccessController.getContext;
 
 public class ParseTask extends AsyncTask<Void, Void, String> {
 
+    public interface AsyncResponse {
+        void processFinish(List<ImportRecyclerItem> output);
+    }
+
     private Context mContext;
     public ProgressDialog pDialog;
-    public unidesign.rn2uitest.RN_USSD pMA;
-//    private ProgressDialog dialog = new ProgressDialog(mContext);
+    public unidesign.rn2uitest.ImportTemplateActivity ITA;
+    URL mURL;
+    public List<ImportRecyclerItem> mlistItems = new ArrayList<>();
 
-    public ParseTask (Context context, unidesign.rn2uitest.RN_USSD ma){
+    public AsyncResponse delegate = null;//Call back interface
+
+
+    public ParseTask (Context context, unidesign.rn2uitest.ImportTemplateActivity ma, URL url){
         mContext = context;
-        pMA = ma;
+        ITA = ma;
+        mURL = url;
+//        delegate = asyncResponse;//Assigning call back interfacethrough constructor
     }
 
     public static String LOG_TAG = "my_log";
@@ -50,7 +62,7 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        pDialog = new ProgressDialog(pMA);
+        pDialog = new ProgressDialog(ITA);
         pDialog.setMessage("Loading...");
         pDialog.setCancelable(true);
         pDialog.show();
@@ -60,12 +72,10 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... params) {
         // получаем данные с внешнего ресурса
         try {
-            //URL url = new URL("http://androiddocs.ru/api/friends.json");
-            URL url = new URL("https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjekJYVDNJVlhvQUU");
-            //https://drive.google.com/open?id=0B6DUrz2vzeEjekJYVDNJVlhvQUU
-            //https://github.com/AndreiRadchenko/RN2UITest/blob/6823ef1a7a4d608055affb0498bbe94b00791134/KyivstarUSSD.json
 
-            urlConnection = (HttpURLConnection) url.openConnection();
+            //URL url = new URL("https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjekJYVDNJVlhvQUU");
+
+            urlConnection = (HttpURLConnection) mURL.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
@@ -94,47 +104,66 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
         Log.d(LOG_TAG, strJson);
 
         JSONObject dataJsonObj = null;
+        String data_fild = null;
         String name = "";
 
         Uri todoUri;
         // создаем объект для данных
         ContentValues values = new ContentValues();
+//        List<ImportRecyclerItem> mlistItems = new ArrayList<>();
 
         try {
             dataJsonObj = new JSONObject(strJson);
-            JSONArray ussd = dataJsonObj.getJSONArray("USSD");
+            data_fild = dataJsonObj.getString("data");
+            //Log.d(LOG_TAG, "onPostExecute, data_fild: "+ data_fild);
 
-            // 1. достаем инфо о втором друге - индекс 1
-            JSONObject firstUSSD = ussd.getJSONObject(0);
-            name = firstUSSD.getString("name");
-            Log.d(LOG_TAG, "First ussd: " + name);
+            if (data_fild.compareTo("import templates") == 0) {
+                //Log.d(LOG_TAG, "onPostExecute, data_fild: "+ data_fild);
 
-            // 2. перебираем и выводим контакты каждого друга
-            for (int i = 0; i < ussd.length(); i++) {
-                JSONObject ussd_one = ussd.getJSONObject(i);
+                JSONArray templates = dataJsonObj.getJSONArray("templates");
 
-                String name1 = ussd_one.getString("name");
-                String template1 = ussd_one.getString("template");
-                String comment1 = ussd_one.getString("comment");
+                for (int i = 0; i < templates.length(); i++) {
+                    JSONObject templates_one = templates.getJSONObject(i);
 
-                //ContentValues values = new ContentValues();
-                values.put(USSDSQLiteHelper.COLUMN_NAME, name1);
-                values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment1);
-                values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template1);
+                    mlistItems.add(new ImportRecyclerItem(templates_one.getString("name"),
+                            templates_one.getString("templatename"), templates_one.getString("jsondirref"),
+                            templates_one.getString("pngdirref"), templates_one.getString("templatetype")));
+                };
 
-                // New todo
-                todoUri = mContext.getContentResolver().insert(
-                        TempContentProvider.CONTENT_URI_USSD, values);
+                //delegate.processFinish(mlistItems);
+//                ITA.listItems.clear();
+//                ITA.listItems.addAll(mlistItems);
+//                Log.d(LOG_TAG, "onPostExecute, mlistItems.get(0).getTemplatename(): "+ mlistItems.get(0).getTemplatename());
 
-                Log.d(LOG_TAG, "name: " + name1);
-                Log.d(LOG_TAG, "template: " + template1);
-                Log.d(LOG_TAG, "comment: " + comment1);
+            }
+
+            else if (data_fild.compareTo("USSD") == 0) {
+
+                JSONArray ussd = dataJsonObj.getJSONArray("USSD");
+
+                for (int i = 0; i < ussd.length(); i++) {
+                    JSONObject ussd_one = ussd.getJSONObject(i);
+
+                    String name1 = ussd_one.getString("name");
+                    String template1 = ussd_one.getString("template");
+                    String comment1 = ussd_one.getString("comment");
+
+                    //ContentValues values = new ContentValues();
+                    values.put(USSDSQLiteHelper.COLUMN_NAME, name1);
+                    values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment1);
+                    values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template1);
+
+                    // New todo
+                    todoUri = mContext.getContentResolver().insert(
+                            TempContentProvider.CONTENT_URI_USSD, values);
+                }
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        delegate.processFinish(mlistItems);
         pDialog.dismiss();
     }
 }
