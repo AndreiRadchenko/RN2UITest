@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.URL;
@@ -76,8 +77,12 @@ public class ImportTemplateActivity extends AppCompatActivity implements ParseTa
         listItems.clear();
         listItems.addAll(output);
         mAdapter.notifyDataSetChanged();
-        Log.d(LOG_TAG, "listItems.get(0).getTemplatename(): "+ listItems.get(0).getTemplatename());
-        Log.d(LOG_TAG, "listItems.get(1).getTemplatename(): "+ listItems.get(1).getTemplatename());
-    }
+        try {
+            Log.d(LOG_TAG, "listItems.get(0).getTemplatename(): " + listItems.get(0).getTemplatename());
+//        Log.d(LOG_TAG, "listItems.get(1).getTemplatename(): "+ listItems.get(1).getTemplatename());
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to download data: ", Toast.LENGTH_LONG).show();
+        }
 
+    }
 }

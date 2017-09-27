@@ -12,11 +12,14 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
+import com.squareup.picasso.Picasso;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,10 +56,23 @@ class ImportTemplateAdapter extends RecyclerView.Adapter<ImportTemplateAdapter.V
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
+
+        URL image_url = null;
         final ImportRecyclerItem itemList = listItems.get(position);
         holder.bind(itemList, listener);
-        holder.m_icon_image_view.setImageResource(R.mipmap.ic_kyivstar);
+//        holder.m_icon_image_view.setImageResource(R.mipmap.ic_kyivstar);
         holder.m_txtTitle.setText(itemList.getTemplatename());
+        // Download image
+        try {
+            image_url = new URL(itemList.getPngdirref());
+        } catch(Exception e) {}
+       // URL image_url = new URL(Import_Templates_URL);
+
+        Picasso.with(holder.m_txtTitle.getContext())
+                .load(itemList.getPngdirref())
+                .placeholder(android.R.drawable.ic_menu_rotate)
+                .error(android.R.drawable.ic_menu_camera)
+                .into(holder.m_icon_image_view);
     }
 
     @Override
@@ -66,7 +82,7 @@ class ImportTemplateAdapter extends RecyclerView.Adapter<ImportTemplateAdapter.V
 
     public static class ViewHolder  extends RecyclerView.ViewHolder {
 
-        public FrameLayout m_import_item_container;
+        public RelativeLayout m_import_item_container;
         public ImageView m_icon_image_view;
         TextView m_txtTitle;
 //        TextView txtDescription;
@@ -75,7 +91,7 @@ class ImportTemplateAdapter extends RecyclerView.Adapter<ImportTemplateAdapter.V
 
         public ViewHolder(View itemView){
             super(itemView);
-            m_import_item_container = (FrameLayout) itemView.findViewById(R.id.import_item_container);
+            m_import_item_container = (RelativeLayout) itemView.findViewById(R.id.import_item_container);
             //mDragHandle = itemView.findViewById(R.id.drag_handle);
             m_icon_image_view = (ImageView) itemView.findViewById(R.id.icon_image_view);
             m_txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
