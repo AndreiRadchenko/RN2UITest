@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -293,7 +294,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
    public static class ViewHolder extends AbstractDraggableItemViewHolder implements
            ItemTouchHelperViewHolder {
 
-       public FrameLayout mContainer;
+       public RelativeLayout mContainer;
        public View mDragHandle;
          TextView txtTitle;
          TextView txtDescription;
@@ -302,7 +303,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mContainer = (FrameLayout) itemView.findViewById(R.id.container);
+            mContainer = (RelativeLayout) itemView.findViewById(R.id.container);
             //mDragHandle = itemView.findViewById(R.id.drag_handle);
             txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
             txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
@@ -322,14 +323,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
        @Override
        public void onItemSelected() {
-           itemView.setBackgroundColor(Color.MAGENTA);
+          // itemView.setBackgroundColor(Color.MAGENTA);
            itemView.setScaleY(1.05f);
            itemView.setScaleX(1.05f);
        }
 
        @Override
        public void onItemClear() {
-           itemView.setBackgroundColor(0);
+          // itemView.setBackgroundColor(0);
            itemView.setScaleY(1f );
            itemView.setScaleX(1f);
        }

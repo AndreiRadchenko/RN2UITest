@@ -192,6 +192,7 @@ public class RN_USSD extends AppCompatActivity
             startActivity(new Intent("intent.action.import_templates"));
 
         } else if (id == R.id.nav_gallery) {
+            startActivity(new Intent("intent.action.gallery"));
 
         } else if (id == R.id.nav_slideshow) {
 
