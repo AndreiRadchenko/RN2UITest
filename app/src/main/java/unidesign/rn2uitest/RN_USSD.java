@@ -275,7 +275,6 @@ public class RN_USSD extends AppCompatActivity
                     Intent intent;
                     switch (mSecNumber) {
                         case 1:
-                            String ussdCode = item.getTemplate();
                             intent = new Intent(Intent.ACTION_DIAL);
                             //Intent intent = new Intent(Intent.ACTION_CALL);
                             intent.setData(ussdToCallableUri(item.getTemplate()));

@@ -3,15 +3,24 @@ package unidesign.rn2uitest;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -40,13 +49,14 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
     URL mURL;
     public List<ImportRecyclerItem> mlistItems = new ArrayList<>();
 
-    public AsyncResponse delegate = null;//Call back interface
+    public AsyncResponse listener = null;//Call back interface
 
 
     public ParseTask (Context context, unidesign.rn2uitest.ImportTemplateActivity ma, URL url){
         mContext = context;
         ITA = ma;
         mURL = url;
+        listener = ma;
 //        delegate = asyncResponse;//Assigning call back interfacethrough constructor
     }
 
@@ -134,7 +144,9 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
 //                ITA.listItems.clear();
 //                ITA.listItems.addAll(mlistItems);
 //                Log.d(LOG_TAG, "onPostExecute, mlistItems.get(0).getTemplatename(): "+ mlistItems.get(0).getTemplatename());
-
+                //delegate.processFinish(mlistItems);
+                listener.processFinish(mlistItems);
+                pDialog.dismiss();
             }
 
             else if (data_fild.compareTo("USSD") == 0) {
@@ -157,13 +169,44 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
                     todoUri = mContext.getContentResolver().insert(
                             TempContentProvider.CONTENT_URI_USSD, values);
                 }
+
+                pDialog.dismiss();
+                ITA.finish();
+            }
+
+            else if (data_fild.compareTo("SMS") == 0) {
+
+                JSONArray sms = dataJsonObj.getJSONArray("SMS");
+
+                for (int i = 0; i < sms.length(); i++) {
+                    JSONObject sms_one = sms.getJSONObject(i);
+
+                    String name1 = sms_one.getString("name");
+                    String phone_number1 = sms_one.getString("phone_number");
+                    String template1 = sms_one.getString("template");
+                    String comment1 = sms_one.getString("comment");
+
+                    //ContentValues values = new ContentValues();
+                    values.put(USSDSQLiteHelper.COLUMN_NAME, name1);
+                    values.put(USSDSQLiteHelper.COLUMN_PHONE_NUMBER, phone_number1);
+                    values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment1);
+                    values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template1);
+
+                    // New todo
+                    todoUri = mContext.getContentResolver().insert(
+                            TempContentProvider.CONTENT_URI_SMS, values);
+                }
+
+                pDialog.dismiss();
+                ITA.finish();
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        delegate.processFinish(mlistItems);
-        pDialog.dismiss();
+       // delegate.processFinish(mlistItems);
+       // pDialog.dismiss();
     }
+
 }
