@@ -79,7 +79,7 @@ public class ImportTemplateActivity extends AppCompatActivity
         recyclerView.setLayoutManager(llm);
         recyclerView.setHasFixedSize(true);
 
-        AsyncImport.execute();
+        AsyncImport.execute("Templates preview");
         //Log.d(LOG_TAG, "initializeData(): "+ listItems.get(0).getTemplatename());
         final ImportTemplateActivity ITA = this;
 
@@ -87,6 +87,7 @@ public class ImportTemplateActivity extends AppCompatActivity
             @Override
             public void onItemClick(ImportRecyclerItem item) {
                 Log.d(LOG_TAG, "--- getJsondirref --- " + item.getJsondirref());
+                Log.d(LOG_TAG, "--- getName() --- " + item.getName());
                 try {
                     URL m_url = new URL(item.getJsondirref());
                     AsyncImport = new ParseTask(getApplicationContext(), ITA, m_url);
@@ -94,7 +95,7 @@ public class ImportTemplateActivity extends AppCompatActivity
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                AsyncImport.execute();
+                AsyncImport.execute(item.getName());
                 imageDownload(getApplicationContext(), item.getPngdirref(), item.getName());
             }
         });

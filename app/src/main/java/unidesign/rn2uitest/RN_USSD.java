@@ -394,7 +394,8 @@ public class RN_USSD extends AppCompatActivity
             switch (id) {
                 case 0:
                     String[] projection0 = { USSDSQLiteHelper.COLUMN_ID, USSDSQLiteHelper.COLUMN_NAME,
-                            USSDSQLiteHelper.COLUMN_COMMENT, USSDSQLiteHelper.COLUMN_TEMPLATE};
+                            USSDSQLiteHelper.COLUMN_COMMENT, USSDSQLiteHelper.COLUMN_TEMPLATE,
+                            USSDSQLiteHelper.COLUMN_IMAGE};
                     cursorLoader = new CursorLoader(getContext(),
                             TempContentProvider.CONTENT_URI_USSD, projection0, null, null, null);
                     //cursorLoader = cursorLoader0;
@@ -402,7 +403,7 @@ public class RN_USSD extends AppCompatActivity
                 case 1:
                     String[] projection1 = { USSDSQLiteHelper.COLUMN_ID, USSDSQLiteHelper.COLUMN_NAME,
                                             USSDSQLiteHelper.COLUMN_COMMENT, USSDSQLiteHelper.COLUMN_PHONE_NUMBER,
-                                            USSDSQLiteHelper.COLUMN_TEMPLATE};
+                                            USSDSQLiteHelper.COLUMN_TEMPLATE, USSDSQLiteHelper.COLUMN_IMAGE};
                     cursorLoader = new CursorLoader(getContext(),
                             TempContentProvider.CONTENT_URI_SMS, projection1, null, null, null);
                     //return cursorLoader1;

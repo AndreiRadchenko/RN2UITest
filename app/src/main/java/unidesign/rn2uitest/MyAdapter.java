@@ -33,7 +33,9 @@ import unidesign.rn2uitest.helper.ItemTouchHelperAdapter;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         void onItemClick(RecyclerItem item, int mSecNumber);
     }
 
-    static final String LOG_TAG = "myLogs";
+    static final String LOG_TAG = "MyAdapter";
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
     }
@@ -116,7 +118,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             for (int k = 0; k < templates.size(); k++) {
                 mlistItems.add(new RecyclerItem(templates.get(k).getId(),
                                     templates.get(k).getName(), templates.get(k).getComment(),
-                                    templates.get(k).getTemplate()));
+                                    templates.get(k).getTemplate(), templates.get(k).getImage()));
             }
 
             listItems.clear();
@@ -138,7 +140,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             for (int k = 0; k < templates.size(); k++) {
                 mlistItems.add(new RecyclerItem(templates.get(k).getId(),
                         templates.get(k).getName(), templates.get(k).getComment(),
-                        templates.get(k).getPhone(), templates.get(k).getTemplate()));
+                        templates.get(k).getPhone(), templates.get(k).getTemplate(),
+                        templates.get(k).getImage()));
             }
 
             listItems.clear();
@@ -167,6 +170,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         template.setName(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_NAME)));
         template.setComment(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_COMMENT)));
         template.setTemplate(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_TEMPLATE)));
+        template.setImage(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_IMAGE)));
         return template;
     }
 
@@ -197,9 +201,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         //dbHelper = new TemplatesDataSource(getActivity());
         //dbHelper.open();
+
         final RecyclerItem itemList = listItems.get(position);
+
+        File file = new File(mContext.getFilesDir().getPath() + "/" + "icons", itemList.getImageName() + ".png");
+        Log.d(LOG_TAG, file.getAbsolutePath());
         holder.bind(itemList, listener, mSectionNumber);
-        holder.imgIcon.setImageResource(R.mipmap.ic_kyivstar);
+
+        //holder.imgIcon.setImageResource(R.mipmap.ic_kyivstar);
+        Picasso.with(holder.txtTitle.getContext()).setIndicatorsEnabled(true);
+        Picasso.with(holder.txtTitle.getContext())
+                .load(file)
+                .placeholder(android.R.drawable.ic_menu_rotate)
+                .error(android.R.drawable.ic_menu_camera)
+                .into(holder.imgIcon);
+
         holder.txtTitle.setText(itemList.getTitle());
         holder.txtDescription.setText(itemList.getDescription());
         holder.txtOptionDigit.setOnClickListener(new View.OnClickListener() {

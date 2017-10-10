@@ -11,20 +11,23 @@ public class RecyclerItem {
     private String description;
     private String phone;
     private String template;
+    private String imageName;
 
-    public RecyclerItem(Long id, String title, String description, String template) {
+    public RecyclerItem(Long id, String title, String description, String template, String imageName) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.template = template;
+        this.imageName = imageName;
     }
 
-    public RecyclerItem(Long id, String title, String description, String phone, String template) {
+    public RecyclerItem(Long id, String title, String description, String phone, String template, String imageName) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.phone = phone;
         this.template = template;
+        this.imageName = imageName;
     }
 
     public Long getID() {
@@ -65,5 +68,13 @@ public class RecyclerItem {
 
     public void setTemplate(String str) {
         this.template = str;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String str) {
+        this.imageName = str;
     }
 }

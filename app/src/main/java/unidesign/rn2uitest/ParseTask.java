@@ -37,7 +37,7 @@ import static java.security.AccessController.getContext;
  * Created by United on 9/1/2017.
  */
 
-public class ParseTask extends AsyncTask<Void, Void, String> {
+public class ParseTask extends AsyncTask<String, Void, String> {
 
     public interface AsyncResponse {
         void processFinish(List<ImportRecyclerItem> output);
@@ -50,6 +50,7 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
     public List<ImportRecyclerItem> mlistItems = new ArrayList<>();
 
     public AsyncResponse listener = null;//Call back interface
+    public String ImageName;
 
 
     public ParseTask (Context context, unidesign.rn2uitest.ImportTemplateActivity ma, URL url){
@@ -60,7 +61,7 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
 //        delegate = asyncResponse;//Assigning call back interfacethrough constructor
     }
 
-    public static String LOG_TAG = "my_log";
+    public static String LOG_TAG = "ParseTask";
 
     HttpURLConnection urlConnection = null;
     BufferedReader reader = null;
@@ -79,7 +80,10 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... params) {
+    protected String doInBackground(String... params) {
+
+        ImageName = params[0];
+//        Log.d(LOG_TAG, "-- ImageName --" + ImageName);
         // получаем данные с внешнего ресурса
         try {
 
@@ -164,7 +168,9 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
                     values.put(USSDSQLiteHelper.COLUMN_NAME, name1);
                     values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment1);
                     values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template1);
+                    values.put(USSDSQLiteHelper.COLUMN_IMAGE, ImageName);
 
+                    //Log.d(LOG_TAG, "-- ImageName --" + ImageName);
                     // New todo
                     todoUri = mContext.getContentResolver().insert(
                             TempContentProvider.CONTENT_URI_USSD, values);
@@ -191,6 +197,7 @@ public class ParseTask extends AsyncTask<Void, Void, String> {
                     values.put(USSDSQLiteHelper.COLUMN_PHONE_NUMBER, phone_number1);
                     values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment1);
                     values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template1);
+                    values.put(USSDSQLiteHelper.COLUMN_IMAGE, ImageName);
 
                     // New todo
                     todoUri = mContext.getContentResolver().insert(
