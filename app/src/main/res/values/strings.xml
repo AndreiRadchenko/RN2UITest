@@ -99,5 +99,10 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="phone_number">Phone number</string>
+    <string name="sms_template_name">Name</string>
+    <string name="sms_template_template">Template</string>
+    <string name="sms_template_comment">Comment</string>
+    <string name="select_templates">Select Templates</string>
 
 </resources>

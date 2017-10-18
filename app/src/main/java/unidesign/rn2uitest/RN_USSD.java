@@ -20,6 +20,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -60,6 +61,9 @@ public class RN_USSD extends AppCompatActivity
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+ //   private ActionModeCallback actionModeCallback = new ActionModeCallback();
+    private ActionMode actionMode;
+
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -172,9 +176,9 @@ public class RN_USSD extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+/*        if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -195,6 +199,8 @@ public class RN_USSD extends AppCompatActivity
             startActivity(new Intent("intent.action.gallery"));
 
         } else if (id == R.id.nav_slideshow) {
+
+
 
         } else if (id == R.id.nav_manage) {
 
@@ -450,4 +456,5 @@ public class RN_USSD extends AppCompatActivity
             return null;
         }
     }
+
 }

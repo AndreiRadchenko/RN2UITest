@@ -27,9 +27,10 @@ import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 
 public class editSMSTemplate extends AppCompatActivity {
 
-    final String LOG_TAG = "myLogs";
+    final String LOG_TAG = "editSMSTemplate";
 
     EditText etName, etComment, etPhone, etTemplate;
+    String image_file = "";
 
     private Uri todoUri;
     USSD_Template template = new USSD_Template();
@@ -73,6 +74,7 @@ public class editSMSTemplate extends AppCompatActivity {
             etComment.setText(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_COMMENT)));
             etPhone.setText(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_PHONE_NUMBER)));
             etTemplate.setText(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_TEMPLATE)));
+            image_file = cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_IMAGE));
             //etName.setText("USSD");
             //etComment.setText("Comment");
             //etTemplate.setText("*111#");
@@ -128,6 +130,7 @@ public class editSMSTemplate extends AppCompatActivity {
                 values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment);
                 values.put(USSDSQLiteHelper.COLUMN_PHONE_NUMBER, phone);
                 values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template);
+                values.put(USSDSQLiteHelper.COLUMN_IMAGE, image_file);
 
                 if (todoUri == null) {
                     // New todo
@@ -159,6 +162,7 @@ public class editSMSTemplate extends AppCompatActivity {
                 values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment);
                 values.put(USSDSQLiteHelper.COLUMN_PHONE_NUMBER, phone);
                 values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template);
+                values.put(USSDSQLiteHelper.COLUMN_IMAGE, image_file);
 
                 todoUri = getContentResolver().insert(
                         TempContentProvider.CONTENT_URI_SMS, values);
@@ -169,10 +173,10 @@ public class editSMSTemplate extends AppCompatActivity {
 
                 return true;
 
-            case R.id.action_settings:
+/*            case R.id.action_settings:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
-                return true;
+                return true;*/
 
             default:
                 // If we got here, the user's action was not recognized.

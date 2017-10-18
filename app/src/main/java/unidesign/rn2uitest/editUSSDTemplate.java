@@ -32,6 +32,7 @@ public class editUSSDTemplate extends AppCompatActivity{
 
     Button btnAdd, btnRead, btnCancel;
     EditText etName, etComment, etTemplate;
+    String image_file = "";
 
     TemplatesDataSource dbHelper;
    // String[] projection = TemplatesDataSource.allUSSDColumns;
@@ -77,6 +78,7 @@ public class editUSSDTemplate extends AppCompatActivity{
             etName.setText(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_NAME)));
             etComment.setText(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_COMMENT)));
             etTemplate.setText(cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_TEMPLATE)));
+            image_file = cursor.getString(cursor.getColumnIndex(USSDSQLiteHelper.COLUMN_IMAGE));
             //etName.setText("USSD");
             //etComment.setText("Comment");
             //etTemplate.setText("*111#");
@@ -125,6 +127,7 @@ public class editUSSDTemplate extends AppCompatActivity{
                 values.put(USSDSQLiteHelper.COLUMN_NAME, name);
                 values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment);
                 values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template);
+                values.put(USSDSQLiteHelper.COLUMN_IMAGE, image_file);
 
                 if (todoUri == null) {
                     // New todo
@@ -156,6 +159,7 @@ public class editUSSDTemplate extends AppCompatActivity{
                 values.put(USSDSQLiteHelper.COLUMN_NAME, name);
                 values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment);
                 values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template);
+                values.put(USSDSQLiteHelper.COLUMN_IMAGE, image_file);
 
                     todoUri = getContentResolver().insert(
                             TempContentProvider.CONTENT_URI_USSD, values);
@@ -166,10 +170,10 @@ public class editUSSDTemplate extends AppCompatActivity{
 
                 return true;
 
-            case R.id.action_settings:
+/*            case R.id.action_settings:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
-                return true;
+                return true;*/
 
             default:
                 // If we got here, the user's action was not recognized.

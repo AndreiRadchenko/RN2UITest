@@ -53,7 +53,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
     public String ImageName;
 
 
-    public ParseTask (Context context, unidesign.rn2uitest.ImportTemplateActivity ma, URL url){
+    public ParseTask(Context context, unidesign.rn2uitest.ImportTemplateActivity ma, URL url) {
         mContext = context;
         ITA = ma;
         mURL = url;
@@ -68,7 +68,9 @@ public class ParseTask extends AsyncTask<String, Void, String> {
     String resultJson = "";
 
     /** progress dialog to show user that the backup is processing. */
-    /** application context. */
+    /**
+     * application context.
+     */
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -142,7 +144,8 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                     mlistItems.add(new ImportRecyclerItem(templates_one.getString("name"),
                             templates_one.getString("templatename"), templates_one.getString("jsondirref"),
                             templates_one.getString("pngdirref"), templates_one.getString("templatetype")));
-                };
+                }
+                ;
 
                 //delegate.processFinish(mlistItems);
 //                ITA.listItems.clear();
@@ -151,9 +154,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                 //delegate.processFinish(mlistItems);
                 listener.processFinish(mlistItems);
                 pDialog.dismiss();
-            }
-
-            else if (data_fild.compareTo("USSD") == 0) {
+            } else if (data_fild.compareTo("USSD") == 0) {
 
                 JSONArray ussd = dataJsonObj.getJSONArray("USSD");
 
@@ -178,9 +179,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
 
                 pDialog.dismiss();
                 ITA.finish();
-            }
-
-            else if (data_fild.compareTo("SMS") == 0) {
+            } else if (data_fild.compareTo("SMS") == 0) {
 
                 JSONArray sms = dataJsonObj.getJSONArray("SMS");
 
@@ -212,8 +211,8 @@ public class ParseTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
 
-       // delegate.processFinish(mlistItems);
-       // pDialog.dismiss();
+        // delegate.processFinish(mlistItems);
+        // pDialog.dismiss();
     }
 
 }

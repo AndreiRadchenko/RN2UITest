@@ -3,6 +3,7 @@ package unidesign.rn2uitest;
 /**
  * Created by United on 2/25/2017.
  */
+
 import android.content.ContentValues;
 import android.content.Context;
 //import android.support.v7.widget.PopupMenu;
@@ -42,13 +43,14 @@ import java.util.List;
 import static unidesign.rn2uitest.RN_USSD.PlaceholderFragment.ARG_SECTION_NUMBER;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
-        implements ItemTouchHelperAdapter  {
+        implements ItemTouchHelperAdapter {
 
     public interface OnItemClickListener {
         void onItemClick(RecyclerItem item, int mSecNumber);
     }
 
     static final String LOG_TAG = "MyAdapter";
+
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
     }
@@ -81,19 +83,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         listItems = mlistItems;
     }*/
 
-    public void swap(List<RecyclerItem> mlistItems){
+    public void swap(List<RecyclerItem> mlistItems) {
         listItems.clear();
         listItems.addAll(mlistItems);
         notifyDataSetChanged();
     }
 
-    public void updateDB(){
+    public void updateDB() {
 
         Uri uri;
         ContentValues values = new ContentValues();
 
-        for (int k  = 0 ; k < listItems.size(); k++){
-            if (listItems.get(k).getID() != templates.get(k).getId()){
+        for (int k = 0; k < listItems.size(); k++) {
+            if (listItems.get(k).getID() != templates.get(k).getId()) {
 
                 uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                         + templates.get(k).getId());
@@ -106,9 +108,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                 Log.d(LOG_TAG, "--- In MyAdapter updateDB() ---");
             }
         }
-    };
+    }
 
-    public void swapCursorUSSD(Cursor cursor){
+    ;
+
+    public void swapCursorUSSD(Cursor cursor) {
 
         if (cursor != null) {
             templates = getAllTemplates(cursor);
@@ -117,20 +121,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             //Generate sample data
             for (int k = 0; k < templates.size(); k++) {
                 mlistItems.add(new RecyclerItem(templates.get(k).getId(),
-                                    templates.get(k).getName(), templates.get(k).getComment(),
-                                    templates.get(k).getTemplate(), templates.get(k).getImage()));
+                        templates.get(k).getName(), templates.get(k).getComment(),
+                        templates.get(k).getTemplate(), templates.get(k).getImage()));
             }
 
             listItems.clear();
             listItems.addAll(mlistItems);
             notifyDataSetChanged();
-        }
-        else {
+        } else {
             notifyDataSetChanged();
         }
     }
 
-    public void swapCursorSMS(Cursor cursor){
+    public void swapCursorSMS(Cursor cursor) {
 
         if (cursor != null) {
             templates = getAllTemplates(cursor);
@@ -147,8 +150,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             listItems.clear();
             listItems.addAll(mlistItems);
             notifyDataSetChanged();
-        }
-        else {
+        } else {
             notifyDataSetChanged();
         }
     }
@@ -267,7 +269,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                                 }
                                 mContext.getContentResolver().delete(uri, null, null);
                                 notifyDataSetChanged();
-                                Toast.makeText(mContext, "Deleted", Toast.LENGTH_LONG).show();
+                                Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show();
                                 //Log.d(LOG_TAG, "In MyAdapter Delete");
                                 //Log.d(LOG_TAG, uri.toString());
                                 //Log.d(LOG_TAG, "this.mSectionNumber = " + mSectionNumber);
@@ -307,15 +309,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
     }
 
-   public static class ViewHolder extends AbstractDraggableItemViewHolder implements
-           ItemTouchHelperViewHolder {
+    public static class ViewHolder extends AbstractDraggableItemViewHolder implements
+            ItemTouchHelperViewHolder {
 
-       public RelativeLayout mContainer;
-       public View mDragHandle;
-         TextView txtTitle;
-         TextView txtDescription;
-         TextView txtOptionDigit;
-         ImageView imgIcon;
+        public RelativeLayout mContainer;
+        public View mDragHandle;
+        TextView txtTitle;
+        TextView txtDescription;
+        TextView txtOptionDigit;
+        ImageView imgIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -327,29 +329,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             imgIcon = (ImageView) itemView.findViewById(R.id.my_image_view);
         }
 
-       public void bind(final RecyclerItem item, final OnItemClickListener listener, final int mSN) {
+        public void bind(final RecyclerItem item, final OnItemClickListener listener, final int mSN) {
 
-           mContainer.setOnClickListener(new View.OnClickListener() {
-               @Override public void onClick(View v) {
-                   listener.onItemClick(item, mSN);
-               }
-           });
-       }
+            mContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(item, mSN);
+                }
+            });
+        }
 
 
-       @Override
-       public void onItemSelected() {
-          // itemView.setBackgroundColor(Color.MAGENTA);
-           itemView.setScaleY(1.05f);
-           itemView.setScaleX(1.05f);
-       }
+        @Override
+        public void onItemSelected() {
+            // itemView.setBackgroundColor(Color.MAGENTA);
+            itemView.setScaleY(1.05f);
+            itemView.setScaleX(1.05f);
+        }
 
-       @Override
-       public void onItemClear() {
-          // itemView.setBackgroundColor(0);
-           itemView.setScaleY(1f );
-           itemView.setScaleX(1f);
-       }
+        @Override
+        public void onItemClear() {
+            // itemView.setBackgroundColor(0);
+            itemView.setScaleY(1f);
+            itemView.setScaleX(1f);
+        }
 
     }
 

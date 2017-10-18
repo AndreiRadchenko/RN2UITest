@@ -119,6 +119,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
                         values.put(USSDSQLiteHelper.COLUMN_NAME, adapter.listItems.get(k).getTitle());
                         values.put(USSDSQLiteHelper.COLUMN_COMMENT, adapter.listItems.get(k).getDescription());
                         values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, adapter.listItems.get(k).getTemplate());
+                        values.put(USSDSQLiteHelper.COLUMN_IMAGE, adapter.listItems.get(k).getImageName());
 
                         adapter.mContext.getContentResolver().update(uri, values, null, null);
                         Log.d(LOG_TAG, "--- In reallyMoved update USSD, from = " + from + ", to = " + to );
@@ -137,6 +138,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
                         values.put(USSDSQLiteHelper.COLUMN_COMMENT, adapter.listItems.get(k).getDescription());
                         values.put(USSDSQLiteHelper.COLUMN_PHONE_NUMBER, adapter.listItems.get(k).getPhone());
                         values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, adapter.listItems.get(k).getTemplate());
+                        values.put(USSDSQLiteHelper.COLUMN_IMAGE, adapter.listItems.get(k).getImageName());
 
                         adapter.mContext.getContentResolver().update(uri, values, null, null);
                         Log.d(LOG_TAG, "--- In reallyMoved update SMS, from = " + from + ", to = " + to );
