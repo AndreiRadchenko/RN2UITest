@@ -1,17 +1,27 @@
 package unidesign.rn2uitest;
 
-import android.graphics.drawable.NinePatchDrawable;
+import android.app.ActionBar;
+import android.net.Uri;
+import android.provider.Telephony;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.Loader;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.app.LoaderManager;
+import android.database.Cursor;
+
+import android.content.Intent;
+
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,29 +31,28 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.widget.Toast;
 //import com.h6ah4i.android.example.advrecyclerview.R;
 
-import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
-import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
+import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
+import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 import unidesign.rn2uitest.helper.SimpleItemTouchHelperCallback;
+
+import static android.R.attr.fragment;
+import static unidesign.rn2uitest.RN_USSD.PlaceholderFragment.ARG_SECTION_NUMBER;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    static final String LOG_TAG = "myLogs";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -53,32 +62,85 @@ public class RN_USSD extends AppCompatActivity
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+//    private ActionModeCallback actionModeCallback = new ActionModeCallback();
+    private android.view.ActionMode actionMode;
+    static Toolbar toolbar;
+    Toolbar select_toolbar;
+    AppBarLayout appbar;
+    AppBarLayout.LayoutParams scroll_params;
+    FloatingActionButton fab;
+    TabLayout tabLayout;
+    NavigationView navigationView;
+    DrawerLayout drawer;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     //rrtyuuyty
-    private ViewPager mViewPager;
+    public CustomViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        appbar = (AppBarLayout) findViewById(R.id.appbar);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //scroll_params - for manipulate with scroll behawior
+        scroll_params =
+                (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+
+        select_toolbar = (Toolbar) findViewById(R.id.select_toolbar);
+        select_toolbar.inflateMenu(R.menu.selected_menu);//changed
+//=========================set normal mode (selection gone)========================================================
+        View select_home = (View) findViewById(R.id.select_home);
+        select_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setNormalMode();
+            }
+        });
+//===================================================================================================
+        //toolbar2 menu items CallBack listener
+        select_toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+            public static final String TAG = "select_toolbar";
+
+            @Override
+            public boolean onMenuItemClick(MenuItem arg0) {
+
+                switch (arg0.getItemId()) {
+                    case R.id.action_select_all:
+                        // TODO: actually remove items
+                        Log.d(TAG, "action_select_all");
+                        return true;
+
+                    case R.id.action_delete_selection:
+                        // TODO: actually remove items
+                        Log.d(TAG, "action_delete_selection");
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (CustomViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         //FragmentPagerAdapter - detect a swipe or a tab click when user goes to a new tab
         //and expand appbar
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         final AppBarLayout mAppBar = (AppBarLayout) findViewById(R.id.appbar);
+        ActionBar actionBar = getActionBar();
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -99,29 +161,43 @@ public class RN_USSD extends AppCompatActivity
             }
         });
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                int sectionNumber = mViewPager.getCurrentItem();
+                switch (sectionNumber) {
+                    case 0:
+/*                        Snackbar.make(view, "FAB pressed in USSD fragment", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();*/
+                        startActivity(new Intent("intent.action.newussd"));
+                        break;
+                    case 1:
+/*                        Snackbar.make(view, "FAB pressed in SMS fragment", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();*/
+                        startActivity(new Intent("intent.action.newsms"));
+                        break;
+                }
+/*                Intent intent = new Intent("intent.action.newussd");
+                startActivity(intent);*/
+/*              Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
             }
         });
 
         //magicButton.getAnimationOnShow().setDuration(5000);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
     }
 
@@ -130,7 +206,12 @@ public class RN_USSD extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else if (!toolbar.isShown()) {
+
+            setNormalMode();
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -143,6 +224,12 @@ public class RN_USSD extends AppCompatActivity
     }
 
     @Override
+    public void invalidateOptionsMenu(){
+
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -150,24 +237,35 @@ public class RN_USSD extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+//=========================set selection mode========================================================
+        if (id == R.id.action_select) {
+            setSelectionMode();
+                //getActionBar().hide();
+                //actionMode = startActionMode(actionModeCallback);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-    @SuppressWarnings("StatementWithEmptyBody")
+//===================================================================================================
+//    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_import) {
+            // Handle the import action
+//            unidesign.rn2uitest.RN_USSD ma = this;
+//            new ParseTask(getApplicationContext(), ma).execute();
+            startActivity(new Intent("intent.action.import_templates"));
+
         } else if (id == R.id.nav_gallery) {
+            startActivity(new Intent("intent.action.gallery"));
 
         } else if (id == R.id.nav_slideshow) {
+
+
 
         } else if (id == R.id.nav_manage) {
 
@@ -185,23 +283,20 @@ public class RN_USSD extends AppCompatActivity
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment
+                                implements LoaderManager.LoaderCallbacks<Cursor> {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
+        TemplatesDataSource dbHelper;
+        View rootView;
+        public static final String ARG_SECTION_NUMBER = "section_number";
         private ItemTouchHelper mItemTouchHelper;
-
         private RecyclerView recyclerView;
         private RecyclerView.LayoutManager mLayoutManager;
-        //private RecyclerViewDragDropManager dragMgr;
-        //private RecyclerView.Adapter mWrappedAdapter;
         private MyAdapter adapter;
-        //private List<RecyclerItem> listItems;
-        // Setup D&D feature and RecyclerView
-
+        //private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
         public PlaceholderFragment() {
         }
 
@@ -216,57 +311,83 @@ public class RN_USSD extends AppCompatActivity
             fragment.setArguments(args);
             return fragment;
         }
+
+        public int getSectionNumber() {
+
+            return getArguments().getInt(ARG_SECTION_NUMBER);
+        }
 //*****************************************************************************************************************************
 //Заполнение фрагментов USSD и SMS
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            View rootView = inflater.inflate(R.layout.fragment_rn__ussd, container, false);
-
+            rootView = inflater.inflate(R.layout.fragment_rn__ussd, container, false);
             recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
             mLayoutManager = new LinearLayoutManager(getContext());
-           // recyclerView.setHasFixedSize(true);
-            //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            // drag & drop manager
-            //dragMgr = new RecyclerViewDragDropManager();
-            //dragMgr.setDraggingItemShadowDrawable(
-            //        (NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z3));
-            // Start dragging after long press
-            //dragMgr.setInitiateOnLongPress(true);
-            //dragMgr.setInitiateOnMove(false);
-
-            //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2, StaggeredGridLayoutManager.VERTICAL, false));
-
-            List<RecyclerItem> listItems = new ArrayList<>();
-            //Generate sample data
-
-            for (int k = 0; k<10; k++) {
-                listItems.add(new RecyclerItem("Item " + (k), "Welcome to Torisan channel, this is description of item " + (k)));
+            //Log.d(LOG_TAG, "--- In OnCreateView() PlaceholderFragment ---");
+            int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
+            switch (sectionNumber) {
+                case 1:
+                    Log.d(LOG_TAG, "--- OnCreateView() PlaceholderFragment sectionNumber: ---" + sectionNumber);
+                    getLoaderManager().initLoader(0, null, this);
+                    break;
+                case 2:
+                    Log.d(LOG_TAG, "--- OnCreateView() PlaceholderFragment sectionNumber: ---" + sectionNumber);
+                    getLoaderManager().initLoader(1, null, this);
+                    break;
             }
 
-            //Set adapter
-            final MyAdapter mAdapter = new MyAdapter(listItems, getActivity());
-            adapter = mAdapter;
-            //mWrappedAdapter = dragMgr.createWrappedAdapter(adapter);
+            final MyAdapter mAdapter = new MyAdapter(getActivity(), sectionNumber, new MyAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(RecyclerItem item, int mSecNumber) {
+                    Log.d(LOG_TAG, "--- onItemClick in section --- " + mSecNumber);
+                    if (!toolbar.isShown()) {
 
-            //final GeneralItemAnimator animator = new DraggableItemAnimator();
+                    }
+                    else {
+                        Intent intent;
+                        switch (mSecNumber) {
+                            case 1:
+                                intent = new Intent(Intent.ACTION_DIAL);
+                                //Intent intent = new Intent(Intent.ACTION_CALL);
+                                intent.setData(ussdToCallableUri(item.getTemplate()));
+                                try {
+                                    startActivity(intent);
+                                } catch (SecurityException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case 2:
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // At least KitKat
+                                {
+                                    String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getContext());
+                                    Uri _uri = Uri.parse("tel:" + item.getPhone());
+                                    intent = new Intent(Intent.ACTION_VIEW, _uri);
+                                    intent.putExtra("address", item.getPhone());
+                                    intent.putExtra("sms_body", item.getTemplate());
+                                    intent.setPackage(defaultSmsPackageName);
+                                    intent.setType("vnd.android-dir/mms-sms");
+                                    startActivity(intent);
+                                } else // For early versions, do what worked for you before.
+                                {
+                                    intent = new Intent(android.content.Intent.ACTION_VIEW);
+                                    intent.setType("vnd.android-dir/mms-sms");
+                                    intent.putExtra("address", item.getPhone());
+                                    intent.putExtra("sms_body", item.getTemplate());
+                                    startActivity(intent);
+                                }
+                                break;
+                        }
+                    }
+                    //Toast.makeText(getContext(), "Item Clicked in section ", Toast.LENGTH_LONG).show();
+                }
+            });
+            adapter = mAdapter;
 
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(adapter);
-            //recyclerView.setItemAnimator(animator);
-            //recyclerView.setAdapter(adapter);
-            // additional decorations
-            //noinspection StatementWithEmptyBody
-            if (supportsViewElevation()) {
-                // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
-            } else {
-                recyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z1)));
-            }
-            recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.list_divider_h), true));
-
-            //dragMgr.attachRecyclerView(recyclerView);
             ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
             mItemTouchHelper = new ItemTouchHelper(callback);
             mItemTouchHelper.attachToRecyclerView(recyclerView);
@@ -274,37 +395,97 @@ public class RN_USSD extends AppCompatActivity
             return rootView;
         }
 
-/*        @Override
-        public void onPause() {
-            dragMgr.cancelDrag();
-            super.onPause();
+        private Uri ussdToCallableUri(String ussd) {
+
+            String uriString = "";
+            if(!ussd.startsWith("tel:"))
+                uriString += "tel:";
+
+            for(char c : ussd.toCharArray()) {
+                if(c == '#')
+                    uriString += Uri.encode("#");
+                else
+                    uriString += c;
+            }
+
+            return Uri.parse(uriString);
         }
 
         @Override
-        public void onDestroyView() {
-            if (dragMgr != null) {
-                dragMgr.release();
-                dragMgr = null;
-            }
+        public void onPause(){
+            super.onPause();
+        // внесу изменения в базу данных произведенные в UI
+        //    adapter.updateDB();
+        }
 
-            if (recyclerView != null) {
-                recyclerView.setItemAnimator(null);
-                recyclerView.setAdapter(null);
-                recyclerView = null;
-            }
+        @Override
+        public void onSaveInstanceState (Bundle outState){
+            super.onSaveInstanceState(outState);
+            // внесу изменения в базу данных произведенные в UI
+            //adapter.updateDB();
+        }
 
-            if (mWrappedAdapter != null) {
-                WrapperAdapterUtils.releaseAll(mWrappedAdapter);
-                mWrappedAdapter = null;
-            }
-            adapter = null;
-            mLayoutManager = null;
+        @Override
+        public void onResume() {
+            super.onResume();
+            int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
+            Log.d(LOG_TAG, "--- In onResume() sectionNumber: ---" + sectionNumber);
+            //getLoaderManager().initLoader(0, null, this);
 
-            super.onDestroyView();
-        }*/
+        }
 
         private boolean supportsViewElevation() {
             return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+        }
+
+        // Called when a previously created loader has finished loading
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            // Swap the new cursor in.  (The framework will take care of closing the
+            // old cursor once we return.)
+            switch (loader.getId()) {
+                case 0:
+                        Log.d(LOG_TAG, "--- In OnLoadFinished() PlaceholderFragmentUSSD ---");
+                        adapter.swapCursorUSSD(data);
+                    break;
+                case 1:
+                        Log.d(LOG_TAG, "--- In OnLoadFinished() PlaceholderFragmentSMS ---");
+                        adapter.swapCursorSMS(data);
+                    break;
+
+            }
+        }
+        public void onLoaderReset(Loader<Cursor> loader) {
+            // This is called when the last Cursor provided to onLoadFinished()
+            // above is about to be closed.  We need to make sure we are no
+            // longer using it.
+            Log.d(LOG_TAG, "--- In OnLoaderReset() PlaceholderFragment ---");
+            adapter.swapCursorUSSD(null);
+            adapter.swapCursorSMS(null);
+        }
+        // creates a new loader after the initLoader () call
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            CursorLoader cursorLoader = null;
+            switch (id) {
+                case 0:
+                    String[] projection0 = { USSDSQLiteHelper.COLUMN_ID, USSDSQLiteHelper.COLUMN_NAME,
+                            USSDSQLiteHelper.COLUMN_COMMENT, USSDSQLiteHelper.COLUMN_TEMPLATE,
+                            USSDSQLiteHelper.COLUMN_IMAGE};
+                    cursorLoader = new CursorLoader(getContext(),
+                            TempContentProvider.CONTENT_URI_USSD, projection0, null, null, null);
+                    //cursorLoader = cursorLoader0;
+                break;
+                case 1:
+                    String[] projection1 = { USSDSQLiteHelper.COLUMN_ID, USSDSQLiteHelper.COLUMN_NAME,
+                                            USSDSQLiteHelper.COLUMN_COMMENT, USSDSQLiteHelper.COLUMN_PHONE_NUMBER,
+                                            USSDSQLiteHelper.COLUMN_TEMPLATE, USSDSQLiteHelper.COLUMN_IMAGE};
+                    cursorLoader = new CursorLoader(getContext(),
+                            TempContentProvider.CONTENT_URI_SMS, projection1, null, null, null);
+                    //return cursorLoader1;
+                break;
+            }
+            return cursorLoader;
         }
 
     }
@@ -345,4 +526,75 @@ public class RN_USSD extends AppCompatActivity
             return null;
         }
     }
+
+/*    private class ActionModeCallback implements android.view.ActionMode.Callback {
+        @SuppressWarnings("unused")
+        private final String TAG = ActionModeCallback.class.getSimpleName();
+
+        @Override
+        public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate (R.menu.selected_menu, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(android.view.ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(android.view.ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_select_all:
+                    // TODO: actually remove items
+                    Log.d(TAG, "action_select_all");
+                    mode.finish();
+                    return true;
+
+                case R.id.action_delete_selection:
+                    // TODO: actually remove items
+                    Log.d(TAG, "action_delete_selection");
+                    mode.finish();
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(android.view.ActionMode mode) {
+            //adapter.clearSelection();
+            actionMode = null;
+            toolbar.setVisibility(toolbar.VISIBLE);
+        }
+
+    }*/
+
+    void setSelectionMode(){
+
+        toolbar.setVisibility(toolbar.GONE);
+        select_toolbar.setVisibility(select_toolbar.VISIBLE);
+
+        scroll_params.setScrollFlags(0);
+        fab.hide();
+        mViewPager.disableScroll(true);
+        tabLayout.setVisibility(tabLayout.GONE);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+    }
+
+    void setNormalMode() {
+
+        select_toolbar.setVisibility(select_toolbar.GONE);
+        toolbar.setVisibility(toolbar.VISIBLE);
+        scroll_params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+                | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        fab.show();
+        mViewPager.disableScroll(false);
+        tabLayout.setVisibility(tabLayout.VISIBLE);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
+    }
+
 }
