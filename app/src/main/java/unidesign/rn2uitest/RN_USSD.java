@@ -1,5 +1,6 @@
 package unidesign.rn2uitest;
 
+import android.app.ActionBar;
 import android.net.Uri;
 import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
@@ -61,35 +62,85 @@ public class RN_USSD extends AppCompatActivity
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
- //   private ActionModeCallback actionModeCallback = new ActionModeCallback();
-    private ActionMode actionMode;
-
+//    private ActionModeCallback actionModeCallback = new ActionModeCallback();
+    private android.view.ActionMode actionMode;
+    static Toolbar toolbar;
+    Toolbar select_toolbar;
+    AppBarLayout appbar;
+    AppBarLayout.LayoutParams scroll_params;
+    FloatingActionButton fab;
+    TabLayout tabLayout;
+    NavigationView navigationView;
+    DrawerLayout drawer;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     //rrtyuuyty
-    public ViewPager mViewPager;
+    public CustomViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        appbar = (AppBarLayout) findViewById(R.id.appbar);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //scroll_params - for manipulate with scroll behawior
+        scroll_params =
+                (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+
+        select_toolbar = (Toolbar) findViewById(R.id.select_toolbar);
+        select_toolbar.inflateMenu(R.menu.selected_menu);//changed
+//=========================set normal mode (selection gone)========================================================
+        View select_home = (View) findViewById(R.id.select_home);
+        select_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setNormalMode();
+            }
+        });
+//===================================================================================================
+        //toolbar2 menu items CallBack listener
+        select_toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+            public static final String TAG = "select_toolbar";
+
+            @Override
+            public boolean onMenuItemClick(MenuItem arg0) {
+
+                switch (arg0.getItemId()) {
+                    case R.id.action_select_all:
+                        // TODO: actually remove items
+                        Log.d(TAG, "action_select_all");
+                        return true;
+
+                    case R.id.action_delete_selection:
+                        // TODO: actually remove items
+                        Log.d(TAG, "action_delete_selection");
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (CustomViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         //FragmentPagerAdapter - detect a swipe or a tab click when user goes to a new tab
         //and expand appbar
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         final AppBarLayout mAppBar = (AppBarLayout) findViewById(R.id.appbar);
+        ActionBar actionBar = getActionBar();
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -110,7 +161,7 @@ public class RN_USSD extends AppCompatActivity
             }
         });
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -139,15 +190,14 @@ public class RN_USSD extends AppCompatActivity
 
         //magicButton.getAnimationOnShow().setDuration(5000);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
     }
 
@@ -156,7 +206,12 @@ public class RN_USSD extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else if (!toolbar.isShown()) {
+
+            setNormalMode();
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -169,6 +224,12 @@ public class RN_USSD extends AppCompatActivity
     }
 
     @Override
+    public void invalidateOptionsMenu(){
+
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -176,14 +237,18 @@ public class RN_USSD extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-/*        if (id == R.id.action_settings) {
+//=========================set selection mode========================================================
+        if (id == R.id.action_select) {
+            setSelectionMode();
+                //getActionBar().hide();
+                //actionMode = startActionMode(actionModeCallback);
             return true;
-        }*/
+        }
 
         return super.onOptionsItemSelected(item);
     }
-
-    @SuppressWarnings("StatementWithEmptyBody")
+//===================================================================================================
+//    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -278,38 +343,43 @@ public class RN_USSD extends AppCompatActivity
                 @Override
                 public void onItemClick(RecyclerItem item, int mSecNumber) {
                     Log.d(LOG_TAG, "--- onItemClick in section --- " + mSecNumber);
-                    Intent intent;
-                    switch (mSecNumber) {
-                        case 1:
-                            intent = new Intent(Intent.ACTION_DIAL);
-                            //Intent intent = new Intent(Intent.ACTION_CALL);
-                            intent.setData(ussdToCallableUri(item.getTemplate()));
-                            try{
-                                startActivity(intent);
-                            } catch (SecurityException e){
-                                e.printStackTrace();
-                            }
-                            break;
-                        case 2:
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // At least KitKat
-                            {
-                                String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getContext());
-                                Uri _uri = Uri.parse("tel:" + item.getPhone());
-                                intent = new Intent(Intent.ACTION_VIEW, _uri);
-                                intent.putExtra("address", item.getPhone());
-                                intent.putExtra("sms_body", item.getTemplate());
-                                intent.setPackage(defaultSmsPackageName);
-                                intent.setType("vnd.android-dir/mms-sms");
-                                startActivity(intent);
-                            } else // For early versions, do what worked for you before.
-                            {
-                                intent = new Intent(android.content.Intent.ACTION_VIEW);
-                                intent.setType("vnd.android-dir/mms-sms");
-                                intent.putExtra("address", item.getPhone());
-                                intent.putExtra("sms_body", item.getTemplate());
-                                startActivity(intent);
-                            }
-                            break;
+                    if (!toolbar.isShown()) {
+
+                    }
+                    else {
+                        Intent intent;
+                        switch (mSecNumber) {
+                            case 1:
+                                intent = new Intent(Intent.ACTION_DIAL);
+                                //Intent intent = new Intent(Intent.ACTION_CALL);
+                                intent.setData(ussdToCallableUri(item.getTemplate()));
+                                try {
+                                    startActivity(intent);
+                                } catch (SecurityException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case 2:
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // At least KitKat
+                                {
+                                    String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getContext());
+                                    Uri _uri = Uri.parse("tel:" + item.getPhone());
+                                    intent = new Intent(Intent.ACTION_VIEW, _uri);
+                                    intent.putExtra("address", item.getPhone());
+                                    intent.putExtra("sms_body", item.getTemplate());
+                                    intent.setPackage(defaultSmsPackageName);
+                                    intent.setType("vnd.android-dir/mms-sms");
+                                    startActivity(intent);
+                                } else // For early versions, do what worked for you before.
+                                {
+                                    intent = new Intent(android.content.Intent.ACTION_VIEW);
+                                    intent.setType("vnd.android-dir/mms-sms");
+                                    intent.putExtra("address", item.getPhone());
+                                    intent.putExtra("sms_body", item.getTemplate());
+                                    startActivity(intent);
+                                }
+                                break;
+                        }
                     }
                     //Toast.makeText(getContext(), "Item Clicked in section ", Toast.LENGTH_LONG).show();
                 }
@@ -455,6 +525,76 @@ public class RN_USSD extends AppCompatActivity
             }
             return null;
         }
+    }
+
+/*    private class ActionModeCallback implements android.view.ActionMode.Callback {
+        @SuppressWarnings("unused")
+        private final String TAG = ActionModeCallback.class.getSimpleName();
+
+        @Override
+        public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate (R.menu.selected_menu, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(android.view.ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(android.view.ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_select_all:
+                    // TODO: actually remove items
+                    Log.d(TAG, "action_select_all");
+                    mode.finish();
+                    return true;
+
+                case R.id.action_delete_selection:
+                    // TODO: actually remove items
+                    Log.d(TAG, "action_delete_selection");
+                    mode.finish();
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(android.view.ActionMode mode) {
+            //adapter.clearSelection();
+            actionMode = null;
+            toolbar.setVisibility(toolbar.VISIBLE);
+        }
+
+    }*/
+
+    void setSelectionMode(){
+
+        toolbar.setVisibility(toolbar.GONE);
+        select_toolbar.setVisibility(select_toolbar.VISIBLE);
+
+        scroll_params.setScrollFlags(0);
+        fab.hide();
+        mViewPager.disableScroll(true);
+        tabLayout.setVisibility(tabLayout.GONE);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+    }
+
+    void setNormalMode() {
+
+        select_toolbar.setVisibility(select_toolbar.GONE);
+        toolbar.setVisibility(toolbar.VISIBLE);
+        scroll_params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+                | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        fab.show();
+        mViewPager.disableScroll(false);
+        tabLayout.setVisibility(tabLayout.VISIBLE);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
     }
 
 }

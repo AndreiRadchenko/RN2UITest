@@ -4,7 +4,7 @@
     tools:context="unidesign.rn2uitest.RN_USSD">
     <item
         android:id="@+id/action_select"
-        android:icon="@drawable/ic_action_check"
+        android:icon="@drawable/ic_done_black_24dp"
         android:title="@string/select_templates"
         app:showAsAction="always" />
 

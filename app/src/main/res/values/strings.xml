@@ -104,5 +104,8 @@
     <string name="sms_template_template">Template</string>
     <string name="sms_template_comment">Comment</string>
     <string name="select_templates">Select Templates</string>
+    <string name="select_all">Select all</string>
+    <string name="delete_selection">delete selection</string>
+    <string name="action_selection_settings">settings</string>
 
 </resources>

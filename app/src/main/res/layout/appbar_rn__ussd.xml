@@ -19,8 +19,35 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            />
+            app:layout_scrollFlags="scroll|enterAlways|snap" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/select_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alwaysDrawnWithCache="false"
+            android:animateLayoutChanges="false"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/select_home"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                app:srcCompat="@drawable/ic_action_home" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="start"
+                android:text="Slected items"
+                android:textColor="@android:color/white" />
+
+        </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
@@ -30,7 +57,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <unidesign.rn2uitest.CustomViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

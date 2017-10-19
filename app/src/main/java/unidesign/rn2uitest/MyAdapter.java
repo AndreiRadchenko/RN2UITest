@@ -69,6 +69,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         this.listener = mListener;
     }
 
+    public void setOnClickListener(OnItemClickListener mListener){
+        this.listener = mListener;
+    }
+
     public MyAdapter(Context mContext, int sectionNumber) {
         //setHasStableIds(true); // this is required for D&D feature.
         this.mSectionNumber = sectionNumber;
