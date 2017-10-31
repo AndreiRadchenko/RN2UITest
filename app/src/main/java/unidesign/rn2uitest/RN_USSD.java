@@ -66,12 +66,15 @@ public class RN_USSD extends AppCompatActivity
     private android.view.ActionMode actionMode;
     static Toolbar toolbar;
     Toolbar select_toolbar;
+    Toolbar select_toolbar_bottom;
     AppBarLayout appbar;
     AppBarLayout.LayoutParams scroll_params;
     FloatingActionButton fab;
     TabLayout tabLayout;
     NavigationView navigationView;
     DrawerLayout drawer;
+    static MyAdapter currentTabAdapter;
+    static MyAdapter USSDTabAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -94,6 +97,8 @@ public class RN_USSD extends AppCompatActivity
 
         select_toolbar = (Toolbar) findViewById(R.id.select_toolbar);
         select_toolbar.inflateMenu(R.menu.selected_menu);//changed
+        select_toolbar_bottom = (Toolbar) findViewById(R.id.select_toolbar_bottom);
+        select_toolbar_bottom.inflateMenu(R.menu.selected_menu_bottom);//changed
 //=========================set normal mode (selection gone)========================================================
         View select_home = (View) findViewById(R.id.select_home);
         select_home.setOnClickListener(new View.OnClickListener() {
@@ -392,6 +397,10 @@ public class RN_USSD extends AppCompatActivity
             mItemTouchHelper = new ItemTouchHelper(callback);
             mItemTouchHelper.attachToRecyclerView(recyclerView);
 
+            if (sectionNumber == 1){
+                USSDTabAdapter = adapter;
+            }
+
             return rootView;
         }
 
@@ -430,8 +439,14 @@ public class RN_USSD extends AppCompatActivity
             super.onResume();
             int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
             Log.d(LOG_TAG, "--- In onResume() sectionNumber: ---" + sectionNumber);
+            //currentTabAdapter = adapter;
+            currentTabAdapter = this.getAdapter();
             //getLoaderManager().initLoader(0, null, this);
 
+        }
+
+        MyAdapter getAdapter() {
+            return adapter;
         }
 
         private boolean supportsViewElevation() {
@@ -575,18 +590,22 @@ public class RN_USSD extends AppCompatActivity
 
         toolbar.setVisibility(toolbar.GONE);
         select_toolbar.setVisibility(select_toolbar.VISIBLE);
+        select_toolbar_bottom.setVisibility(select_toolbar_bottom.VISIBLE);
 
         scroll_params.setScrollFlags(0);
         fab.hide();
         mViewPager.disableScroll(true);
         tabLayout.setVisibility(tabLayout.GONE);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        currentTabAdapter.setMod(currentTabAdapter.SELECTION_MOD);
+        USSDTabAdapter.setMod(USSDTabAdapter.SELECTION_MOD);
 
     }
 
     void setNormalMode() {
 
         select_toolbar.setVisibility(select_toolbar.GONE);
+        select_toolbar_bottom.setVisibility(select_toolbar_bottom.GONE);
         toolbar.setVisibility(toolbar.VISIBLE);
         scroll_params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
                 | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
@@ -594,6 +613,8 @@ public class RN_USSD extends AppCompatActivity
         mViewPager.disableScroll(false);
         tabLayout.setVisibility(tabLayout.VISIBLE);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        currentTabAdapter.setMod(currentTabAdapter.NORMAL_MOD);
+        USSDTabAdapter.setMod(USSDTabAdapter.NORMAL_MOD);
 
     }
 

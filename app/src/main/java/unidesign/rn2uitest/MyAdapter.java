@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -55,11 +56,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     private interface Draggable extends DraggableItemConstants {
     }
 
+    public static final int NORMAL_MOD = 0;
+    public static final int SELECTION_MOD = 1;
+    public int mode = NORMAL_MOD;
+
     public OnItemClickListener listener;
     public List<RecyclerItem> listItems = new ArrayList<>();
     public List<USSD_Template> templates;
     public Context mContext;
     public int mSectionNumber;
+    public CheckBox mCheckBox;
     TemplatesDataSource dbHelper;
 
     public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener) {
@@ -213,7 +219,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         File file = new File(mContext.getFilesDir().getPath() + "/" + "icons", itemList.getImageName() + ".png");
         Log.d(LOG_TAG, file.getAbsolutePath());
         holder.bind(itemList, listener, mSectionNumber);
-
+//==========================set selection/normal mode================================================
+        if (mode == SELECTION_MOD) {
+            holder.vhCheckBox.setVisibility(holder.vhCheckBox.VISIBLE);
+            holder.txtOptionDigit.setVisibility(holder.txtOptionDigit.INVISIBLE);
+        }
+        else {
+            holder.vhCheckBox.setVisibility(holder.vhCheckBox.INVISIBLE);
+            holder.txtOptionDigit.setVisibility(holder.txtOptionDigit.VISIBLE);
+        }
+//===================================================================================================
         //holder.imgIcon.setImageResource(R.mipmap.ic_kyivstar);
         Picasso.with(holder.txtTitle.getContext()).setIndicatorsEnabled(true);
         Picasso.with(holder.txtTitle.getContext())
@@ -322,6 +337,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         TextView txtDescription;
         TextView txtOptionDigit;
         ImageView imgIcon;
+        CheckBox vhCheckBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -331,6 +347,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
             txtOptionDigit = (TextView) itemView.findViewById(R.id.txtOptionDigit);
             imgIcon = (ImageView) itemView.findViewById(R.id.my_image_view);
+            vhCheckBox = (CheckBox) itemView.findViewById(R.id.checkBox);
         }
 
         public void bind(final RecyclerItem item, final OnItemClickListener listener, final int mSN) {
@@ -360,5 +377,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
     }
 
+    void setMod(int mmode) {
+        this.mode = mmode;
+        notifyDataSetChanged();
+    }
 }
 

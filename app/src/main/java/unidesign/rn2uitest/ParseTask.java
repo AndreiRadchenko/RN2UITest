@@ -3,24 +3,15 @@ package unidesign.rn2uitest;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
-
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -28,10 +19,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import unidesign.rn2uitest.ImportActivity.ImportRecyclerItem;
+import unidesign.rn2uitest.ImportActivity.ImportTemplateActivity;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by United on 9/1/2017.
@@ -45,7 +36,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
 
     private Context mContext;
     public ProgressDialog pDialog;
-    public unidesign.rn2uitest.ImportTemplateActivity ITA;
+    public ImportTemplateActivity ITA;
     URL mURL;
     public List<ImportRecyclerItem> mlistItems = new ArrayList<>();
 
@@ -53,7 +44,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
     public String ImageName;
 
 
-    public ParseTask(Context context, unidesign.rn2uitest.ImportTemplateActivity ma, URL url) {
+    public ParseTask(Context context, ImportTemplateActivity ma, URL url) {
         mContext = context;
         ITA = ma;
         mURL = url;

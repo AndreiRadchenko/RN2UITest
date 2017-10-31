@@ -1,70 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="unidesign.rn2uitest.RN_USSD"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways|snap" />
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/select_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alwaysDrawnWithCache="false"
-            android:animateLayoutChanges="false"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/select_home"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                app:srcCompat="@drawable/ic_action_home" />
+                android:animateLayoutChanges="true"
+                android:visibility="visible"
+                app:layout_scrollFlags="scroll|enterAlways|snap" />
 
-            <TextView
-                android:id="@+id/toolbar_title"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/select_toolbar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:text="Slected items"
-                android:textColor="@android:color/white" />
+                android:alwaysDrawnWithCache="false"
+                android:animateLayoutChanges="true"
+                android:visibility="gone">
 
-        </android.support.v7.widget.Toolbar>
+                <ImageView
+                    android:id="@+id/select_home"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    app:srcCompat="@drawable/ic_action_home" />
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="start"
+                    android:text="Slected items"
+                    android:textColor="@android:color/white" />
 
-    </android.support.design.widget.AppBarLayout>
+            </android.support.v7.widget.Toolbar>
 
-    <unidesign.rn2uitest.CustomViewPager
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
 
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
+        </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -72,12 +66,40 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="-16dp"
-        android:layout_marginRight="16dp"
-        app:srcCompat="@drawable/ic_fab_plus"
-
+        android:layout_marginEnd="8dp"
+        app:fabSize="normal"
         app:layout_behavior="unidesign.rn2uitest.ScrollingFABBehavior"
-        app:fabSize="normal" />
+        app:srcCompat="@drawable/ic_fab_plus" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_behavior="unidesign.rn2uitest.ScrollingViewBehavior">
+
+            <unidesign.rn2uitest.CustomViewPager
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:scrollbars="vertical"
+                android:visibility="visible"/>
+            <!-- app:layout_behavior="@string/appbar_scrolling_view_behavior"  -->
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/select_toolbar_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="0.1"
+                android:alwaysDrawnWithCache="false"
+                android:animateLayoutChanges="true"
+                android:background="?attr/colorPrimary"
+                android:theme="@style/AppTheme.AppBarOverlay"
+                android:visibility="gone">
+
+            </android.support.v7.widget.Toolbar>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
 

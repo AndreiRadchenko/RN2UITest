@@ -65,7 +65,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ImportTemplateActivity"
+            android:name=".ImportActivity.ImportTemplateActivity"
             android:label="@string/import_template_form"
             android:parentActivityName=".RN_USSD"
             android:theme="@style/AppTheme.NoActionBar"
