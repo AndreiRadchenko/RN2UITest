@@ -1,6 +1,7 @@
 package unidesign.rn2uitest;
 
 import android.app.ActionBar;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +40,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 //import com.h6ah4i.android.example.advrecyclerview.R;
 
@@ -75,6 +79,7 @@ public class RN_USSD extends AppCompatActivity
     DrawerLayout drawer;
     static MyAdapter currentTabAdapter;
     static MyAdapter USSDTabAdapter;
+    private ActionMenuView amvMenu;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -98,7 +103,9 @@ public class RN_USSD extends AppCompatActivity
         select_toolbar = (Toolbar) findViewById(R.id.select_toolbar);
         select_toolbar.inflateMenu(R.menu.selected_menu);//changed
         select_toolbar_bottom = (Toolbar) findViewById(R.id.select_toolbar_bottom);
-        select_toolbar_bottom.inflateMenu(R.menu.selected_menu_bottom);//changed
+        amvMenu = (ActionMenuView) select_toolbar_bottom.findViewById(R.id.amvMenu);
+        getMenuInflater().inflate(R.menu.selected_menu_bottom, amvMenu.getMenu());
+        //select_toolbar_bottom.inflateMenu(R.menu.selected_menu_bottom);//changed
 //=========================set normal mode (selection gone)========================================================
         View select_home = (View) findViewById(R.id.select_home);
         select_home.setOnClickListener(new View.OnClickListener() {
@@ -111,20 +118,33 @@ public class RN_USSD extends AppCompatActivity
         //toolbar2 menu items CallBack listener
         select_toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 
-            public static final String TAG = "select_toolbar";
-
             @Override
             public boolean onMenuItemClick(MenuItem arg0) {
 
                 switch (arg0.getItemId()) {
                     case R.id.action_select_all:
                         // TODO: actually remove items
-                        Log.d(TAG, "action_select_all");
+                        Log.d(LOG_TAG, "action_select_all");
                         return true;
 
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        //toolbar2 menu items CallBack listener
+        amvMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem arg0) {
+
+                switch (arg0.getItemId()) {
                     case R.id.action_delete_selection:
                         // TODO: actually remove items
-                        Log.d(TAG, "action_delete_selection");
+                        Log.d(LOG_TAG, "action_delete_selection");
+                        Snackbar.make(amvMenu.getRootView(), "FAB pressed in USSD fragment", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
                         return true;
 
                     default:
@@ -225,6 +245,7 @@ public class RN_USSD extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_rn__ussd, menu);
+        //getMenuInflater().inflate(R.menu.selected_menu_bottom, amvMenu.getMenu());
         return true;
     }
 
@@ -599,6 +620,11 @@ public class RN_USSD extends AppCompatActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         currentTabAdapter.setMod(currentTabAdapter.SELECTION_MOD);
         USSDTabAdapter.setMod(USSDTabAdapter.SELECTION_MOD);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+           // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.select_mod_status_bar));
+        }
 
     }
 
@@ -615,6 +641,11 @@ public class RN_USSD extends AppCompatActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         currentTabAdapter.setMod(currentTabAdapter.NORMAL_MOD);
         USSDTabAdapter.setMod(USSDTabAdapter.NORMAL_MOD);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+           // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
+        }
 
     }
 

@@ -27,6 +27,7 @@ import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private final ItemTouchHelperAdapter mAdapter;
+    public boolean LongPressDragEnabled = true;
 
     int dragFrom = -1;
     int dragTo = -1;
@@ -37,9 +38,21 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         mAdapter = adapter;
     }
 
+    public void disableLongPressDrag(){
+        LongPressDragEnabled = false;
+    }
+
+    public void enableLongPressDrag(){
+        LongPressDragEnabled = true;
+    }
+
     @Override
     public boolean isLongPressDragEnabled() {
-        return true;
+        MyAdapter adapter = (MyAdapter) mAdapter;
+        if (adapter.mode == adapter.NORMAL_MOD )
+            return true;
+        else
+            return false;
     }
 
     @Override

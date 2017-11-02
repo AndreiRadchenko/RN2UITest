@@ -29,5 +29,7 @@
     <color name="snackbar_action_color_done">#ffccccff</color>
 
     <color name="expandable_item_indicator_color">#42000000</color>
+    <color name="select_toolbar_background">#9e9e9e</color>
+    <color name="select_mod_status_bar">#757575</color>
 
 </resources>
