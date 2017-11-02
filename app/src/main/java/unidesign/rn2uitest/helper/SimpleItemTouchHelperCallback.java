@@ -38,14 +38,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         mAdapter = adapter;
     }
 
-    public void disableLongPressDrag(){
-        LongPressDragEnabled = false;
-    }
-
-    public void enableLongPressDrag(){
-        LongPressDragEnabled = true;
-    }
-
     @Override
     public boolean isLongPressDragEnabled() {
         MyAdapter adapter = (MyAdapter) mAdapter;
