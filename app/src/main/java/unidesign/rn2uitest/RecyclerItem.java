@@ -12,6 +12,7 @@ public class RecyclerItem {
     private String phone;
     private String template;
     private String imageName;
+    private boolean isSelected = false;
 
     public RecyclerItem(Long id, String title, String description, String template, String imageName) {
         this.id = id;
@@ -76,5 +77,13 @@ public class RecyclerItem {
 
     public void setImageName(String str) {
         this.imageName = str;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
     }
 }

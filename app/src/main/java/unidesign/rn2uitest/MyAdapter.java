@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.annotation.ColorRes;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -213,12 +214,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         //dbHelper = new TemplatesDataSource(getActivity());
         //dbHelper.open();
-
+        //holder.getAdapterPosition();
         final RecyclerItem itemList = listItems.get(position);
+        //final RecyclerItem itemList = listItems.get(holder.getAdapterPosition());
 
         File file = new File(mContext.getFilesDir().getPath() + "/" + "icons", itemList.getImageName() + ".png");
         Log.d(LOG_TAG, file.getAbsolutePath());
-        holder.bind(itemList, listener, mSectionNumber);
+        //holder.mContainer.setBackgroundColor(itemList.isSelected() ? Color.CYAN : Color.WHITE);
+        holder.vhCheckBox.setChecked(itemList.isSelected() ? true : false);
+        holder.bind(itemList, listener, mSectionNumber, mode);
 //==========================set selection/normal mode================================================
         if (mode == SELECTION_MOD) {
             holder.vhCheckBox.setVisibility(holder.vhCheckBox.VISIBLE);
@@ -312,6 +316,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         return listItems.size();
     }
 
+
     @Override
     public void onItemDismiss(int position) {
         listItems.remove(position);
@@ -350,12 +355,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             vhCheckBox = (CheckBox) itemView.findViewById(R.id.checkBox);
         }
 
-        public void bind(final RecyclerItem item, final OnItemClickListener listener, final int mSN) {
+        public void bind(final RecyclerItem item, final OnItemClickListener listener,
+                         final int mSN, final int mode) {
 
             mContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(item, mSN);
+                    if (mode == SELECTION_MOD) {
+                        item.setSelected(!item.isSelected());
+                        //mContainer.setBackgroundColor(item.isSelected() ? Color.CYAN : Color.WHITE);
+                        vhCheckBox.setChecked(item.isSelected() ? true : false);
+
+                    } else
+                        listener.onItemClick(item, mSN);
                 }
             });
         }
