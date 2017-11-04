@@ -13,7 +13,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_item_normal_state"
+        android:background="@drawable/bg_item_normal_state"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:padding="@dimen/activity_vertical_margin">
@@ -22,11 +22,14 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            android:background="@color/bg_item_normal_state"
-            android:layout_alignParentTop="true"
+            android:clickable="false"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="@dimen/cardview_default_elevation"
+            android:layout_marginLeft="@dimen/cardview_default_elevation"
+            android:layout_marginRight="@dimen/cardview_default_elevation"
+            android:layout_marginStart="@dimen/cardview_default_elevation">
 
             <ImageView
                 android:id="@+id/my_image_view"
@@ -73,7 +76,13 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:backgroundTint="@color/bg_item_selected_state"
+                android:buttonTintMode="multiply"
+                android:clickable="false"
+                android:contextClickable="false"
                 android:text=""
+                android:textColorLink="@color/cardview_dark_background"
                 android:visibility="invisible" />
 
         </RelativeLayout>
@@ -81,13 +90,12 @@
         <TextView
             android:id="@+id/txtDescription"
             style="@style/RegularMonoSerif"
-            android:textColor="?android:attr/textColorSecondary"
             android:layout_width="fill_parent"
-
             android:layout_height="wrap_content"
+
             android:layout_below="@+id/title"
             android:layout_marginTop="5dp"
-            />
+            android:textColor="?android:attr/textColorSecondary" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

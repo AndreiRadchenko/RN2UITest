@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -69,11 +70,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public CheckBox mCheckBox;
     TemplatesDataSource dbHelper;
 
+    //public static String selected_color = String.format("#%08X", (0xFFFFFFFF & R.color.bg_item_selected_state));
+    public int  selected_color;
+    public int  normal_color;
+
     public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener) {
         //setHasStableIds(true); // this is required for D&D feature.
         this.mSectionNumber = sectionNumber;
         this.mContext = mContext;
         this.listener = mListener;
+        selected_color = ContextCompat.getColor(mContext, R.color.bg_item_selected_state);
+        normal_color = ContextCompat.getColor(mContext, R.color.bg_item_normal_state);
     }
 
     public void setOnClickListener(OnItemClickListener mListener){
@@ -220,9 +227,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         File file = new File(mContext.getFilesDir().getPath() + "/" + "icons", itemList.getImageName() + ".png");
         Log.d(LOG_TAG, file.getAbsolutePath());
-        //holder.mContainer.setBackgroundColor(itemList.isSelected() ? Color.CYAN : Color.WHITE);
-        holder.vhCheckBox.setChecked(itemList.isSelected() ? true : false);
-        holder.bind(itemList, listener, mSectionNumber, mode);
+
+// check selection due to RecycleView reuse ViewHolders
+        if (itemList.isSelected()) {
+            holder.vhCheckBox.setChecked(true);
+            holder.mContainer.setBackgroundColor(selected_color);
+        }
+        else {
+            holder.vhCheckBox.setChecked(false);
+            holder.mContainer.setBackgroundColor(normal_color);
+        };
+
+        holder.bind(itemList, listener, mSectionNumber, mode, selected_color, normal_color);
 //==========================set selection/normal mode================================================
         if (mode == SELECTION_MOD) {
             holder.vhCheckBox.setVisibility(holder.vhCheckBox.VISIBLE);
@@ -356,15 +372,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         }
 
         public void bind(final RecyclerItem item, final OnItemClickListener listener,
-                         final int mSN, final int mode) {
+                         final int mSN, final int mode, final int selected_color, final int normal_color) {
 
             mContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mode == SELECTION_MOD) {
                         item.setSelected(!item.isSelected());
-                        //mContainer.setBackgroundColor(item.isSelected() ? Color.CYAN : Color.WHITE);
-                        vhCheckBox.setChecked(item.isSelected() ? true : false);
+                        if (item.isSelected()) {
+                            vhCheckBox.setChecked(true);
+                            mContainer.setBackgroundColor(selected_color);
+                        }
+                        else {
+                            vhCheckBox.setChecked(false);
+                            mContainer.setBackgroundColor(normal_color);
+                        };
 
                     } else
                         listener.onItemClick(item, mSN);
@@ -391,7 +413,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
     void setMod(int mmode) {
         this.mode = mmode;
+
+        if (mmode == NORMAL_MOD)
+            deselectAllItems();
+
         notifyDataSetChanged();
+    }
+// deselect all items when exit selection mode
+    void deselectAllItems(){
+        for (int k = 0; k < listItems.size(); k++) {
+            listItems.get(k).setSelected(false);
+        }
     }
 }
 
