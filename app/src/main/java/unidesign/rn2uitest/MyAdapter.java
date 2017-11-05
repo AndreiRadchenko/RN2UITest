@@ -425,5 +425,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             listItems.get(k).setSelected(false);
         }
     }
+    // deselect all items when exit selection mode
+    void selectAllItems(){
+        for (int k = 0; k < listItems.size(); k++) {
+            listItems.get(k).setSelected(true);
+        }
+    }
 }
 
