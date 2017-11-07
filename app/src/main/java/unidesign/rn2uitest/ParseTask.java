@@ -163,7 +163,6 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                     values.put(USSDSQLiteHelper.COLUMN_IMAGE, ImageName);
 
                     //Log.d(LOG_TAG, "-- ImageName --" + ImageName);
-                    // New todo
                     todoUri = mContext.getContentResolver().insert(
                             TempContentProvider.CONTENT_URI_USSD, values);
                 }
@@ -189,7 +188,6 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                     values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template1);
                     values.put(USSDSQLiteHelper.COLUMN_IMAGE, ImageName);
 
-                    // New todo
                     todoUri = mContext.getContentResolver().insert(
                             TempContentProvider.CONTENT_URI_SMS, values);
                 }

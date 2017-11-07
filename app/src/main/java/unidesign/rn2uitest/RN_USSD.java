@@ -84,7 +84,7 @@ public class RN_USSD extends AppCompatActivity
     private ActionMenuView amvMenu;
 
     public boolean select_all_checked = false;
-
+    public static int selected_items_count = 0;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -129,29 +129,33 @@ public class RN_USSD extends AppCompatActivity
                         Log.d(LOG_TAG, "action_select_all");
                         switch (mViewPager.getCurrentItem()){
                             case 0:
-                                if (!select_all_checked) {
+                                if (RN_USSD.selected_items_count < USSDTabAdapter.getItemCount()) {
                                     Log.d(LOG_TAG, "action_select_ussd");
                                     USSDTabAdapter.selectAllItems();
                                     USSDTabAdapter.notifyDataSetChanged();
-                                    select_all_checked = true;
+                                    //select_all_checked = true;
+                                    RN_USSD.selected_items_count = USSDTabAdapter.getItemCount();
                                 }
                                 else {
                                     USSDTabAdapter.deselectAllItems();
                                     USSDTabAdapter.notifyDataSetChanged();
-                                    select_all_checked = false;
+                                    //select_all_checked = false;
+                                    RN_USSD.selected_items_count = 0;
                                 }
                                 break;
                             case 1:
-                                if (!select_all_checked) {
+                                if (RN_USSD.selected_items_count < currentTabAdapter.getItemCount()) {
                                     Log.d(LOG_TAG, "action_select_sms");
                                     currentTabAdapter.selectAllItems();
                                     currentTabAdapter.notifyDataSetChanged();
-                                    select_all_checked = true;
+                                    //select_all_checked = true;
+                                    RN_USSD.selected_items_count = currentTabAdapter.getItemCount();
                                 }
                                 else {
                                     currentTabAdapter.deselectAllItems();
                                     currentTabAdapter.notifyDataSetChanged();
-                                    select_all_checked = false;
+                                    //select_all_checked = false;
+                                    RN_USSD.selected_items_count = 0;
                                 }
                                 break;
                         }
@@ -623,11 +627,11 @@ public class RN_USSD extends AppCompatActivity
         }
     }
 
-
-
     void setSelectionMode(){
 
-        select_all_checked = false;
+        //select_all_checked = false;
+        RN_USSD.selected_items_count = 0;
+
         toolbar.setVisibility(toolbar.GONE);
         select_toolbar.setVisibility(select_toolbar.VISIBLE);
         select_toolbar_bottom.setVisibility(select_toolbar_bottom.VISIBLE);
@@ -665,6 +669,7 @@ public class RN_USSD extends AppCompatActivity
            // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
         }
+        //RN_USSD.selected_items_count = 0;
     }
 
 

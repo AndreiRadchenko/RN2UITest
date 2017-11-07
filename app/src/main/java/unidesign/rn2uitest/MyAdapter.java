@@ -38,6 +38,7 @@ import unidesign.rn2uitest.helper.ItemTouchHelperAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.squareup.picasso.Picasso;
+import unidesign.rn2uitest.RN_USSD;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     }
 
     static final String LOG_TAG = "MyAdapter";
-
+    //int a = RN_USSD.selected_items_count;
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
     }
@@ -237,7 +238,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             holder.vhCheckBox.setChecked(false);
             holder.mContainer.setBackgroundColor(normal_color);
         };
-
+        //RN_USSD.selected_items_count = 10;
         holder.bind(itemList, listener, mSectionNumber, mode, selected_color, normal_color);
 //==========================set selection/normal mode================================================
         if (mode == SELECTION_MOD) {
@@ -370,10 +371,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             imgIcon = (ImageView) itemView.findViewById(R.id.my_image_view);
             vhCheckBox = (CheckBox) itemView.findViewById(R.id.checkBox);
         }
-
+//        RN_USSD.selected_items_count = 10;
         public void bind(final RecyclerItem item, final OnItemClickListener listener,
                          final int mSN, final int mode, final int selected_color, final int normal_color) {
-
+            //todo: selection mode bihavior
+            //======================================================================================
             mContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -382,10 +384,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                         if (item.isSelected()) {
                             vhCheckBox.setChecked(true);
                             mContainer.setBackgroundColor(selected_color);
+                            RN_USSD.selected_items_count++;
                         }
                         else {
                             vhCheckBox.setChecked(false);
                             mContainer.setBackgroundColor(normal_color);
+                            RN_USSD.selected_items_count--;
                         };
 
                     } else

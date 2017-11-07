@@ -130,11 +130,9 @@ public class editUSSDTemplate extends AppCompatActivity{
                 values.put(USSDSQLiteHelper.COLUMN_IMAGE, image_file);
 
                 if (todoUri == null) {
-                    // New todo
                     todoUri = getContentResolver().insert(
                             TempContentProvider.CONTENT_URI_USSD, values);
                 } else {
-                    // Update todo
                     getContentResolver().update(todoUri, values, null, null);
                 }
 
