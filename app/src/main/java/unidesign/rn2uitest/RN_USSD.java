@@ -45,6 +45,8 @@ import android.view.WindowManager;
 import android.widget.Toast;
 //import com.h6ah4i.android.example.advrecyclerview.R;
 
+import java.util.List;
+
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
@@ -80,6 +82,8 @@ public class RN_USSD extends AppCompatActivity
     static MyAdapter currentTabAdapter;
     static MyAdapter USSDTabAdapter;
     private ActionMenuView amvMenu;
+
+    public boolean select_all_checked = false;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -120,12 +124,37 @@ public class RN_USSD extends AppCompatActivity
 
             @Override
             public boolean onMenuItemClick(MenuItem arg0) {
-
                 switch (arg0.getItemId()) {
                     case R.id.action_select_all:
-                        // TODO: actually remove items
                         Log.d(LOG_TAG, "action_select_all");
-                        return true;
+                        switch (mViewPager.getCurrentItem()){
+                            case 0:
+                                if (!select_all_checked) {
+                                    Log.d(LOG_TAG, "action_select_ussd");
+                                    USSDTabAdapter.selectAllItems();
+                                    USSDTabAdapter.notifyDataSetChanged();
+                                    select_all_checked = true;
+                                }
+                                else {
+                                    USSDTabAdapter.deselectAllItems();
+                                    USSDTabAdapter.notifyDataSetChanged();
+                                    select_all_checked = false;
+                                }
+                                break;
+                            case 1:
+                                if (!select_all_checked) {
+                                    Log.d(LOG_TAG, "action_select_sms");
+                                    currentTabAdapter.selectAllItems();
+                                    currentTabAdapter.notifyDataSetChanged();
+                                    select_all_checked = true;
+                                }
+                                else {
+                                    currentTabAdapter.deselectAllItems();
+                                    currentTabAdapter.notifyDataSetChanged();
+                                    select_all_checked = false;
+                                }
+                                break;
+                        }
 
                     default:
                         return false;
@@ -142,9 +171,40 @@ public class RN_USSD extends AppCompatActivity
                 switch (arg0.getItemId()) {
                     case R.id.action_delete_selection:
                         // TODO: actually remove items
-                        Log.d(LOG_TAG, "action_delete_selection");
-                        Snackbar.make(amvMenu.getRootView(), "FAB pressed in USSD fragment", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        //Log.d(LOG_TAG, "action_delete_selection");
+                        //Delete item
+                        Uri uri = null;
+                        switch (mViewPager.getCurrentItem()){
+                            case 0:
+                                for (int k = 0; k < USSDTabAdapter.getItemCount(); k++)
+                                {
+                                    if (USSDTabAdapter.listItems.get(k).isSelected()) {
+                                        uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
+                                                + USSDTabAdapter.listItems.get(k).getID());
+                                        getContentResolver().delete(uri, null, null);
+                                    }
+                                }
+                                USSDTabAdapter.notifyDataSetChanged();
+                                    //Log.d(LOG_TAG, "action_select_ussd");
+                                break;
+                            case 1:
+                                for (int k = 0; k < currentTabAdapter.getItemCount(); k++)
+                                {
+                                    if (currentTabAdapter.listItems.get(k).isSelected()) {
+                                        uri = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
+                                                + currentTabAdapter.listItems.get(k).getID());
+                                        getContentResolver().delete(uri, null, null);
+                                    }
+                                }
+                                currentTabAdapter.notifyDataSetChanged();
+                                //Log.d(LOG_TAG, "action_select_ussd");
+                                break;
+                        }
+//                        Snackbar.make(amvMenu.getRootView(), R.string.dele_items_snackbar, Snackbar.LENGTH_LONG)
+//                                .setAction("Action", null).show();
+                        Toast.makeText(getBaseContext(), "Deleted", Toast.LENGTH_SHORT).show();
+
+                        setNormalMode();
                         return true;
 
                     default:
@@ -563,52 +623,11 @@ public class RN_USSD extends AppCompatActivity
         }
     }
 
-/*    private class ActionModeCallback implements android.view.ActionMode.Callback {
-        @SuppressWarnings("unused")
-        private final String TAG = ActionModeCallback.class.getSimpleName();
 
-        @Override
-        public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate (R.menu.selected_menu, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(android.view.ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(android.view.ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.action_select_all:
-                    // TODO: actually remove items
-                    Log.d(TAG, "action_select_all");
-                    mode.finish();
-                    return true;
-
-                case R.id.action_delete_selection:
-                    // TODO: actually remove items
-                    Log.d(TAG, "action_delete_selection");
-                    mode.finish();
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
-
-        @Override
-        public void onDestroyActionMode(android.view.ActionMode mode) {
-            //adapter.clearSelection();
-            actionMode = null;
-            toolbar.setVisibility(toolbar.VISIBLE);
-        }
-
-    }*/
 
     void setSelectionMode(){
 
+        select_all_checked = false;
         toolbar.setVisibility(toolbar.GONE);
         select_toolbar.setVisibility(select_toolbar.VISIBLE);
         select_toolbar_bottom.setVisibility(select_toolbar_bottom.VISIBLE);
@@ -646,7 +665,7 @@ public class RN_USSD extends AppCompatActivity
            // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
         }
-
     }
+
 
 }
