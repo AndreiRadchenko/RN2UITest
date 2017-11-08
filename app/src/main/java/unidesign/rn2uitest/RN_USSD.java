@@ -41,24 +41,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
-//import com.h6ah4i.android.example.advrecyclerview.R;
 
-import java.util.List;
+import org.reactivestreams.Subscription;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 import unidesign.rn2uitest.helper.SimpleItemTouchHelperCallback;
 
-import static android.R.attr.fragment;
-import static unidesign.rn2uitest.RN_USSD.PlaceholderFragment.ARG_SECTION_NUMBER;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     static final String LOG_TAG = "myLogs";
+    static final String TAG = "Observer";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -84,7 +87,8 @@ public class RN_USSD extends AppCompatActivity
     private ActionMenuView amvMenu;
 
     public boolean select_all_checked = false;
-    public static int selected_items_count = 0;
+    //public static int selected_items_count = 0;
+    public static StaticCount myCount = new StaticCount();
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -129,50 +133,42 @@ public class RN_USSD extends AppCompatActivity
                         Log.d(LOG_TAG, "action_select_all");
                         switch (mViewPager.getCurrentItem()){
                             case 0:
-                                if (RN_USSD.selected_items_count < USSDTabAdapter.getItemCount()) {
+                                if (RN_USSD.myCount.getCount() < USSDTabAdapter.getItemCount()) {
                                     Log.d(LOG_TAG, "action_select_ussd");
                                     USSDTabAdapter.selectAllItems();
                                     USSDTabAdapter.notifyDataSetChanged();
                                     //select_all_checked = true;
-                                    RN_USSD.selected_items_count = USSDTabAdapter.getItemCount();
+                                    RN_USSD.myCount.setCount(USSDTabAdapter.getItemCount());
                                 }
                                 else {
                                     USSDTabAdapter.deselectAllItems();
                                     USSDTabAdapter.notifyDataSetChanged();
                                     //select_all_checked = false;
-                                    RN_USSD.selected_items_count = 0;
+                                    //RN_USSD.selected_items_count = 0;
+                                    RN_USSD.myCount.setCount(0);
                                 }
                                 break;
                             case 1:
-                                if (RN_USSD.selected_items_count < currentTabAdapter.getItemCount()) {
+                                if (RN_USSD.myCount.getCount() < currentTabAdapter.getItemCount()) {
                                     Log.d(LOG_TAG, "action_select_sms");
                                     currentTabAdapter.selectAllItems();
                                     currentTabAdapter.notifyDataSetChanged();
                                     //select_all_checked = true;
-                                    RN_USSD.selected_items_count = currentTabAdapter.getItemCount();
+                                    //RN_USSD.selected_items_count = currentTabAdapter.getItemCount();
+                                    RN_USSD.myCount.setCount(currentTabAdapter.getItemCount());
                                 }
                                 else {
                                     currentTabAdapter.deselectAllItems();
                                     currentTabAdapter.notifyDataSetChanged();
                                     //select_all_checked = false;
-                                    RN_USSD.selected_items_count = 0;
+                                    //RN_USSD.selected_items_count = 0;
+                                    RN_USSD.myCount.setCount(0);
                                 }
                                 break;
                         }
+                        //break;
+                        return true;
 
-                    default:
-                        return false;
-                }
-            }
-        });
-
-        //toolbar2 menu items CallBack listener
-        amvMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem arg0) {
-
-                switch (arg0.getItemId()) {
                     case R.id.action_delete_selection:
                         // TODO: actually remove items
                         //Log.d(LOG_TAG, "action_delete_selection");
@@ -189,7 +185,7 @@ public class RN_USSD extends AppCompatActivity
                                     }
                                 }
                                 USSDTabAdapter.notifyDataSetChanged();
-                                    //Log.d(LOG_TAG, "action_select_ussd");
+                                //Log.d(LOG_TAG, "action_select_ussd");
                                 break;
                             case 1:
                                 for (int k = 0; k < currentTabAdapter.getItemCount(); k++)
@@ -206,9 +202,28 @@ public class RN_USSD extends AppCompatActivity
                         }
 //                        Snackbar.make(amvMenu.getRootView(), R.string.dele_items_snackbar, Snackbar.LENGTH_LONG)
 //                                .setAction("Action", null).show();
-                        Toast.makeText(getBaseContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), getString(R.string.Deleted) +
+                                RN_USSD.myCount.getCount() + getString(R.string.items), Toast.LENGTH_SHORT).show();
 
                         setNormalMode();
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        //toolbar2 menu items CallBack listener
+        amvMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem arg0) {
+
+                switch (arg0.getItemId()) {
+                    case R.id.action_delete_selection:
+                        // TODO: actually remove items
+
                         return true;
 
                     default:
@@ -287,6 +302,10 @@ public class RN_USSD extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        myCount.getCountChanges()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
 
     }
 
@@ -630,11 +649,15 @@ public class RN_USSD extends AppCompatActivity
     void setSelectionMode(){
 
         //select_all_checked = false;
-        RN_USSD.selected_items_count = 0;
+        //RN_USSD.selected_items_count = 0;
+//        myCount.getCountChanges()
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .subscribe(observer);
+        myCount.setCount(0);
 
         toolbar.setVisibility(toolbar.GONE);
         select_toolbar.setVisibility(select_toolbar.VISIBLE);
-        select_toolbar_bottom.setVisibility(select_toolbar_bottom.VISIBLE);
+       // select_toolbar_bottom.setVisibility(select_toolbar_bottom.VISIBLE);
 
         scroll_params.setScrollFlags(0);
         fab.hide();
@@ -652,6 +675,11 @@ public class RN_USSD extends AppCompatActivity
     }
 
     void setNormalMode() {
+        //myCount.setCountComplete();
+//        myCount.getCountChanges()
+//                .unsubscribeOn(AndroidSchedulers.mainThread())
+//                .subscribe(observer);;
+        //myCount.getCountChanges().subscribe(null);
 
         select_toolbar.setVisibility(select_toolbar.GONE);
         select_toolbar_bottom.setVisibility(select_toolbar_bottom.GONE);
@@ -672,5 +700,26 @@ public class RN_USSD extends AppCompatActivity
         //RN_USSD.selected_items_count = 0;
     }
 
+    final Observer<StaticCount> observer = new Observer<StaticCount>() {
+        @Override
+        public void onSubscribe(Disposable d) {
+            Log.e(TAG, "onSubscribe: " + Thread.currentThread().getName());
+        }
+
+        @Override
+        public void onNext(StaticCount count) {
+            Log.e(TAG, "onNext: " + count.getCount() + " " + Thread.currentThread().getName());
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: " + Thread.currentThread().getName());
+        }
+
+        @Override
+        public void onComplete() {
+            Log.e(TAG, "onComplete: All Done!" + Thread.currentThread().getName());
+        }
+    };
 
 }

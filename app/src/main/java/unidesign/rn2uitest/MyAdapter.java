@@ -384,12 +384,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                         if (item.isSelected()) {
                             vhCheckBox.setChecked(true);
                             mContainer.setBackgroundColor(selected_color);
-                            RN_USSD.selected_items_count++;
+                            //RN_USSD.selected_items_count++;
+                            RN_USSD.myCount.setCount(RN_USSD.myCount.getCount() + 1);
                         }
                         else {
                             vhCheckBox.setChecked(false);
                             mContainer.setBackgroundColor(normal_color);
-                            RN_USSD.selected_items_count--;
+                            //RN_USSD.selected_items_count--;
+                            RN_USSD.myCount.setCount(RN_USSD.myCount.getCount() - 1);
                         };
 
                     } else
