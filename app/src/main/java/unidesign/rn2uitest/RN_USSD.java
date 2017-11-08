@@ -41,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.reactivestreams.Subscription;
@@ -85,6 +86,7 @@ public class RN_USSD extends AppCompatActivity
     static MyAdapter currentTabAdapter;
     static MyAdapter USSDTabAdapter;
     private ActionMenuView amvMenu;
+    TextView select_toolbar_title;
 
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
@@ -109,6 +111,7 @@ public class RN_USSD extends AppCompatActivity
                 (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
         select_toolbar = (Toolbar) findViewById(R.id.select_toolbar);
+        select_toolbar_title = (TextView) findViewById(R.id.toolbar_title);
         select_toolbar.inflateMenu(R.menu.selected_menu);//changed
         select_toolbar_bottom = (Toolbar) findViewById(R.id.select_toolbar_bottom);
         amvMenu = (ActionMenuView) select_toolbar_bottom.findViewById(R.id.amvMenu);
@@ -709,6 +712,15 @@ public class RN_USSD extends AppCompatActivity
         @Override
         public void onNext(StaticCount count) {
             Log.e(TAG, "onNext: " + count.getCount() + " " + Thread.currentThread().getName());
+            if (count.getCount() == 0)
+                //select_toolbar.setTitle(R.string.selection_toolbar_title);
+                select_toolbar_title.setText(R.string.selection_toolbar_title);
+            else {
+                String selected_items = getResources().getString(R.string.selection_toolbar_title_selected)
+                        + " " + count.getCount();
+                select_toolbar_title.setText(selected_items);
+            }
+
         }
 
         @Override
