@@ -54,22 +54,15 @@ import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 import unidesign.rn2uitest.helper.SimpleItemTouchHelperCallback;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-
-import com.trello.rxlifecycle2.android.ActivityEvent;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
-import com.trello.rxlifecycle2.internal.Preconditions;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     static final String LOG_TAG = "myLogs";
     static final String TAG = "Observer";
+    static final int DISPOSE_OBSERVER = -100;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -94,7 +87,6 @@ public class RN_USSD extends AppCompatActivity
     static MyAdapter USSDTabAdapter;
     private ActionMenuView amvMenu;
     TextView select_toolbar_title;
-    Disposable disp;
 
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
@@ -126,7 +118,7 @@ public class RN_USSD extends AppCompatActivity
         select_toolbar_bottom = (Toolbar) findViewById(R.id.select_toolbar_bottom);
         amvMenu = (ActionMenuView) select_toolbar_bottom.findViewById(R.id.amvMenu);
         getMenuInflater().inflate(R.menu.selected_menu_bottom, amvMenu.getMenu());
-        myCount = new StaticCount((TextView) select_toolbar_title);
+        myCount = new StaticCount();
         //select_toolbar_bottom.inflateMenu(R.menu.selected_menu_bottom);//changed
 //=========================set normal mode (selection gone)========================================================
         View select_home = (View) findViewById(R.id.select_home);
@@ -658,35 +650,10 @@ public class RN_USSD extends AppCompatActivity
 
     void setSelectionMode(){
 
-        //select_all_checked = false;
-        //RN_USSD.selected_items_count = 0;
-//        myCount.getCountChanges()
-//                .subscribeOn(AndroidSchedulers.mainThread())
-//                .subscribe(observer);
-//        myCount.setCount(0);
-//        myCount.getCountChanges()
-//                .subscribeOn(AndroidSchedulers.mainThread())
-//                .subscribe( observer);
-        myCount.setCount(0);
-        disp = myCount.getCountChanges()
+        myCount.getCountChanges()
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Integer>() {
-                    @Override public void accept(Integer s) {
-                        //System.out.println(s);
-                        Log.e(TAG, "onNext: " + s + " " + Thread.currentThread().getName());
-                        if (s == 0)
-                            //select_toolbar.setTitle(R.string.selection_toolbar_title);
-                            select_toolbar_title.setText(R.string.selection_toolbar_title);
-                        else {
-                            String selected_items = getResources().getString(R.string.selection_toolbar_title_selected)
-                                    + " " + s;
-                            select_toolbar_title.setText(selected_items);
-                        }
-                    }
-                });
-
-        //myCount.setCount(0);
-        //disp.dispose();
+                .subscribe(observer);
+        myCount.setCount(0);
 
         toolbar.setVisibility(toolbar.GONE);
         select_toolbar.setVisibility(select_toolbar.VISIBLE);
@@ -708,13 +675,8 @@ public class RN_USSD extends AppCompatActivity
     }
 
     void setNormalMode() {
-        //myCount.setCountComplete();
-//        myCount.getCountChanges()
-//                .unsubscribeOn(AndroidSchedulers.mainThread())
-//                .subscribe(observer);;
-        //myCount.getCountChanges().subscribe(null);
-        myCount.setCount(0);
-        disp.dispose();
+
+        myCount.setCount(DISPOSE_OBSERVER);
 
         select_toolbar.setVisibility(select_toolbar.GONE);
         select_toolbar_bottom.setVisibility(select_toolbar_bottom.GONE);
@@ -735,24 +697,29 @@ public class RN_USSD extends AppCompatActivity
         //RN_USSD.selected_items_count = 0;
     }
 
-    final Observer<StaticCount> observer = new Observer<StaticCount>() {
+    final Observer<Integer> observer = new Observer<Integer>() {
         public Disposable d;
 
         @Override
         public void onSubscribe(Disposable d) {
-            Log.e(TAG, "onSubscribe: " + Thread.currentThread().getName());
+            Log.e(TAG, "onSubscribe: " + Thread.currentThread().getName() + " "  + d.isDisposed());
             this.d = d;
         }
 
         @Override
-        public void onNext(StaticCount count) {
-            Log.e(TAG, "onNext: " + count.getCount() + " " + Thread.currentThread().getName());
-            if (count.getCount() == 0)
+        public void onNext(Integer count) {
+            Log.e(TAG, "onNext: " + count + " " + Thread.currentThread().getName());
+            if (count == 0)
                 //select_toolbar.setTitle(R.string.selection_toolbar_title);
                 select_toolbar_title.setText(R.string.selection_toolbar_title);
+            else if (count == -100){
+                select_toolbar_title.setText(R.string.selection_toolbar_title);
+                d.dispose();
+                Log.e(TAG, "onNext: All Done!" + Thread.currentThread().getName() + " "  + d.isDisposed());
+            }
             else {
                 String selected_items = getResources().getString(R.string.selection_toolbar_title_selected)
-                        + " " + count.getCount();
+                        + " " + count;
                 select_toolbar_title.setText(selected_items);
             }
 
@@ -765,8 +732,9 @@ public class RN_USSD extends AppCompatActivity
 
         @Override
         public void onComplete() {
-            Log.e(TAG, "onComplete: All Done!" + Thread.currentThread().getName());
             d.dispose();
+            Log.e(TAG, "onComplete: All Done!" + Thread.currentThread().getName() + " "  + d.isDisposed());
+            //d.dispose();
         }
 
     };

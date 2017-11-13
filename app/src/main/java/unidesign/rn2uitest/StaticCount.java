@@ -20,11 +20,9 @@ public class StaticCount {
     private PublishSubject<Integer> changeObservable = PublishSubject.create();
 
     private int count;
-    TextView select_toolbar_title;
 
-    StaticCount(TextView select_toolbar_title) {
+    StaticCount() {
         this.count = 0;
-        this.select_toolbar_title = select_toolbar_title;
     };
 
     public int getCount() {
@@ -33,10 +31,7 @@ public class StaticCount {
 
     public void setCount(int count) {
         this.count = count;
-        if (count != -100)
-            changeObservable.onNext(count);
-        else
-            changeObservable.onComplete();
+        changeObservable.onNext(count);
     }
 
     public void setCountComplete() {
@@ -44,12 +39,8 @@ public class StaticCount {
     }
 
     public Observable<Integer> getCountChanges() {
+        //if (changeObservable.hasComplete())
         return changeObservable;
     }
-
-    public StaticCount CustomonNext(TextView select_toolbar_title) {
-        return this;
-    }
-
 
 }
