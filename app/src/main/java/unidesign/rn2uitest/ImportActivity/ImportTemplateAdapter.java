@@ -61,7 +61,7 @@ class ImportTemplateAdapter extends RecyclerView.Adapter<ImportTemplateAdapter.V
             image_url = new URL(itemList.getPngdirref());
         } catch(Exception e) {}
        // URL image_url = new URL(Import_Templates_URL);
-        Picasso.with(holder.m_txtTitle.getContext()).setIndicatorsEnabled(true);
+        //Picasso.with(holder.m_txtTitle.getContext()).setIndicatorsEnabled(true);
         Picasso.with(holder.m_txtTitle.getContext())
                 .load(itemList.getPngdirref())
                 .placeholder(android.R.drawable.ic_menu_rotate)
