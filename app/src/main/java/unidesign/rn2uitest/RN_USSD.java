@@ -47,6 +47,8 @@ import android.widget.Toast;
 import org.reactivestreams.Subscription;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
@@ -57,6 +59,11 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+
+import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
+import com.trello.rxlifecycle2.internal.Preconditions;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -87,10 +94,11 @@ public class RN_USSD extends AppCompatActivity
     static MyAdapter USSDTabAdapter;
     private ActionMenuView amvMenu;
     TextView select_toolbar_title;
+    Disposable disp;
 
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
-    public static StaticCount myCount = new StaticCount();
+    public static StaticCount myCount;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -101,6 +109,8 @@ public class RN_USSD extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //RxLifecycleAndroid.bindActivity(this);
 
         appbar = (AppBarLayout) findViewById(R.id.appbar);
 
@@ -116,6 +126,7 @@ public class RN_USSD extends AppCompatActivity
         select_toolbar_bottom = (Toolbar) findViewById(R.id.select_toolbar_bottom);
         amvMenu = (ActionMenuView) select_toolbar_bottom.findViewById(R.id.amvMenu);
         getMenuInflater().inflate(R.menu.selected_menu_bottom, amvMenu.getMenu());
+        myCount = new StaticCount((TextView) select_toolbar_title);
         //select_toolbar_bottom.inflateMenu(R.menu.selected_menu_bottom);//changed
 //=========================set normal mode (selection gone)========================================================
         View select_home = (View) findViewById(R.id.select_home);
@@ -305,10 +316,6 @@ public class RN_USSD extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        myCount.getCountChanges()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
 
     }
 
@@ -656,7 +663,30 @@ public class RN_USSD extends AppCompatActivity
 //        myCount.getCountChanges()
 //                .subscribeOn(AndroidSchedulers.mainThread())
 //                .subscribe(observer);
+//        myCount.setCount(0);
+//        myCount.getCountChanges()
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .subscribe( observer);
         myCount.setCount(0);
+        disp = myCount.getCountChanges()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override public void accept(Integer s) {
+                        //System.out.println(s);
+                        Log.e(TAG, "onNext: " + s + " " + Thread.currentThread().getName());
+                        if (s == 0)
+                            //select_toolbar.setTitle(R.string.selection_toolbar_title);
+                            select_toolbar_title.setText(R.string.selection_toolbar_title);
+                        else {
+                            String selected_items = getResources().getString(R.string.selection_toolbar_title_selected)
+                                    + " " + s;
+                            select_toolbar_title.setText(selected_items);
+                        }
+                    }
+                });
+
+        //myCount.setCount(0);
+        //disp.dispose();
 
         toolbar.setVisibility(toolbar.GONE);
         select_toolbar.setVisibility(select_toolbar.VISIBLE);
@@ -683,6 +713,8 @@ public class RN_USSD extends AppCompatActivity
 //                .unsubscribeOn(AndroidSchedulers.mainThread())
 //                .subscribe(observer);;
         //myCount.getCountChanges().subscribe(null);
+        myCount.setCount(0);
+        disp.dispose();
 
         select_toolbar.setVisibility(select_toolbar.GONE);
         select_toolbar_bottom.setVisibility(select_toolbar_bottom.GONE);
@@ -704,9 +736,12 @@ public class RN_USSD extends AppCompatActivity
     }
 
     final Observer<StaticCount> observer = new Observer<StaticCount>() {
+        public Disposable d;
+
         @Override
         public void onSubscribe(Disposable d) {
             Log.e(TAG, "onSubscribe: " + Thread.currentThread().getName());
+            this.d = d;
         }
 
         @Override
@@ -731,7 +766,15 @@ public class RN_USSD extends AppCompatActivity
         @Override
         public void onComplete() {
             Log.e(TAG, "onComplete: All Done!" + Thread.currentThread().getName());
+            d.dispose();
         }
+
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
 
 }

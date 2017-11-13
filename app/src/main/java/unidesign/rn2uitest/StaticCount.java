@@ -4,7 +4,12 @@ package unidesign.rn2uitest;
  * Created by United on 11/8/2017.
  */
 
+import android.widget.TextView;
+
 import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -12,11 +17,14 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 public class StaticCount {
-    private PublishSubject<StaticCount> changeObservable = PublishSubject.create();
-    private int count;
+    private PublishSubject<Integer> changeObservable = PublishSubject.create();
 
-    StaticCount() {
+    private int count;
+    TextView select_toolbar_title;
+
+    StaticCount(TextView select_toolbar_title) {
         this.count = 0;
+        this.select_toolbar_title = select_toolbar_title;
     };
 
     public int getCount() {
@@ -25,15 +33,23 @@ public class StaticCount {
 
     public void setCount(int count) {
         this.count = count;
-            changeObservable.onNext(this);
+        if (count != -100)
+            changeObservable.onNext(count);
+        else
+            changeObservable.onComplete();
     }
 
     public void setCountComplete() {
             changeObservable.onComplete();
     }
 
-    public Observable<StaticCount> getCountChanges() {
+    public Observable<Integer> getCountChanges() {
         return changeObservable;
     }
+
+    public StaticCount CustomonNext(TextView select_toolbar_title) {
+        return this;
+    }
+
 
 }
