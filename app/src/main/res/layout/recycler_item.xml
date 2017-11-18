@@ -55,18 +55,16 @@
                 android:textAppearance="@android:style/TextAppearance.Material.Widget"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/txtOptionDigit"
-                android:layout_width="30dp"
+            <ImageView
+                android:id="@+id/EditButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
 
                 android:gravity="center"
-                android:text="&#8942;"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:textStyle="bold" />
+                card_view:srcCompat="@android:drawable/ic_menu_info_details" />
 
             <CheckBox
                 android:id="@+id/checkBox"

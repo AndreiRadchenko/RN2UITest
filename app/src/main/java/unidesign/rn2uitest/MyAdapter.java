@@ -243,15 +243,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 //==========================set selection/normal mode================================================
         if (mode == SELECTION_MOD) {
             holder.vhCheckBox.setVisibility(holder.vhCheckBox.VISIBLE);
-            holder.txtOptionDigit.setVisibility(holder.txtOptionDigit.INVISIBLE);
+            holder.EditButton.setVisibility(holder.EditButton.INVISIBLE);
         }
         else {
             holder.vhCheckBox.setVisibility(holder.vhCheckBox.INVISIBLE);
-            holder.txtOptionDigit.setVisibility(holder.txtOptionDigit.VISIBLE);
+            holder.EditButton.setVisibility(holder.EditButton.VISIBLE);
         }
 //===================================================================================================
         //holder.imgIcon.setImageResource(R.mipmap.ic_kyivstar);
-        Picasso.with(holder.txtTitle.getContext()).setIndicatorsEnabled(true);
+        //Picasso.with(holder.txtTitle.getContext()).setIndicatorsEnabled(true);
         Picasso.with(holder.txtTitle.getContext())
                 .load(file)
                 .placeholder(android.R.drawable.ic_menu_rotate)
@@ -260,67 +260,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         holder.txtTitle.setText(itemList.getTitle());
         holder.txtDescription.setText(itemList.getDescription());
-        holder.txtOptionDigit.setOnClickListener(new View.OnClickListener() {
+        holder.EditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Display option menu
 
-                PopupMenu popupMenu = new PopupMenu(mContext, holder.txtOptionDigit);
-                popupMenu.inflate(R.menu.option_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-
-                        switch (item.getItemId()) {
-
-                            case R.id.mnu_item_edit:
-                                //Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
-                                Uri uri2edit = null;
-                                Intent intent = null;
-                                switch (mSectionNumber) {
-                                    case 1:
-                                        intent = new Intent("intent.action.editussd");
-                                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                                                + listItems.get(position).getID());
-                                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
-                                        break;
-                                    case 2:
-                                        intent = new Intent("intent.action.editsms");
-                                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
-                                                + listItems.get(position).getID());
-                                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_SMS, uri2edit);
-                                        break;
-                                }
-                                mContext.startActivity(intent);
-                                break;
-
-                            case R.id.mnu_item_delete:
-                                //Delete item
-                                Uri uri = null;
-                                switch (mSectionNumber) {
-                                    case 1:
-                                        uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                                                + listItems.get(position).getID());
-                                        break;
-                                    case 2:
-                                        uri = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
-                                                + listItems.get(position).getID());
-                                        break;
-                                }
-                                mContext.getContentResolver().delete(uri, null, null);
-                                notifyDataSetChanged();
-                                Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show();
-                                //Log.d(LOG_TAG, "In MyAdapter Delete");
-                                //Log.d(LOG_TAG, uri.toString());
-                                //Log.d(LOG_TAG, "this.mSectionNumber = " + mSectionNumber);
-                                break;
-                            default:
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
+                Uri uri2edit = null;
+                Intent intent = null;
+                switch (mSectionNumber) {
+                    case 1:
+                        intent = new Intent("intent.action.editussd");
+                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
+                                + listItems.get(position).getID());
+                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
+                        break;
+                    case 2:
+                        intent = new Intent("intent.action.editsms");
+                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
+                                + listItems.get(position).getID());
+                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_SMS, uri2edit);
+                        break;
+                }
+                mContext.startActivity(intent);
             }
         });
 
@@ -357,7 +317,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         public View mDragHandle;
         TextView txtTitle;
         TextView txtDescription;
-        TextView txtOptionDigit;
+        ImageView EditButton;
         ImageView imgIcon;
         CheckBox vhCheckBox;
 
@@ -367,7 +327,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             //mDragHandle = itemView.findViewById(R.id.drag_handle);
             txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
             txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
-            txtOptionDigit = (TextView) itemView.findViewById(R.id.txtOptionDigit);
+            EditButton = (ImageView) itemView.findViewById(R.id.EditButton);
             imgIcon = (ImageView) itemView.findViewById(R.id.my_image_view);
             vhCheckBox = (CheckBox) itemView.findViewById(R.id.checkBox);
         }
