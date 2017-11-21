@@ -18,8 +18,15 @@
     <string name="delete_selection">delete selection</string>
     <string name="action_selection_settings">settings</string>
     <string name="dele_items_snackbar">Selected items deleted</string>
-    <string name="Deleted">Deleted</string>
-    <string name="items">items</string>
+    <string name="Deleted_message">Deleted %1$d items</string>
+    <string name="items"> items</string>
+
+    <plurals name="Deleted_message">
+        <item quantity="one">Deleted %1$d шаблон</item>
+        <item quantity="few">Deleted %1$d шаблони</item>
+        <item quantity="other">Deleted %1$d шаблонів</item>
+    </plurals>
+
     <string name="selection_toolbar_title">Slect items</string>
     <string name="selection_toolbar_title_selected">Slected</string>
 

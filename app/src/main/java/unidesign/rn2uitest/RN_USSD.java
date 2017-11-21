@@ -208,8 +208,9 @@ public class RN_USSD extends AppCompatActivity
                         }
 //                        Snackbar.make(amvMenu.getRootView(), R.string.dele_items_snackbar, Snackbar.LENGTH_LONG)
 //                                .setAction("Action", null).show();
-                        Toast.makeText(getBaseContext(), getString(R.string.Deleted) +
-                                RN_USSD.myCount.getCount() + getString(R.string.items), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), getResources().getQuantityString(
+                                R.plurals.Deleted_message, RN_USSD.myCount.getCount(), RN_USSD.myCount.getCount())
+                                 , Toast.LENGTH_LONG).show();
 
                         setNormalMode();
                         return true;
