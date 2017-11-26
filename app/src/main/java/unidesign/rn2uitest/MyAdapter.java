@@ -14,7 +14,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -53,17 +55,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         void onItemClick(RecyclerItem item, int mSecNumber);
     }
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(RecyclerItem item, int mSecNumber);
+    }
+
     static final String LOG_TAG = "MyAdapter";
     //int a = RN_USSD.selected_items_count;
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
     }
 
+    ItemTouchHelper touchHelper;
+
     public static final int NORMAL_MOD = 0;
     public static final int SELECTION_MOD = 1;
     public int mode = NORMAL_MOD;
 
     public OnItemClickListener listener;
+    public OnItemLongClickListener LongClicklistener;
+    //public onItemLongClickListener listener;
     public List<RecyclerItem> listItems = new ArrayList<>();
     public List<USSD_Template> templates;
     public Context mContext;
@@ -75,11 +85,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public int  selected_color;
     public int  normal_color;
 
-    public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener) {
+    public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener,
+                     OnItemLongClickListener mLongClickListener) {
         //setHasStableIds(true); // this is required for D&D feature.
         this.mSectionNumber = sectionNumber;
         this.mContext = mContext;
         this.listener = mListener;
+        this.LongClicklistener = mLongClickListener;
         selected_color = ContextCompat.getColor(mContext, R.color.bg_item_selected_state);
         normal_color = ContextCompat.getColor(mContext, R.color.bg_item_normal_state);
     }
@@ -239,7 +251,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             holder.mContainer.setBackgroundColor(normal_color);
         };
         //RN_USSD.selected_items_count = 10;
-        holder.bind(itemList, listener, mSectionNumber, mode, selected_color, normal_color);
+        holder.bind(itemList, listener, LongClicklistener, mSectionNumber, mode, selected_color, normal_color);
 //==========================set selection/normal mode================================================
         if (mode == SELECTION_MOD) {
             holder.vhCheckBox.setVisibility(holder.vhCheckBox.VISIBLE);
@@ -257,6 +269,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                 .placeholder(android.R.drawable.ic_menu_rotate)
                 .error(android.R.drawable.ic_menu_camera)
                 .into(holder.imgIcon);
+
+        holder.imgIcon.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    touchHelper.startDrag(holder);
+                }
+                return false;
+            }
+        });
 
         holder.txtTitle.setText(itemList.getTitle());
         holder.txtDescription.setText(itemList.getDescription());
@@ -333,8 +355,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         }
 //        RN_USSD.selected_items_count = 10;
         public void bind(final RecyclerItem item, final OnItemClickListener listener,
+                         final OnItemLongClickListener LongClickListener,
                          final int mSN, final int mode, final int selected_color, final int normal_color) {
-            //todo: selection mode bihavior
+            //todo: selection mode behavior
             //======================================================================================
             mContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -356,6 +379,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
                     } else
                         listener.onItemClick(item, mSN);
+                }
+            });
+
+            mContainer.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(View v){
+                    if (mode == NORMAL_MOD) {
+                        LongClickListener.onItemLongClick(item, mSN);
+
+                        item.setSelected(!item.isSelected());
+                        vhCheckBox.setChecked(true);
+                        mContainer.setBackgroundColor(selected_color);
+                        //RN_USSD.selected_items_count++;
+                        RN_USSD.myCount.setCount(RN_USSD.myCount.getCount() + 1);
+
+                    }
+                    else {
+                        mContainer.performClick();
+                    }
+                    return true;
                 }
             });
         }
@@ -396,6 +439,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         for (int k = 0; k < listItems.size(); k++) {
             listItems.get(k).setSelected(true);
         }
+    }
+
+    public void setTouchHelper(ItemTouchHelper touchHelper) {
+
+        this.touchHelper = touchHelper;
     }
 }
 
