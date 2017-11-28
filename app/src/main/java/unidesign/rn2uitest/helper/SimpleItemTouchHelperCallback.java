@@ -40,10 +40,10 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean isLongPressDragEnabled() {
-        MyAdapter adapter = (MyAdapter) mAdapter;
-        if (adapter.mode == adapter.NORMAL_MOD )
-            return true;
-        else
+//        MyAdapter adapter = (MyAdapter) mAdapter;
+//        if (adapter.mode == adapter.NORMAL_MOD )
+//            return true;
+//        else
             return false;
     }
 

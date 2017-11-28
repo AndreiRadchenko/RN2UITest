@@ -32,7 +32,7 @@ import unidesign.rn2uitest.R;
  * Created by United on 9/12/2017.
  */
 
-public class ImportTemplateActivity extends AppCompatActivity
+public class   ImportTemplateActivity extends AppCompatActivity
         implements ParseTask.AsyncResponse
         {
 

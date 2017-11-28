@@ -386,14 +386,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                 @Override
                 public boolean onLongClick(View v){
                     if (mode == NORMAL_MOD) {
-                        LongClickListener.onItemLongClick(item, mSN);
 
                         item.setSelected(!item.isSelected());
                         vhCheckBox.setChecked(true);
                         mContainer.setBackgroundColor(selected_color);
-                        //RN_USSD.selected_items_count++;
-                        RN_USSD.myCount.setCount(RN_USSD.myCount.getCount() + 1);
+//                        RN_USSD.myCount.setCount(RN_USSD.myCount.getCount() + 1);
 
+                        LongClickListener.onItemLongClick(item, mSN);
                     }
                     else {
                         mContainer.performClick();
@@ -407,15 +406,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         @Override
         public void onItemSelected() {
             // itemView.setBackgroundColor(Color.MAGENTA);
-            itemView.setScaleY(1.05f);
-            itemView.setScaleX(1.05f);
+//            itemView.setScaleY(1.05f);
+//            itemView.setScaleX(1.05f);
         }
 
         @Override
         public void onItemClear() {
             // itemView.setBackgroundColor(0);
-            itemView.setScaleY(1f);
-            itemView.setScaleX(1f);
+//            itemView.setScaleY(1f);
+//            itemView.setScaleX(1f);
         }
 
     }
