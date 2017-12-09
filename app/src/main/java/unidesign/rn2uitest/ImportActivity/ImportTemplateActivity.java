@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import unidesign.rn2uitest.ParseTask;
 import unidesign.rn2uitest.R;
 
 /**

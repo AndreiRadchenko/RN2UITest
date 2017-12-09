@@ -1,4 +1,4 @@
-package unidesign.rn2uitest;
+package unidesign.rn2uitest.ImportActivity;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -22,6 +22,7 @@ import java.util.List;
 import unidesign.rn2uitest.ImportActivity.ImportRecyclerItem;
 import unidesign.rn2uitest.ImportActivity.ImportTemplateActivity;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
+import unidesign.rn2uitest.R;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 
 /**
@@ -67,7 +68,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
         super.onPreExecute();
 
         pDialog = new ProgressDialog(ITA);
-        pDialog.setMessage("Loading...");
+        pDialog.setMessage(mContext.getString(R.string.LoadDialogText));
         pDialog.setCancelable(true);
         pDialog.show();
     }
@@ -108,7 +109,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String strJson) {
         super.onPostExecute(strJson);
         // выводим целиком полученную json-строку
-        Log.d(LOG_TAG, strJson);
+        //Log.d(LOG_TAG, strJson);
 
         JSONObject dataJsonObj = null;
         String data_fild = null;

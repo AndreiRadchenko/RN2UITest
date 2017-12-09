@@ -29,5 +29,7 @@
 
     <string name="selection_toolbar_title">Slect items</string>
     <string name="selection_toolbar_title_selected">Slected</string>
+    <string name="LoadDialogText">Loading...</string>
+    <string name="no_sdcard">External SD card is inaccessible</string>
 
 </resources>
