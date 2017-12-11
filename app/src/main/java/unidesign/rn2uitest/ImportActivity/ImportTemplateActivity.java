@@ -88,8 +88,8 @@ public class   ImportTemplateActivity extends AppCompatActivity
         mAdapter = new ImportTemplateAdapter(listItems, new ImportTemplateAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ImportRecyclerItem item) {
-                Log.d(LOG_TAG, "--- getJsondirref --- " + item.getJsondirref());
-                Log.d(LOG_TAG, "--- getName() --- " + item.getName());
+                //Log.d(LOG_TAG, "--- getJsondirref --- " + item.getJsondirref());
+                //Log.d(LOG_TAG, "--- getName() --- " + item.getName());
                 try {
                     URL m_url = new URL(item.getJsondirref());
                     AsyncImport = new ParseTask(getApplicationContext(), ITA, m_url);

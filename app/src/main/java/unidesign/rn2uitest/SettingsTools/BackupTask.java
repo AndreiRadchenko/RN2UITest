@@ -16,11 +16,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,14 +66,24 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
             return null;
         }
 
-        //File sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        //Log.d("doInBackground: ", "sdPath " + sdPath);
-        // äîáàâëÿåì ñâîé êàòàëîã ê ïóòè
         File sdPath = new File(Environment.getExternalStorageDirectory()
                 + File.separator + DIR_SD);
         if (!sdPath.exists()) {
             // ñîçäàåì êàòàëîã
             sdPath.mkdirs();
+        }
+
+/*        File imagePath = new File(sdPath + "/" + "icons");
+        if (!imagePath.exists()) {
+            imagePath.mkdirs();
+        }*/
+
+        File appIconPath = mContext.getFilesDir() ;
+        appIconPath = new File(appIconPath.getPath() + "/" + "icons");
+        if (appIconPath.exists()) {
+            //appIconPath.listFiles().clone();
+            Log.d("doInBackground: ", "image copyed into: " );
+            copyFileOrDirectory(appIconPath.getPath(), sdPath.getPath());
         }
 
         Log.d("doInBackground: ", "sdPath.exists() " + sdPath +" "+ sdPath.exists());
@@ -87,7 +99,7 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         File smssdFile = new File(sdPath, SMSfile);
         File ussdsdFile = new File(sdPath, USSDfile);
 
-        Log.d("doInBackground: ", String.valueOf(ussdsdFile));
+        //Log.d("doInBackground: ", String.valueOf(ussdsdFile));
 
         FileOutputStream fos = null;
 
@@ -102,6 +114,7 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         PrintStream ps = new PrintStream(fos);
 
         List<USSD_Template> templates = new ArrayList<USSD_Template>();
+        USSD_Template template;
 
         Uri uri = TempContentProvider.CONTENT_URI_USSD;
         Cursor mCursor = mContext.getContentResolver().query(uri,
@@ -109,7 +122,7 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         mCursor.moveToFirst();
 
         while (!mCursor.isAfterLast()) {
-            USSD_Template template = MyAdapter.cursorToTemplate(mCursor);
+            template = MyAdapter.cursorToTemplate(mCursor);
             templates.add(template);
             mCursor.moveToNext();
         }
@@ -125,6 +138,7 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
                 rObject.put("name", mtemplate.getName());
                 rObject.put("template", mtemplate.getTemplate());
                 rObject.put("comment", mtemplate.getComment());
+                rObject.put("image", mtemplate.getImage());
 
                 ussdArray.put(i, rObject);
                 i++;
@@ -152,5 +166,77 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
     }
+
+
+
+    public  void copyFileOrDirectory(String srcDir, String destDir){
+        try{
+            File src = new File(srcDir);
+            File dst = new File(destDir, src.getName());
+
+            if (src.isDirectory()){
+                String files[] = src.list();
+                int filesLength = files.length;
+                for (int i = 0; i < filesLength; i++) {
+                    String src1 = (new File(src, files[i])).getPath();
+                    String dst1 = dst.getPath();
+                    copyFileOrDirectory(src1, dst1);
+                }
+            }
+            else {
+                copyFile(src, dst);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public  void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!destFile.getParentFile().exists())
+            destFile.getParentFile().mkdirs();
+
+        if (!destFile.exists())
+            destFile.createNewFile();
+
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        try {
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+        }
+        finally {
+            if (source != null) {
+                source.close();
+            }
+            if (destination != null) {
+                destination.close();
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
