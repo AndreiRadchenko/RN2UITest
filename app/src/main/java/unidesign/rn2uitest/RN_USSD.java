@@ -54,11 +54,15 @@ import android.widget.Toast;
 
 import org.reactivestreams.Subscription;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
+import unidesign.rn2uitest.SettingsTools.BackupDialog;
 import unidesign.rn2uitest.SettingsTools.BackupTask;
 import unidesign.rn2uitest.SettingsTools.RestoreDialog;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
@@ -68,7 +72,8 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 public class RN_USSD extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        BackupDialog.NoticeDialogListener {
 
     static final String LOG_TAG = "myLogs";
     static final String TAG = "Observer";
@@ -383,39 +388,35 @@ public class RN_USSD extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_import) {
-            // Handle the import action
-//            unidesign.rn2uitest.RN_USSD ma = this;
-//            new ParseTask(getApplicationContext(), ma).execute();
+
             startActivity(new Intent("intent.action.import_templates"));
 
-        } else if (id == R.id.nav_backup) {
-            // int result = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
-            //if (result == PackageManager.PERMISSION_GRANTED){
+        }
+        else if (id == R.id.nav_backup) {
+
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED){
 
-                BackupTask AsyncBackup = new BackupTask(this);
-                AsyncBackup.execute();
-            } else {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-//                    Toast.makeText(this,"External storage permission allows us to write backup. " +
-//                            "Please allow in App Settings for additional functionality.",Toast.LENGTH_LONG).show();
-//                }
-//                else {
+                SimpleDateFormat sdf = new SimpleDateFormat("_yy-MM-dd_HH-mm");
+                String mydate = sdf.format(Calendar.getInstance().getTime());
+                mydate = "_templates" + mydate;
+
+                DialogFragment newFragment = new BackupDialog();
+                Bundle args = new Bundle();
+                args.putString("backup_name", mydate);
+                newFragment.setArguments(args);
+                newFragment.show(getSupportFragmentManager(), "backup_dialog");
+
+/*                BackupTask AsyncBackup = new BackupTask(this);
+                AsyncBackup.execute();*/
+            }
+            else {
                     ActivityCompat.requestPermissions(this, new String[]{
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);
-//                }
-//                if (ContextCompat.checkSelfPermission(this,
-//                        Manifest.permission.WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED){
-//
-//                    BackupTask AsyncBackup = new BackupTask(this);
-//                    AsyncBackup.execute();
-//                }
             }
-/*            BackupTask AsyncBackup = new BackupTask(this);
-            AsyncBackup.execute();*/
 
-        } else if (id == R.id.nav_restore) {
+        }
+        else if (id == R.id.nav_restore) {
 
             DialogFragment newFragment = new RestoreDialog();
             newFragment.show(getSupportFragmentManager(), "restore_dialog");
@@ -878,5 +879,22 @@ public class RN_USSD extends AppCompatActivity
                 }
                 break;
         }
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String name, String comment) {
+        // User touched the dialog's positive button
+        BackupTask AsyncBackup = new BackupTask(this);
+        AsyncBackup.execute(name, comment);
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+
     }
 }
