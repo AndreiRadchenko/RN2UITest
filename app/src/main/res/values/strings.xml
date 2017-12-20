@@ -31,5 +31,6 @@
     <string name="selection_toolbar_title_selected">Slected</string>
     <string name="LoadDialogText">Loading...</string>
     <string name="no_sdcard">External SD card is inaccessible</string>
+    <string name="Backup_sucsess">Backup %1$s is added</string>
 
 </resources>

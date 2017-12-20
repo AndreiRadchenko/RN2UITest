@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
@@ -59,6 +60,7 @@ import io.reactivex.functions.Consumer;
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 import unidesign.rn2uitest.SettingsTools.BackupTask;
+import unidesign.rn2uitest.SettingsTools.RestoreDialog;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 import unidesign.rn2uitest.helper.SimpleItemTouchHelperCallback;
 
@@ -394,8 +396,7 @@ public class RN_USSD extends AppCompatActivity
 
                 BackupTask AsyncBackup = new BackupTask(this);
                 AsyncBackup.execute();
-            }
-            else {
+            } else {
 //                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
 //                    Toast.makeText(this,"External storage permission allows us to write backup. " +
 //                            "Please allow in App Settings for additional functionality.",Toast.LENGTH_LONG).show();
@@ -414,7 +415,12 @@ public class RN_USSD extends AppCompatActivity
 /*            BackupTask AsyncBackup = new BackupTask(this);
             AsyncBackup.execute();*/
 
-        }  else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_restore) {
+
+            DialogFragment newFragment = new RestoreDialog();
+            newFragment.show(getSupportFragmentManager(), "restore_dialog");
+
+        } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 
