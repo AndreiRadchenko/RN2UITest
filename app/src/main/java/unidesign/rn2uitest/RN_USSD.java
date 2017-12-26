@@ -418,8 +418,9 @@ public class RN_USSD extends AppCompatActivity
         }
         else if (id == R.id.nav_restore) {
 
-            DialogFragment newFragment = new RestoreDialog();
-            newFragment.show(getSupportFragmentManager(), "restore_dialog");
+//            DialogFragment newFragment = new RestoreDialog();
+//            newFragment.show(getSupportFragmentManager(), "restore_dialog");
+            startActivity(new Intent("intent.action.restore_templates"));
 
         } else if (id == R.id.nav_manage) {
 

@@ -33,5 +33,6 @@
     <string name="no_sdcard">External SD card is inaccessible</string>
     <string name="Backup_sucsess">Backup %1$s is added</string>
     <string name="comment">Comment</string>
+    <string name="restore_activity_form">Restore backup</string>
 
 </resources>

@@ -24,92 +24,58 @@
             android:orientation="vertical"
             android:paddingTop="15dp">
 
-             <LinearLayout
-                 android:id="@+id/linearLayout1"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sms_template_name"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
-                </TextView>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
                 <EditText
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:hint="Name">
                     <requestFocus>
                     </requestFocus>
                 </EditText>
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayout3"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/phone_number"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
-                </TextView>
+                android:padding="8dp">
                 <EditText
                     android:id="@+id/etPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:hint="Phone number">
                 </EditText>
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayout4"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sms_template_template"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
-                </TextView>
+                android:padding="8dp">
                 <EditText
                     android:id="@+id/etTemplate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:hint="Template">
                 </EditText>
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayout2"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sms_template_comment"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
-                </TextView>
+                android:padding="8dp"
+                app:hintTextAppearance="@style/HintTextStyle">
                 <EditText
                     android:id="@+id/etComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:hint="Comment"
                     android:background="@null"
                     android:paddingLeft="5dp"
                     android:paddingTop="10dp"
@@ -117,7 +83,7 @@
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="16sp">
                 </EditText>
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
     </ScrollView>
