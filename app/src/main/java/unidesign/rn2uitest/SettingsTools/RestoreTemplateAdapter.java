@@ -2,6 +2,7 @@ package unidesign.rn2uitest.SettingsTools;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +35,7 @@ public class RestoreTemplateAdapter extends RecyclerView.Adapter<RestoreTemplate
     public RestoreTemplateAdapter.OnItemClickListener listener;
     public List<RestoreRecyclerItem> listItems = new ArrayList<>();
     private ItemTouchHelper touchHelper;
+    private SparseBooleanArray mSelectedItemsIds;
 
     public RestoreTemplateAdapter(List<RestoreRecyclerItem> mlistItems, RestoreTemplateAdapter.OnItemClickListener mListener) {
         //setHasStableIds(true); // this is required for D&D feature.
@@ -114,5 +116,41 @@ public class RestoreTemplateAdapter extends RecyclerView.Adapter<RestoreTemplate
         this.touchHelper = touchHelper;
     }
 
+    /***
+     * Methods required for do selections, remove selections, etc.
+     */
+
+    //Toggle selection methods
+    public void toggleSelection(int position) {
+        selectView(position, !mSelectedItemsIds.get(position));
+    }
+
+
+    //Remove selected selections
+    public void removeSelection() {
+        mSelectedItemsIds = new SparseBooleanArray();
+        notifyDataSetChanged();
+    }
+
+
+    //Put or delete selected position into SparseBooleanArray
+    public void selectView(int position, boolean value) {
+        if (value)
+            mSelectedItemsIds.put(position, value);
+        else
+            mSelectedItemsIds.delete(position);
+
+        notifyDataSetChanged();
+    }
+
+    //Get total selected count
+    public int getSelectedCount() {
+        return mSelectedItemsIds.size();
+    }
+
+    //Return all selected ids
+    public SparseBooleanArray getSelectedIds() {
+        return mSelectedItemsIds;
+    }
 
 }

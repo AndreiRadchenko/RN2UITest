@@ -15,9 +15,14 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +47,7 @@ public class RestoreActivity extends AppCompatActivity {
 
     List<String> myFileArray = new ArrayList<>();
     String BackupName = "";
+    File sdPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +72,7 @@ public class RestoreActivity extends AppCompatActivity {
 
         myFileArray.clear();
 
-        File sdPath = new File(Environment.getExternalStorageDirectory()
+        sdPath = new File(Environment.getExternalStorageDirectory()
                 + File.separator + BackupTask.DIR_SD);
         if (!sdPath.exists()) {
             // ñîçäàåì êàòàëîã
@@ -134,7 +140,16 @@ public class RestoreActivity extends AppCompatActivity {
                 String[] time = tokens[3].split(delims);
                 String backupName = tokens[2] + " " + time[0] + ":" + time[1];
                 mBackup.setName(backupName);
-                mBackup.setUSSD_file_path(file);
+                mBackup.setUSSD_file_path(sdPath.toString() + File.separator + file);
+                String json = loadJSONFromFile(sdPath.toString() + File.separator + file);
+
+                try {
+                    JSONObject obj = new JSONObject(json);
+                    mBackup.setComment(obj.getString("comment"));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 int filesLength = files.length;
                 for (int i = 0; i < filesLength; i++) {
@@ -143,7 +158,7 @@ public class RestoreActivity extends AppCompatActivity {
                     if (tokens[0].equals("SMS")) {
                         String StringForCompare = files[i].replace("SMS", "USSD");
                         if (file.equals(StringForCompare)) {
-                            mBackup.setSMS_file_path(files[i]);
+                            mBackup.setSMS_file_path(sdPath.toString() + File.separator + files[i]);
                         }
                     }
                 }
@@ -152,5 +167,22 @@ public class RestoreActivity extends AppCompatActivity {
 
         return mBackup;
     }
+
+    public String loadJSONFromFile(String sourceFile) {
+        String json = null;
+        try {
+            InputStream is = new FileInputStream(sourceFile);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+
 
 }
