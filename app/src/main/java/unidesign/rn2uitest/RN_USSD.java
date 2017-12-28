@@ -709,17 +709,9 @@ public class RN_USSD extends AppCompatActivity
 
         appbar.setBackgroundColor(this.getResources().getColor(R.color.select_toolbar_background));
         toolbar.setVisibility(toolbar.GONE);
-        //toolbar.setAlpha(0);
-        //toolbar.setTranslationY(-300);
-
-        //toolbar.animate().setDuration(1000).translationY(-300).alpha(0);
-
         select_toolbar.setVisibility(select_toolbar.VISIBLE);
-       // select_toolbar_bottom.setVisibility(select_toolbar_bottom.VISIBLE);
 
         select_toolbar.setAlpha(0);
-        //select_toolbar.setTranslationY(-300);
-
         select_toolbar.animate().setDuration(500).alpha(1);
 
         scroll_params.setScrollFlags(0);
@@ -730,7 +722,6 @@ public class RN_USSD extends AppCompatActivity
         fab.getGlobalVisibleRect(fabrect);
         Rect apprect = new Rect();
         toolbar.getWindowVisibleDisplayFrame(apprect);
-        //Log.d(TAG, "is fab in visible area: " + fabrect.intersect(apprect));
         if (!fabrect.intersect(apprect)){
             tabLayout.setVisibility(tabLayout.GONE);
         }
@@ -747,14 +738,12 @@ public class RN_USSD extends AppCompatActivity
             }
         }
 
-        //tabLayout.setVisibility(tabLayout.GONE);
-
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         currentTabAdapter.setMod(currentTabAdapter.SELECTION_MOD);
         USSDTabAdapter.setMod(USSDTabAdapter.SELECTION_MOD);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-           // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(this.getResources().getColor(R.color.select_mod_status_bar));
         }
 
@@ -768,21 +757,12 @@ public class RN_USSD extends AppCompatActivity
     void setNormalMode() {
 
         myCount.setCount(DISPOSE_OBSERVER);
-
-        //select_toolbar.setVisibility(select_toolbar.GONE);
-        //select_toolbar_bottom.setVisibility(select_toolbar_bottom.GONE);
         appbar.setBackgroundColor(this.getResources().getColor(R.color.colorPrimary));
         toolbar.setVisibility(toolbar.VISIBLE);
         toolbar.setAlpha(0);
         toolbar.animate().setDuration(500).alpha(1);
 
         select_toolbar.setVisibility(select_toolbar.GONE);
-        // select_toolbar_bottom.setVisibility(select_toolbar_bottom.VISIBLE);
-
-        //select_toolbar.setAlpha(0);
-        //select_toolbar.setTranslationY(-300);
-
-        //select_toolbar.animate().setDuration(500).translationY(-300).alpha(0);
 
         scroll_params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
                 | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
@@ -807,6 +787,7 @@ public class RN_USSD extends AppCompatActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         currentTabAdapter.setMod(currentTabAdapter.NORMAL_MOD);
         USSDTabAdapter.setMod(USSDTabAdapter.NORMAL_MOD);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
            // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

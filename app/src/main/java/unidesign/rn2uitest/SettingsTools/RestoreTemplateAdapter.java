@@ -1,5 +1,6 @@
 package unidesign.rn2uitest.SettingsTools;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.SparseBooleanArray;
@@ -37,16 +38,19 @@ public class RestoreTemplateAdapter extends RecyclerView.Adapter<RestoreTemplate
     private ItemTouchHelper touchHelper;
     private SparseBooleanArray mSelectedItemsIds;
 
-    public RestoreTemplateAdapter(List<RestoreRecyclerItem> mlistItems, RestoreTemplateAdapter.OnItemClickListener mListener) {
+    public RestoreTemplateAdapter(List<RestoreRecyclerItem> mlistItems,
+                                  RestoreTemplateAdapter.OnItemClickListener mListener) {
         //setHasStableIds(true); // this is required for D&D feature.
         this.listItems = mlistItems;
         this.listener = mListener;
+        mSelectedItemsIds = new SparseBooleanArray();
     }
 
 
     @Override
     public RestoreTemplateAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.restore_recycle_item, parent, false);
+        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.restore_recycle_item,
+                parent, false);
         return new RestoreTemplateAdapter.ViewHolder(v);
     }
 
@@ -61,6 +65,10 @@ public class RestoreTemplateAdapter extends RecyclerView.Adapter<RestoreTemplate
 //        holder.m_icon_image_view.setImageResource(R.mipmap.ic_kyivstar);
         holder.txtName.setText(itemList.getName());
         holder.txtComment.setText(itemList.getComment());
+        /** Change background color of the selected items in list view  **/
+        holder.itemView
+                .setBackgroundColor(mSelectedItemsIds.get(position) ? 0x9934B5E4
+                        : Color.TRANSPARENT);
     }
 
     @Override
@@ -140,6 +148,15 @@ public class RestoreTemplateAdapter extends RecyclerView.Adapter<RestoreTemplate
         else
             mSelectedItemsIds.delete(position);
 
+        notifyDataSetChanged();
+    }
+
+    public void selectAllView(int listSize, boolean value) {
+        mSelectedItemsIds = new SparseBooleanArray();
+        if (value) {
+            for (int i = 0; i < listSize; i++)
+                mSelectedItemsIds.put(i, value);
+        }
         notifyDataSetChanged();
     }
 

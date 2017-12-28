@@ -1,33 +1,31 @@
 package unidesign.rn2uitest.SettingsTools;
 
 import android.content.ContentValues;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.View;
 import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import unidesign.rn2uitest.ImportActivity.SwipeAndDragHelper;
 import unidesign.rn2uitest.R;
 
 /**
@@ -48,6 +46,7 @@ public class RestoreActivity extends AppCompatActivity {
     List<String> myFileArray = new ArrayList<>();
     String BackupName = "";
     File sdPath;
+    public ActionMode mActionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +111,7 @@ public class RestoreActivity extends AppCompatActivity {
         mAdapter.setTouchHelper(touchHelper);
         recyclerView.setAdapter(mAdapter);
         touchHelper.attachToRecyclerView(recyclerView);
+        implementRecyclerViewClickListeners();
 
     };
 
@@ -184,5 +184,83 @@ public class RestoreActivity extends AppCompatActivity {
         return json;
     }
 
+    //Implement item click and long click over recycler view
+    private void implementRecyclerViewClickListeners() {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView,
+                new RecyclerClick_Listener() {
+            @Override
+            public void onClick(View view, int position) {
+                //If ActionMode not null select item
+                if (mActionMode != null)
+                    onListItemSelect(position);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                //Select item on long click
+                onListItemSelect(position);
+            }
+        }));
+    }
+
+    //List item select method
+    private void onListItemSelect(int position) {
+        mAdapter.toggleSelection(position);//Toggle the selection
+
+        boolean hasCheckedItems = mAdapter.getSelectedCount() > 0;//Check if any items are already selected or not
+
+
+        if (hasCheckedItems && mActionMode == null) {
+            // there are some selected items, start the actionMode
+            mActionMode = startSupportActionMode(new Toolbar_ActionMode_Callback(this,
+                    mAdapter, listItems, false));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                StatusbarColorAnimator anim = new StatusbarColorAnimator(this,
+                        getResources().getColor(R.color.colorPrimaryDark),
+                        getResources().getColor(R.color.select_mod_status_bar));
+//                anim.addUpdateListener(anim);
+                anim.setDuration(250).start();
+                //ValueAnimator anim1 = ValueAnimator.ofFloat(0, 1);
+                //Window  window = this.getWindow();
+                //window.setStatusBarColor(this.getResources().getColor(R.color.select_mod_status_bar));
+            }
+        }
+        else if (!hasCheckedItems && mActionMode != null) {
+            // there no selected items, finish the actionMode
+            mActionMode.finish();
+        }
+
+        if (mActionMode != null)
+            //set action mode title on item selection
+            mActionMode.setTitle(String.valueOf(mAdapter
+                    .getSelectedCount()) + " selected");
+
+
+    }
+
+    public void setNullToActionMode() {
+        if (mActionMode != null)
+            mActionMode = null;
+    }
+
+    //Delete selected rows
+    public void deleteRows() {
+        SparseBooleanArray selected = mAdapter
+                .getSelectedIds();//Get selected ids
+
+        //Loop all selected ids
+        for (int i = (selected.size() - 1); i >= 0; i--) {
+            if (selected.valueAt(i)) {
+                //If current id is selected remove the item via key
+                listItems.remove(selected.keyAt(i));
+                mAdapter.notifyDataSetChanged();//notify adapter
+
+            }
+        }
+        Toast.makeText(this, selected.size() + " item deleted.", Toast.LENGTH_SHORT).show();//Show Toast
+        mActionMode.finish();//Finish action mode after use
+
+    }
 
 }

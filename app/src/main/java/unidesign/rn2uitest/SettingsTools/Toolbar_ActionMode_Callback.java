@@ -1,14 +1,17 @@
 package unidesign.rn2uitest.SettingsTools;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import unidesign.rn2uitest.R;
 
@@ -19,10 +22,11 @@ import unidesign.rn2uitest.R;
 public class Toolbar_ActionMode_Callback implements ActionMode.Callback {
     private Context context;
     private RestoreTemplateAdapter recyclerView_adapter;
-    private ArrayList<RestoreRecyclerItem> message_models;
+    private List<RestoreRecyclerItem> message_models;
     private boolean isListViewFragment;
+
     public Toolbar_ActionMode_Callback(Context context, RestoreTemplateAdapter recyclerView_adapter,
-                                       ArrayList<RestoreRecyclerItem> message_models, boolean isListViewFragment) {
+                                       List<RestoreRecyclerItem> message_models, boolean isListViewFragment) {
         this.context = context;
         this.recyclerView_adapter = recyclerView_adapter;
         this.message_models = message_models;
@@ -44,26 +48,27 @@ public class Toolbar_ActionMode_Callback implements ActionMode.Callback {
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.restore_action_delete_selection:
-                RestoreActivity.deleteRows();//delete selected rows
+                ((RestoreActivity) context).deleteRows();//delete selected rows
                 mode.finish();//Finish action mode
                 break;
             case R.id.restore_action_select_all:
                 //Get selected ids on basis of current fragment action mode
                 SparseBooleanArray selected;
                 selected = recyclerView_adapter.getSelectedIds();
-                int selectedMessageSize = selected.size();
-                //Loop to all selected items
-                for (int i = (selectedMessageSize - 1); i >= 0; i--) {
-                    if (selected.valueAt(i)) {
-                        //get selected data in Model
-                        Item_Model model = message_models.get(selected.keyAt(i));
-                        String title = model.getTitle();
-                        String subTitle = model.getSubTitle();
-                        //Print the data to show if its working properly or not
-                        Log.e("Selected Items", "Title - " + title + "\n" + "Sub Title - " + subTitle);
-                    }
+
+                if (selected.size() < message_models.size()) {
+                    recyclerView_adapter.selectAllView(message_models.size(), true);
+                    //set action mode title on item selection
+                    ((RestoreActivity) context).mActionMode.setTitle(String.valueOf(recyclerView_adapter
+                            .getSelectedCount()) + " selected");
                 }
-                Toast.makeText(context, "You selected Copy menu.", Toast.LENGTH_SHORT).show();//Show toast
+                else {
+                    recyclerView_adapter.removeSelection();
+                    ((RestoreActivity) context).mActionMode.finish();
+//                    ((RestoreActivity) context).mActionMode.setTitle(String.valueOf(recyclerView_adapter
+//                        .getSelectedCount()) + " selected");
+                }
+
                 break;
 
         }
@@ -74,6 +79,16 @@ public class Toolbar_ActionMode_Callback implements ActionMode.Callback {
         //When action mode destroyed remove selected selections and set action mode to null
         //First check current fragment action mode
         recyclerView_adapter.removeSelection();         // remove selection
-        RestoreActivity.setNullToActionMode();       //Set action mode null
+        ((RestoreActivity) context).setNullToActionMode();       //Set action mode null
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Window window = ((RestoreActivity) context).getWindow();
+//            window.setStatusBarColor(context.getResources().getColor(R.color.colorPrimaryDark));
+//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            StatusbarColorAnimator anim = new StatusbarColorAnimator(context,
+                    context.getResources().getColor(R.color.select_mod_status_bar),
+                    context.getResources().getColor(R.color.colorPrimaryDark));
+            anim.setDuration(250).start();
+        }
     }
 }
