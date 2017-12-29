@@ -24,6 +24,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import unidesign.rn2uitest.R;
@@ -90,7 +92,14 @@ public class RestoreActivity extends AppCompatActivity {
         //Log.d(LOG_TAG, "initializeData(): "+ listItems.get(0).getTemplatename());
         final RestoreActivity RA = this;
 
-        mAdapter = new RestoreTemplateAdapter(listItems, new RestoreTemplateAdapter.OnItemClickListener() {
+        Collections.sort(listItems, new Comparator<RestoreRecyclerItem>() {
+            @Override
+            public int compare(RestoreRecyclerItem obj1, RestoreRecyclerItem obj2) {
+                return obj1.getName().compareToIgnoreCase(obj2.getName());
+            }
+        });
+
+        mAdapter = new RestoreTemplateAdapter(this, listItems, new RestoreTemplateAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RestoreRecyclerItem item) {
                 Log.d(LOG_TAG, "--- USSD file --- " + item.getUSSD_file_path());
@@ -108,9 +117,9 @@ public class RestoreActivity extends AppCompatActivity {
 
         RestoreSwipeAndDragHelper swipeAndDragHelper = new RestoreSwipeAndDragHelper(mAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(swipeAndDragHelper);
-        mAdapter.setTouchHelper(touchHelper);
+        //mAdapter.setTouchHelper(touchHelper);
         recyclerView.setAdapter(mAdapter);
-        touchHelper.attachToRecyclerView(recyclerView);
+        //touchHelper.attachToRecyclerView(recyclerView);
         implementRecyclerViewClickListeners();
 
     };
@@ -132,7 +141,7 @@ public class RestoreActivity extends AppCompatActivity {
         if (tokens.length > 1) {
 
             if (tokens[0].equals("SMS")) {
-                Log.d("RestoreDialog: ", "tokens[0] = " + tokens[0]);
+                //Log.d("RestoreDialog: ", "tokens[0] = " + tokens[0]);
                 return mBackup;
             } else {
                 // Log.d("RestoreDialog: ", "tokens[0] = " + tokens[0]);
@@ -219,11 +228,7 @@ public class RestoreActivity extends AppCompatActivity {
                 StatusbarColorAnimator anim = new StatusbarColorAnimator(this,
                         getResources().getColor(R.color.colorPrimaryDark),
                         getResources().getColor(R.color.select_mod_status_bar));
-//                anim.addUpdateListener(anim);
                 anim.setDuration(250).start();
-                //ValueAnimator anim1 = ValueAnimator.ofFloat(0, 1);
-                //Window  window = this.getWindow();
-                //window.setStatusBarColor(this.getResources().getColor(R.color.select_mod_status_bar));
             }
         }
         else if (!hasCheckedItems && mActionMode != null) {
@@ -248,11 +253,21 @@ public class RestoreActivity extends AppCompatActivity {
     public void deleteRows() {
         SparseBooleanArray selected = mAdapter
                 .getSelectedIds();//Get selected ids
+        File sms_file;
+        File ussd_file;
 
         //Loop all selected ids
         for (int i = (selected.size() - 1); i >= 0; i--) {
             if (selected.valueAt(i)) {
                 //If current id is selected remove the item via key
+                sms_file = new File(listItems.get(selected.keyAt(i)).getSMS_file_path());
+                ussd_file = new File(listItems.get(selected.keyAt(i)).getUSSD_file_path());
+                if (ussd_file.exists())
+                    ussd_file.delete();
+                if (sms_file.exists())
+                    sms_file.delete();
+//                deleteFile(listItems.get(selected.keyAt(i)).getSMS_file_path());
+//                deleteFile(listItems.get(selected.keyAt(i)).getUSSD_file_path());
                 listItems.remove(selected.keyAt(i));
                 mAdapter.notifyDataSetChanged();//notify adapter
 

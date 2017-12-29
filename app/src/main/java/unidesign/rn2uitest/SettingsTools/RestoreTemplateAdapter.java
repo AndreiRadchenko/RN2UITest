@@ -1,5 +1,6 @@
 package unidesign.rn2uitest.SettingsTools;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -37,12 +38,14 @@ public class RestoreTemplateAdapter extends RecyclerView.Adapter<RestoreTemplate
     public List<RestoreRecyclerItem> listItems = new ArrayList<>();
     private ItemTouchHelper touchHelper;
     private SparseBooleanArray mSelectedItemsIds;
+    Context context;
 
-    public RestoreTemplateAdapter(List<RestoreRecyclerItem> mlistItems,
+    public RestoreTemplateAdapter(Context context, List<RestoreRecyclerItem> mlistItems,
                                   RestoreTemplateAdapter.OnItemClickListener mListener) {
         //setHasStableIds(true); // this is required for D&D feature.
         this.listItems = mlistItems;
         this.listener = mListener;
+        this.context = context;
         mSelectedItemsIds = new SparseBooleanArray();
     }
 
@@ -58,7 +61,6 @@ public class RestoreTemplateAdapter extends RecyclerView.Adapter<RestoreTemplate
     @Override
     public void onBindViewHolder(final RestoreTemplateAdapter.ViewHolder holder, final int position) {
 
-
         URL image_url = null;
         final RestoreRecyclerItem itemList = listItems.get(position);
         holder.bind(itemList, listener);
@@ -66,9 +68,12 @@ public class RestoreTemplateAdapter extends RecyclerView.Adapter<RestoreTemplate
         holder.txtName.setText(itemList.getName());
         holder.txtComment.setText(itemList.getComment());
         /** Change background color of the selected items in list view  **/
-        holder.itemView
-                .setBackgroundColor(mSelectedItemsIds.get(position) ? 0x9934B5E4
-                        : Color.TRANSPARENT);
+//        holder.itemView
+//                .setBackgroundColor(mSelectedItemsIds.get(position) ? 0x9934B5E4
+//                        : Color.TRANSPARENT);
+        holder.restore_item_container.setBackgroundColor(mSelectedItemsIds.get(position) ?
+                    context.getResources().getColor(R.color.bg_item_selected_state)
+                    : Color.TRANSPARENT);
     }
 
     @Override
