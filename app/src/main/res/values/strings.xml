@@ -34,5 +34,6 @@
     <string name="Backup_sucsess">Backup %1$s is added</string>
     <string name="comment">Comment</string>
     <string name="restore_activity_form">Restore backup</string>
+    <string name="BackupRestoredMessage">Backup %1$s restored</string>
 
 </resources>

@@ -808,10 +808,12 @@ public class RN_USSD extends AppCompatActivity
         @Override
         public void onNext(Integer count) {
             Log.e(TAG, "onNext: " + count + " " + Thread.currentThread().getName());
-            if (count == 0)
+            if (count == 0) {
                 //select_toolbar.setTitle(R.string.selection_toolbar_title);
-                select_toolbar_title.setText(R.string.selection_toolbar_title);
-            else if (count == -100){
+                //select_toolbar_title.setText(R.string.selection_toolbar_title);
+                setNormalMode();
+            }
+            else if (count == DISPOSE_OBSERVER){
                 select_toolbar_title.setText(R.string.selection_toolbar_title);
                 d.dispose();
                 Log.e(TAG, "onNext: All Done!" + Thread.currentThread().getName() + " "  + d.isDisposed());

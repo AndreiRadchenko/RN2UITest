@@ -239,7 +239,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         //final RecyclerItem itemList = listItems.get(holder.getAdapterPosition());
 
         File file = new File(mContext.getFilesDir().getPath() + "/" + "icons", itemList.getImageName() + ".png");
-        Log.d(LOG_TAG, file.getAbsolutePath());
+        //Log.d(LOG_TAG, file.getAbsolutePath());
 
 // check selection due to RecycleView reuse ViewHolders
         if (itemList.isSelected()) {

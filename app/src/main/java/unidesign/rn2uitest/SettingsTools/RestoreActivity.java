@@ -34,7 +34,7 @@ import unidesign.rn2uitest.R;
  * Created by United on 12/26/2017.
  */
 
-public class RestoreActivity extends AppCompatActivity {
+public class RestoreActivity extends AppCompatActivity implements RestoreTask.AsyncResponse {
 
 
     static final String LOG_TAG = "RestoreTemplateActivity";
@@ -49,6 +49,7 @@ public class RestoreActivity extends AppCompatActivity {
     String BackupName = "";
     File sdPath;
     public ActionMode mActionMode;
+    public RestoreTask AsyncRestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,14 +105,14 @@ public class RestoreActivity extends AppCompatActivity {
             public void onItemClick(RestoreRecyclerItem item) {
                 Log.d(LOG_TAG, "--- USSD file --- " + item.getUSSD_file_path());
                 Log.d(LOG_TAG, "--- SMS file --- " + item.getSMS_file_path());
-//                try {
-//                    URL m_url = new URL(item.getJsondirref());
-//                    AsyncImport = new ParseTask(getApplicationContext(), ITA, m_url);
-//
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                AsyncImport.execute(item.getName());
+
+                try {
+                    AsyncRestore = new RestoreTask (getApplicationContext(), RA);
+
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                AsyncRestore.execute(item);
             }
         });
 
@@ -275,6 +276,14 @@ public class RestoreActivity extends AppCompatActivity {
         }
         Toast.makeText(this, selected.size() + " item deleted.", Toast.LENGTH_SHORT).show();//Show Toast
         mActionMode.finish();//Finish action mode after use
+
+    }
+
+    @Override
+    public void processFinish(String backup_name) {
+        String greetingText = String.format(getResources().getString(R.string.BackupRestoredMessage), backup_name);
+        Toast.makeText(this, greetingText, Toast.LENGTH_LONG).show();
+
 
     }
 

@@ -98,7 +98,10 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         USSDfile = USSDfile + myTime + ".json";
         File smssdFile = new File(sdPath, SMSfile);
         File ussdsdFile = new File(sdPath, USSDfile);
-
+        if (smssdFile.exists())
+            smssdFile.delete();
+        if (ussdsdFile.exists())
+            ussdsdFile.delete();
         //Log.d("doInBackground: ", String.valueOf(ussdsdFile));
 
         FileOutputStream fos = null;
@@ -130,7 +133,9 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         if (result != null) {
 //            Toast.makeText(mContext, mContext.getResources().getString(R.string.Backup_sucsess, result),
 //                    Toast.LENGTH_LONG).show();
-            Toast.makeText(mContext, "Backup is added", Toast.LENGTH_LONG).show();
+            String greetingText = String.format(mContext.getResources().
+                    getString(R.string.Backup_sucsess), result);
+            Toast.makeText(mContext, greetingText, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -231,7 +236,7 @@ public JSONObject db2JSON(Uri uri, String comment) {
             rObject.put("name", mtemplate.getName());
             rObject.put("template", mtemplate.getTemplate());
             if (mtemplate.getPhone() != null) {
-                rObject.put("Phone", mtemplate.getPhone());
+                rObject.put("phone_number", mtemplate.getPhone());
             }
             rObject.put("comment", mtemplate.getComment());
             rObject.put("image", mtemplate.getImage());
