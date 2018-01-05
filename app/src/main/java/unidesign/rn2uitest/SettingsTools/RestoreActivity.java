@@ -1,9 +1,15 @@
 package unidesign.rn2uitest.SettingsTools;
 
+import android.Manifest;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -21,14 +27,21 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import unidesign.rn2uitest.R;
+import unidesign.rn2uitest.RN_USSD;
 
 /**
  * Created by United on 12/26/2017.
@@ -79,15 +92,15 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
         if (!sdPath.exists()) {
             // ñîçäàåì êàòàëîã
             myFileArray.add("Nothing to restore");
-        } else {
-            String files[] = sdPath.list();
-            int filesLength = files.length;
-            for (int i = 0; i < filesLength; i++) {
-                RestoreRecyclerItem Backupitem = getBackup(files, files[i]);
-                if (!Backupitem.getName().equals(""))
-                    listItems.add(Backupitem);
-
-            }
+        }
+        else {
+                String files[] = sdPath.list();
+                int filesLength = files.length;
+                for (int i = 0; i < filesLength; i++) {
+                    RestoreRecyclerItem Backupitem = getBackup(files, files[i]);
+                    if (!Backupitem.getName().equals(""))
+                        listItems.add(Backupitem);
+                }
         }
 
         //Log.d(LOG_TAG, "initializeData(): "+ listItems.get(0).getTemplatename());
@@ -103,9 +116,6 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
         mAdapter = new RestoreTemplateAdapter(this, listItems, new RestoreTemplateAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RestoreRecyclerItem item) {
-                Log.d(LOG_TAG, "--- USSD file --- " + item.getUSSD_file_path());
-                Log.d(LOG_TAG, "--- SMS file --- " + item.getSMS_file_path());
-
                 try {
                     AsyncRestore = new RestoreTask (getApplicationContext(), RA);
 
@@ -113,6 +123,14 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
                     throw new RuntimeException(e);
                 }
                 AsyncRestore.execute(item);
+                // copy icon dir from external storage to application dir
+                File appIconPath = getApplicationContext().getFilesDir() ;
+                appIconPath = new File(appIconPath.getPath());
+                if (!appIconPath.exists()) {
+                    appIconPath.mkdirs();
+                }
+                String backup_icons_dir = sdPath.getPath() + "/" + "icons";
+                copyFileOrDirectory(backup_icons_dir, appIconPath.getPath());
             }
         });
 
@@ -139,7 +157,7 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
 
         String delims = "[_.]";
         String[] tokens = file.split(delims);
-        if (tokens.length > 1) {
+        if (tokens.length == 5) {
 
             if (tokens[0].equals("SMS")) {
                 //Log.d("RestoreDialog: ", "tokens[0] = " + tokens[0]);
@@ -285,6 +303,55 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
         Toast.makeText(this, greetingText, Toast.LENGTH_LONG).show();
 
 
+    }
+
+    public void copyFileOrDirectory(String srcDir, String destDir){
+        try{
+            File src = new File(srcDir);
+            File dst = new File(destDir, src.getName());
+
+            if (src.isDirectory()){
+                String files[] = src.list();
+                int filesLength = files.length;
+                for (int i = 0; i < filesLength; i++) {
+                    String src1 = (new File(src, files[i])).getPath();
+                    String dst1 = dst.getPath();
+                    copyFileOrDirectory(src1, dst1);
+                }
+            }
+            else {
+                copyFile(src, dst);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!destFile.getParentFile().exists())
+            destFile.getParentFile().mkdirs();
+
+        if (!destFile.exists())
+            destFile.createNewFile();
+
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        try {
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+        }
+        finally {
+            if (source != null) {
+                source.close();
+            }
+            if (destination != null) {
+                destination.close();
+            }
+        }
     }
 
 }

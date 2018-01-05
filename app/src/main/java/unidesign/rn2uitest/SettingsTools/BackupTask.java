@@ -123,7 +123,7 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         ps.append(db2JSON(TempContentProvider.CONTENT_URI_USSD, myComment).toString());
         ps_sms.append(db2JSON(TempContentProvider.CONTENT_URI_SMS, myComment).toString());
 
-        String result = myTime;
+        String result = BackupDialog.getBackupName(myTime);
         return result;
     }
 
@@ -141,7 +141,7 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
 
 
 
-    public  void copyFileOrDirectory(String srcDir, String destDir){
+    public void copyFileOrDirectory(String srcDir, String destDir){
         try{
             File src = new File(srcDir);
             File dst = new File(destDir, src.getName());
@@ -165,7 +165,7 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
 
     }
 
-    public  void copyFile(File sourceFile, File destFile) throws IOException {
+    public void copyFile(File sourceFile, File destFile) throws IOException {
         if (!destFile.getParentFile().exists())
             destFile.getParentFile().mkdirs();
 

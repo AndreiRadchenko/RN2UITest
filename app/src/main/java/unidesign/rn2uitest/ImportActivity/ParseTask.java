@@ -137,7 +137,6 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                             templates_one.getString("templatename"), templates_one.getString("jsondirref"),
                             templates_one.getString("pngdirref"), templates_one.getString("templatetype")));
                 }
-                ;
 
                 //delegate.processFinish(mlistItems);
 //                ITA.listItems.clear();

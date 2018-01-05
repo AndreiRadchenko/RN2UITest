@@ -56,6 +56,8 @@ import org.reactivestreams.Subscription;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
@@ -79,6 +81,7 @@ public class RN_USSD extends AppCompatActivity
     static final String TAG = "Observer";
     static final int DISPOSE_OBSERVER = -100;
     static final int PERMISSION_REQUEST_CODE = 1;
+    public static final int PERMISSION_READ_SD = 2;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -414,13 +417,19 @@ public class RN_USSD extends AppCompatActivity
                     ActivityCompat.requestPermissions(this, new String[]{
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);
             }
-
         }
+
         else if (id == R.id.nav_restore) {
 
-//            DialogFragment newFragment = new RestoreDialog();
-//            newFragment.show(getSupportFragmentManager(), "restore_dialog");
-            startActivity(new Intent("intent.action.restore_templates"));
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED) {
+
+                startActivity(new Intent("intent.action.restore_templates"));
+            }
+            else {
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE},PERMISSION_READ_SD);
+            }
 
         } else if (id == R.id.nav_manage) {
 
@@ -852,16 +861,41 @@ public class RN_USSD extends AppCompatActivity
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    Snackbar.make(tabLayout,"Permission Granted, Now you can access location data.",Snackbar.LENGTH_LONG).show();
-                    BackupTask AsyncBackup = new BackupTask(this);
-                    AsyncBackup.execute();
+//                    Snackbar.make(tabLayout,"Permission Granted, Now you can access location data.",
+//                            Snackbar.LENGTH_LONG).show();
+
+                    new Timer().schedule(new TimerTask() {
+                        @Override public void run() {
+                            // EXECUTE ACTIONS (LIKE FRAGMENT TRANSACTION ETC.)
+                            SimpleDateFormat sdf = new SimpleDateFormat("_yy-MM-dd_HH-mm");
+                            String mydate = sdf.format(Calendar.getInstance().getTime());
+                            mydate = "_templates" + mydate;
+
+                            DialogFragment newFragment = new BackupDialog();
+                            Bundle args = new Bundle();
+                            args.putString("backup_name", mydate);
+                            newFragment.setArguments(args);
+                            newFragment.show(getSupportFragmentManager(), "backup_dialog");
+                        }
+                    }, 0);
 
                 } else {
 
-                    Snackbar.make(tabLayout,"Permission Denied, You cannot access External storage.",Snackbar.LENGTH_LONG).show();
-
+                    Snackbar.make(tabLayout,"Permission Denied, You cannot access External storage.",
+                            Snackbar.LENGTH_LONG).show();
                 }
                 break;
+            case PERMISSION_READ_SD:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+//                    Snackbar.make(tabLayout,"Permission Granted, Now you can access location data.",
+//                            Snackbar.LENGTH_LONG).show();
+                    startActivity(new Intent("intent.action.restore_templates"));
+                }
+                else {
+                    Snackbar.make(tabLayout,"Permission Denied, You cannot access External storage.",
+                            Snackbar.LENGTH_LONG).show();
+                }
         }
     }
 

@@ -82,7 +82,7 @@ public class BackupDialog extends DialogFragment {
         return builder.create();
     }
 
-    String getBackupName(String file_name) {
+    public static String getBackupName(String file_name) {
         String delims = "[_.]";
         String[] tokens = file_name.split(delims);
         if (tokens.length > 1) {
