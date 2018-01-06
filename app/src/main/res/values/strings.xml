@@ -1,7 +1,7 @@
 <resources>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="app_name">RN2UITest</string>
+    <string name="app_name">USSD &amp; SMS codes</string>
     <string name="action_settings">Settings</string>
     <string name="action_done">Done</string>
     <string name="action_copy">Copy</string>
@@ -32,5 +32,8 @@
     <string name="LoadDialogText">Loading...</string>
     <string name="no_sdcard">External SD card is inaccessible</string>
     <string name="Backup_sucsess">Backup %1$s is added</string>
+    <string name="comment">Comment</string>
+    <string name="restore_activity_form">Restore backup</string>
+    <string name="BackupRestoredMessage">Backup %1$s restored</string>
 
 </resources>

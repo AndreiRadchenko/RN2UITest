@@ -44,8 +44,8 @@ import static com.h6ah4i.android.widget.advrecyclerview.animator.impl.ItemMoveAn
 public class BackupTask extends AsyncTask<String, Integer, String> {
 
     public static final String DIR_SD = "RN2backup";
-    String SMSfile = "SMS_templates";
-    String USSDfile = "USSD_templates";
+    String SMSfile = "SMS";
+    String USSDfile = "USSD";
     private Context mContext;
 
     public  BackupTask(Context context){
@@ -59,6 +59,9 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected String doInBackground(String... params) {
+
+        String myTime = params[0];
+        String myComment = params[1];
 
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
@@ -88,17 +91,17 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
 
         Log.d("doInBackground: ", "sdPath.exists() " + sdPath +" "+ sdPath.exists());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("_yy-MM-dd_HH-mm");
-        // String mydate =
-        // java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        String mydate = sdf.format(Calendar.getInstance().getTime());
-        // Log.d("ExportCSVActivity", mydate);
+//        SimpleDateFormat sdf = new SimpleDateFormat("_yy-MM-dd_HH-mm");
+//        String mydate = sdf.format(Calendar.getInstance().getTime());
 
-        SMSfile = SMSfile + mydate + ".json";
-        USSDfile = USSDfile + mydate + ".json";
+        SMSfile = SMSfile + myTime + ".json";
+        USSDfile = USSDfile + myTime + ".json";
         File smssdFile = new File(sdPath, SMSfile);
         File ussdsdFile = new File(sdPath, USSDfile);
-
+        if (smssdFile.exists())
+            smssdFile.delete();
+        if (ussdsdFile.exists())
+            ussdsdFile.delete();
         //Log.d("doInBackground: ", String.valueOf(ussdsdFile));
 
         FileOutputStream fos = null;
@@ -117,10 +120,10 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         PrintStream ps = new PrintStream(fos);
         PrintStream ps_sms = new PrintStream(fos_sms);
 
-        ps.append(db2JSON(TempContentProvider.CONTENT_URI_USSD).toString());
-        ps_sms.append(db2JSON(TempContentProvider.CONTENT_URI_SMS).toString());
+        ps.append(db2JSON(TempContentProvider.CONTENT_URI_USSD, myComment).toString());
+        ps_sms.append(db2JSON(TempContentProvider.CONTENT_URI_SMS, myComment).toString());
 
-        String result = mydate;
+        String result = BackupDialog.getBackupName(myTime);
         return result;
     }
 
@@ -130,13 +133,15 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         if (result != null) {
 //            Toast.makeText(mContext, mContext.getResources().getString(R.string.Backup_sucsess, result),
 //                    Toast.LENGTH_LONG).show();
-            Toast.makeText(mContext, "Backup is added", Toast.LENGTH_LONG).show();
+            String greetingText = String.format(mContext.getResources().
+                    getString(R.string.Backup_sucsess), result);
+            Toast.makeText(mContext, greetingText, Toast.LENGTH_LONG).show();
         }
     }
 
 
 
-    public  void copyFileOrDirectory(String srcDir, String destDir){
+    public void copyFileOrDirectory(String srcDir, String destDir){
         try{
             File src = new File(srcDir);
             File dst = new File(destDir, src.getName());
@@ -160,7 +165,7 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
 
     }
 
-    public  void copyFile(File sourceFile, File destFile) throws IOException {
+    public void copyFile(File sourceFile, File destFile) throws IOException {
         if (!destFile.getParentFile().exists())
             destFile.getParentFile().mkdirs();
 
@@ -195,7 +200,7 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         }
     }
 
-public JSONObject db2JSON(Uri uri) {
+public JSONObject db2JSON(Uri uri, String comment) {
 
     List<USSD_Template> templates = new ArrayList<USSD_Template>();
     USSD_Template template;
@@ -231,7 +236,7 @@ public JSONObject db2JSON(Uri uri) {
             rObject.put("name", mtemplate.getName());
             rObject.put("template", mtemplate.getTemplate());
             if (mtemplate.getPhone() != null) {
-                rObject.put("Phone", mtemplate.getPhone());
+                rObject.put("phone_number", mtemplate.getPhone());
             }
             rObject.put("comment", mtemplate.getComment());
             rObject.put("image", mtemplate.getImage());
@@ -247,11 +252,13 @@ public JSONObject db2JSON(Uri uri) {
     try {
         if (uri == TempContentProvider.CONTENT_URI_USSD) {
             tableObject.put("data", "USSD");
+            tableObject.put("comment", comment);
             //tableObject.put("data1", "dbUSSDKyivstar");
             tableObject.put("USSD", ussdArray);
         }
         else {
             tableObject.put("data", "SMS");
+            tableObject.put("comment", comment);
             tableObject.put("SMS", ussdArray);
         }
     } catch (JSONException e) {

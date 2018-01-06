@@ -1,17 +1,18 @@
-package unidesign.rn2uitest.ImportActivity;
+package unidesign.rn2uitest.SettingsTools;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -21,41 +22,39 @@ import java.util.List;
 
 import unidesign.rn2uitest.ImportActivity.ImportRecyclerItem;
 import unidesign.rn2uitest.ImportActivity.ImportTemplateActivity;
+import unidesign.rn2uitest.ImportActivity.ParseTask;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
 import unidesign.rn2uitest.R;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 
 /**
- * Created by United on 9/1/2017.
+ * Created by United on 12/29/2017.
  */
 
-public class ParseTask extends AsyncTask<String, Void, String> {
+public class RestoreTask extends AsyncTask<RestoreRecyclerItem, Void, String> {
 
     public interface AsyncResponse {
-        void processFinish(List<ImportRecyclerItem> output);
+        void processFinish(String backup_name);
     }
 
     private Context mContext;
     public ProgressDialog pDialog;
-    public ImportTemplateActivity ITA;
-    URL mURL;
+    public RestoreActivity RA;
     public List<ImportRecyclerItem> mlistItems = new ArrayList<>();
 
-    public AsyncResponse listener = null;//Call back interface
+    public RestoreTask.AsyncResponse listener = null;//Call back interface
     public String ImageName;
 
 
-    public ParseTask(Context context, ImportTemplateActivity ma, URL url) {
+    public RestoreTask(Context context, RestoreActivity ra) {
         mContext = context;
-        ITA = ma;
-        mURL = url;
-        listener = ma;
+        RA = ra;
+        listener = ra;
 //        delegate = asyncResponse;//Assigning call back interfacethrough constructor
     }
 
-    public static String LOG_TAG = "ParseTask";
+    public static String LOG_TAG = "RestoreTask";
 
-    HttpURLConnection urlConnection = null;
     BufferedReader reader = null;
     String resultJson = "";
 
@@ -67,49 +66,69 @@ public class ParseTask extends AsyncTask<String, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        pDialog = new ProgressDialog(ITA);
+/*        pDialog = new ProgressDialog(ITA);
         pDialog.setMessage(mContext.getString(R.string.LoadDialogText));
         pDialog.setCancelable(true);
-        pDialog.show();
+        pDialog.show();*/
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected String doInBackground(RestoreRecyclerItem... params) {
 
-        ImageName = params[0];
+        RestoreRecyclerItem item = params[0];
 //        Log.d(LOG_TAG, "-- ImageName --" + ImageName);
-        // получаем данные с внешнего ресурса
-        try {
+        // получаем данные с карты памяти
+        String USSDJson = getStringFromFile(item.getUSSD_file_path());
+        String SMSJson = getStringFromFile(item.getSMS_file_path());
+        restoreJSON2DB(USSDJson);
+        restoreJSON2DB(SMSJson);
 
-            //URL url = new URL("https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjekJYVDNJVlhvQUU");
 
-            urlConnection = (HttpURLConnection) mURL.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line);
-            }
-
-            resultJson = buffer.toString();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return resultJson;
+        return item.getName();
     }
 
     @Override
     protected void onPostExecute(String strJson) {
         super.onPostExecute(strJson);
-        // выводим целиком полученную json-строку
-        //Log.d(LOG_TAG, strJson);
+        listener.processFinish(strJson);
+        RA.finish();
+    }
+
+    String getStringFromFile(String path){
+
+        String line,line1 = "";
+
+        try
+        {
+            File ussdfile = new File(path);
+            FileInputStream instream = new FileInputStream(ussdfile);
+            //InputStream instream = openFileInput("E:\\test\\src\\com\\test\\mani.txt");
+            if (instream != null)
+            {
+                InputStreamReader inputreader = new InputStreamReader(instream);
+                BufferedReader buffreader = new BufferedReader(inputreader);
+
+                try
+                {
+                    while ((line = buffreader.readLine()) != null)
+                        line1+=line;
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                buffreader.close();
+            }
+            instream.close();
+        }
+        catch (Exception e)
+        {
+            String error="";
+            error=e.getMessage();
+        }
+        return line1;
+    }
+
+    void restoreJSON2DB (String jsonstr){
 
         JSONObject dataJsonObj = null;
         String data_fild = null;
@@ -118,34 +137,13 @@ public class ParseTask extends AsyncTask<String, Void, String> {
         Uri todoUri;
         // создаем объект для данных
         ContentValues values = new ContentValues();
-//        List<ImportRecyclerItem> mlistItems = new ArrayList<>();
 
         try {
-            dataJsonObj = new JSONObject(strJson);
+            dataJsonObj = new JSONObject(jsonstr);
             data_fild = dataJsonObj.getString("data");
             //Log.d(LOG_TAG, "onPostExecute, data_fild: "+ data_fild);
 
-            if (data_fild.compareTo("import templates") == 0) {
-                //Log.d(LOG_TAG, "onPostExecute, data_fild: "+ data_fild);
-
-                JSONArray templates = dataJsonObj.getJSONArray("templates");
-
-                for (int i = 0; i < templates.length(); i++) {
-                    JSONObject templates_one = templates.getJSONObject(i);
-
-                    mlistItems.add(new ImportRecyclerItem(templates_one.getString("name"),
-                            templates_one.getString("templatename"), templates_one.getString("jsondirref"),
-                            templates_one.getString("pngdirref"), templates_one.getString("templatetype")));
-                }
-
-                //delegate.processFinish(mlistItems);
-//                ITA.listItems.clear();
-//                ITA.listItems.addAll(mlistItems);
-//                Log.d(LOG_TAG, "onPostExecute, mlistItems.get(0).getTemplatename(): "+ mlistItems.get(0).getTemplatename());
-                //delegate.processFinish(mlistItems);
-                listener.processFinish(mlistItems);
-                pDialog.dismiss();
-            } else if (data_fild.compareTo("USSD") == 0) {
+            if (data_fild.compareTo("USSD") == 0) {
 
                 JSONArray ussd = dataJsonObj.getJSONArray("USSD");
 
@@ -155,20 +153,19 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                     String name1 = ussd_one.getString("name");
                     String template1 = ussd_one.getString("template");
                     String comment1 = ussd_one.getString("comment");
+                    String image1 = ussd_one.getString("image");
 
                     //ContentValues values = new ContentValues();
                     values.put(USSDSQLiteHelper.COLUMN_NAME, name1);
                     values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment1);
                     values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template1);
-                    values.put(USSDSQLiteHelper.COLUMN_IMAGE, ImageName);
+                    values.put(USSDSQLiteHelper.COLUMN_IMAGE, image1);
 
                     //Log.d(LOG_TAG, "-- ImageName --" + ImageName);
                     todoUri = mContext.getContentResolver().insert(
                             TempContentProvider.CONTENT_URI_USSD, values);
                 }
 
-                pDialog.dismiss();
-                ITA.finish();
             } else if (data_fild.compareTo("SMS") == 0) {
 
                 JSONArray sms = dataJsonObj.getJSONArray("SMS");
@@ -180,28 +177,24 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                     String phone_number1 = sms_one.getString("phone_number");
                     String template1 = sms_one.getString("template");
                     String comment1 = sms_one.getString("comment");
+                    String image1 = sms_one.getString("image");
 
                     //ContentValues values = new ContentValues();
                     values.put(USSDSQLiteHelper.COLUMN_NAME, name1);
                     values.put(USSDSQLiteHelper.COLUMN_PHONE_NUMBER, phone_number1);
                     values.put(USSDSQLiteHelper.COLUMN_COMMENT, comment1);
                     values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, template1);
-                    values.put(USSDSQLiteHelper.COLUMN_IMAGE, ImageName);
+                    values.put(USSDSQLiteHelper.COLUMN_IMAGE, image1);
 
                     todoUri = mContext.getContentResolver().insert(
                             TempContentProvider.CONTENT_URI_SMS, values);
                 }
 
-                pDialog.dismiss();
-                ITA.finish();
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        // delegate.processFinish(mlistItems);
-        // pDialog.dismiss();
     }
 
 }

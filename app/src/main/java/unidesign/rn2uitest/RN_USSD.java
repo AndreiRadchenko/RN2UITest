@@ -54,11 +54,17 @@ import android.widget.Toast;
 
 import org.reactivestreams.Subscription;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
+import unidesign.rn2uitest.SettingsTools.BackupDialog;
 import unidesign.rn2uitest.SettingsTools.BackupTask;
 import unidesign.rn2uitest.SettingsTools.RestoreDialog;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
@@ -68,12 +74,14 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 public class RN_USSD extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        BackupDialog.NoticeDialogListener {
 
     static final String LOG_TAG = "myLogs";
     static final String TAG = "Observer";
     static final int DISPOSE_OBSERVER = -100;
     static final int PERMISSION_REQUEST_CODE = 1;
+    public static final int PERMISSION_READ_SD = 2;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -383,42 +391,45 @@ public class RN_USSD extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_import) {
-            // Handle the import action
-//            unidesign.rn2uitest.RN_USSD ma = this;
-//            new ParseTask(getApplicationContext(), ma).execute();
+
             startActivity(new Intent("intent.action.import_templates"));
 
-        } else if (id == R.id.nav_backup) {
-            // int result = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
-            //if (result == PackageManager.PERMISSION_GRANTED){
+        }
+        else if (id == R.id.nav_backup) {
+
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED){
 
-                BackupTask AsyncBackup = new BackupTask(this);
-                AsyncBackup.execute();
-            } else {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-//                    Toast.makeText(this,"External storage permission allows us to write backup. " +
-//                            "Please allow in App Settings for additional functionality.",Toast.LENGTH_LONG).show();
-//                }
-//                else {
+                SimpleDateFormat sdf = new SimpleDateFormat("_yy-MM-dd_HH-mm");
+                String mydate = sdf.format(Calendar.getInstance().getTime());
+                mydate = "_templates" + mydate;
+
+                DialogFragment newFragment = new BackupDialog();
+                Bundle args = new Bundle();
+                args.putString("backup_name", mydate);
+                newFragment.setArguments(args);
+                newFragment.show(getSupportFragmentManager(), "backup_dialog");
+
+/*                BackupTask AsyncBackup = new BackupTask(this);
+                AsyncBackup.execute();*/
+            }
+            else {
                     ActivityCompat.requestPermissions(this, new String[]{
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);
-//                }
-//                if (ContextCompat.checkSelfPermission(this,
-//                        Manifest.permission.WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED){
-//
-//                    BackupTask AsyncBackup = new BackupTask(this);
-//                    AsyncBackup.execute();
-//                }
             }
-/*            BackupTask AsyncBackup = new BackupTask(this);
-            AsyncBackup.execute();*/
+        }
 
-        } else if (id == R.id.nav_restore) {
+        else if (id == R.id.nav_restore) {
 
-            DialogFragment newFragment = new RestoreDialog();
-            newFragment.show(getSupportFragmentManager(), "restore_dialog");
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED) {
+
+                startActivity(new Intent("intent.action.restore_templates"));
+            }
+            else {
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE},PERMISSION_READ_SD);
+            }
 
         } else if (id == R.id.nav_manage) {
 
@@ -707,17 +718,9 @@ public class RN_USSD extends AppCompatActivity
 
         appbar.setBackgroundColor(this.getResources().getColor(R.color.select_toolbar_background));
         toolbar.setVisibility(toolbar.GONE);
-        //toolbar.setAlpha(0);
-        //toolbar.setTranslationY(-300);
-
-        //toolbar.animate().setDuration(1000).translationY(-300).alpha(0);
-
         select_toolbar.setVisibility(select_toolbar.VISIBLE);
-       // select_toolbar_bottom.setVisibility(select_toolbar_bottom.VISIBLE);
 
         select_toolbar.setAlpha(0);
-        //select_toolbar.setTranslationY(-300);
-
         select_toolbar.animate().setDuration(500).alpha(1);
 
         scroll_params.setScrollFlags(0);
@@ -728,7 +731,6 @@ public class RN_USSD extends AppCompatActivity
         fab.getGlobalVisibleRect(fabrect);
         Rect apprect = new Rect();
         toolbar.getWindowVisibleDisplayFrame(apprect);
-        //Log.d(TAG, "is fab in visible area: " + fabrect.intersect(apprect));
         if (!fabrect.intersect(apprect)){
             tabLayout.setVisibility(tabLayout.GONE);
         }
@@ -745,14 +747,12 @@ public class RN_USSD extends AppCompatActivity
             }
         }
 
-        //tabLayout.setVisibility(tabLayout.GONE);
-
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         currentTabAdapter.setMod(currentTabAdapter.SELECTION_MOD);
         USSDTabAdapter.setMod(USSDTabAdapter.SELECTION_MOD);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-           // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(this.getResources().getColor(R.color.select_mod_status_bar));
         }
 
@@ -766,21 +766,12 @@ public class RN_USSD extends AppCompatActivity
     void setNormalMode() {
 
         myCount.setCount(DISPOSE_OBSERVER);
-
-        //select_toolbar.setVisibility(select_toolbar.GONE);
-        //select_toolbar_bottom.setVisibility(select_toolbar_bottom.GONE);
         appbar.setBackgroundColor(this.getResources().getColor(R.color.colorPrimary));
         toolbar.setVisibility(toolbar.VISIBLE);
         toolbar.setAlpha(0);
         toolbar.animate().setDuration(500).alpha(1);
 
         select_toolbar.setVisibility(select_toolbar.GONE);
-        // select_toolbar_bottom.setVisibility(select_toolbar_bottom.VISIBLE);
-
-        //select_toolbar.setAlpha(0);
-        //select_toolbar.setTranslationY(-300);
-
-        //select_toolbar.animate().setDuration(500).translationY(-300).alpha(0);
 
         scroll_params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
                 | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
@@ -805,6 +796,7 @@ public class RN_USSD extends AppCompatActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         currentTabAdapter.setMod(currentTabAdapter.NORMAL_MOD);
         USSDTabAdapter.setMod(USSDTabAdapter.NORMAL_MOD);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
            // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -825,10 +817,12 @@ public class RN_USSD extends AppCompatActivity
         @Override
         public void onNext(Integer count) {
             Log.e(TAG, "onNext: " + count + " " + Thread.currentThread().getName());
-            if (count == 0)
+            if (count == 0) {
                 //select_toolbar.setTitle(R.string.selection_toolbar_title);
-                select_toolbar_title.setText(R.string.selection_toolbar_title);
-            else if (count == -100){
+                //select_toolbar_title.setText(R.string.selection_toolbar_title);
+                setNormalMode();
+            }
+            else if (count == DISPOSE_OBSERVER){
                 select_toolbar_title.setText(R.string.selection_toolbar_title);
                 d.dispose();
                 Log.e(TAG, "onNext: All Done!" + Thread.currentThread().getName() + " "  + d.isDisposed());
@@ -867,16 +861,58 @@ public class RN_USSD extends AppCompatActivity
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    Snackbar.make(tabLayout,"Permission Granted, Now you can access location data.",Snackbar.LENGTH_LONG).show();
-                    BackupTask AsyncBackup = new BackupTask(this);
-                    AsyncBackup.execute();
+//                    Snackbar.make(tabLayout,"Permission Granted, Now you can access location data.",
+//                            Snackbar.LENGTH_LONG).show();
+
+                    new Timer().schedule(new TimerTask() {
+                        @Override public void run() {
+                            // EXECUTE ACTIONS (LIKE FRAGMENT TRANSACTION ETC.)
+                            SimpleDateFormat sdf = new SimpleDateFormat("_yy-MM-dd_HH-mm");
+                            String mydate = sdf.format(Calendar.getInstance().getTime());
+                            mydate = "_templates" + mydate;
+
+                            DialogFragment newFragment = new BackupDialog();
+                            Bundle args = new Bundle();
+                            args.putString("backup_name", mydate);
+                            newFragment.setArguments(args);
+                            newFragment.show(getSupportFragmentManager(), "backup_dialog");
+                        }
+                    }, 0);
 
                 } else {
 
-                    Snackbar.make(tabLayout,"Permission Denied, You cannot access External storage.",Snackbar.LENGTH_LONG).show();
-
+                    Snackbar.make(tabLayout,"Permission Denied, You cannot access External storage.",
+                            Snackbar.LENGTH_LONG).show();
                 }
                 break;
+            case PERMISSION_READ_SD:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+//                    Snackbar.make(tabLayout,"Permission Granted, Now you can access location data.",
+//                            Snackbar.LENGTH_LONG).show();
+                    startActivity(new Intent("intent.action.restore_templates"));
+                }
+                else {
+                    Snackbar.make(tabLayout,"Permission Denied, You cannot access External storage.",
+                            Snackbar.LENGTH_LONG).show();
+                }
         }
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String name, String comment) {
+        // User touched the dialog's positive button
+        BackupTask AsyncBackup = new BackupTask(this);
+        AsyncBackup.execute(name, comment);
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+
     }
 }
