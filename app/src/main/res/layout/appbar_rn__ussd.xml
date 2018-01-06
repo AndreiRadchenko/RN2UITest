@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical"
                     android:layout_marginLeft="@dimen/appbar_padding_top"
-                    android:text="Slected items"
+                    android:text="@string/selection_toolbar_title"
                     android:textAlignment="viewStart"
                     android:textColor="@android:color/white"
                     android:visibility="visible" />
@@ -59,7 +59,7 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="?attr/actionBarSize"
                 android:visibility="visible" />
 
         </android.support.design.widget.AppBarLayout>

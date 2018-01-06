@@ -14,7 +14,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -53,17 +55,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         void onItemClick(RecyclerItem item, int mSecNumber);
     }
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(RecyclerItem item, int mSecNumber);
+    }
+
     static final String LOG_TAG = "MyAdapter";
     //int a = RN_USSD.selected_items_count;
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
     }
 
+    ItemTouchHelper touchHelper;
+
     public static final int NORMAL_MOD = 0;
     public static final int SELECTION_MOD = 1;
     public int mode = NORMAL_MOD;
 
     public OnItemClickListener listener;
+    public OnItemLongClickListener LongClicklistener;
+    //public onItemLongClickListener listener;
     public List<RecyclerItem> listItems = new ArrayList<>();
     public List<USSD_Template> templates;
     public Context mContext;
@@ -75,11 +85,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public int  selected_color;
     public int  normal_color;
 
-    public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener) {
+    public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener,
+                     OnItemLongClickListener mLongClickListener) {
         //setHasStableIds(true); // this is required for D&D feature.
         this.mSectionNumber = sectionNumber;
         this.mContext = mContext;
         this.listener = mListener;
+        this.LongClicklistener = mLongClickListener;
         selected_color = ContextCompat.getColor(mContext, R.color.bg_item_selected_state);
         normal_color = ContextCompat.getColor(mContext, R.color.bg_item_normal_state);
     }
@@ -239,88 +251,58 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             holder.mContainer.setBackgroundColor(normal_color);
         };
         //RN_USSD.selected_items_count = 10;
-        holder.bind(itemList, listener, mSectionNumber, mode, selected_color, normal_color);
+        holder.bind(itemList, listener, LongClicklistener, mSectionNumber, mode, selected_color, normal_color);
 //==========================set selection/normal mode================================================
         if (mode == SELECTION_MOD) {
             holder.vhCheckBox.setVisibility(holder.vhCheckBox.VISIBLE);
-            holder.txtOptionDigit.setVisibility(holder.txtOptionDigit.INVISIBLE);
+            holder.EditButton.setVisibility(holder.EditButton.INVISIBLE);
         }
         else {
             holder.vhCheckBox.setVisibility(holder.vhCheckBox.INVISIBLE);
-            holder.txtOptionDigit.setVisibility(holder.txtOptionDigit.VISIBLE);
+            holder.EditButton.setVisibility(holder.EditButton.VISIBLE);
         }
 //===================================================================================================
         //holder.imgIcon.setImageResource(R.mipmap.ic_kyivstar);
-        Picasso.with(holder.txtTitle.getContext()).setIndicatorsEnabled(true);
+        //Picasso.with(holder.txtTitle.getContext()).setIndicatorsEnabled(true);
         Picasso.with(holder.txtTitle.getContext())
                 .load(file)
                 .placeholder(android.R.drawable.ic_menu_rotate)
                 .error(android.R.drawable.ic_menu_camera)
                 .into(holder.imgIcon);
 
+        holder.imgIcon.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    touchHelper.startDrag(holder);
+                }
+                return false;
+            }
+        });
+
         holder.txtTitle.setText(itemList.getTitle());
         holder.txtDescription.setText(itemList.getDescription());
-        holder.txtOptionDigit.setOnClickListener(new View.OnClickListener() {
+        holder.EditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Display option menu
 
-                PopupMenu popupMenu = new PopupMenu(mContext, holder.txtOptionDigit);
-                popupMenu.inflate(R.menu.option_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-
-                        switch (item.getItemId()) {
-
-                            case R.id.mnu_item_edit:
-                                //Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
-                                Uri uri2edit = null;
-                                Intent intent = null;
-                                switch (mSectionNumber) {
-                                    case 1:
-                                        intent = new Intent("intent.action.editussd");
-                                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                                                + listItems.get(position).getID());
-                                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
-                                        break;
-                                    case 2:
-                                        intent = new Intent("intent.action.editsms");
-                                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
-                                                + listItems.get(position).getID());
-                                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_SMS, uri2edit);
-                                        break;
-                                }
-                                mContext.startActivity(intent);
-                                break;
-
-                            case R.id.mnu_item_delete:
-                                //Delete item
-                                Uri uri = null;
-                                switch (mSectionNumber) {
-                                    case 1:
-                                        uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                                                + listItems.get(position).getID());
-                                        break;
-                                    case 2:
-                                        uri = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
-                                                + listItems.get(position).getID());
-                                        break;
-                                }
-                                mContext.getContentResolver().delete(uri, null, null);
-                                notifyDataSetChanged();
-                                Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show();
-                                //Log.d(LOG_TAG, "In MyAdapter Delete");
-                                //Log.d(LOG_TAG, uri.toString());
-                                //Log.d(LOG_TAG, "this.mSectionNumber = " + mSectionNumber);
-                                break;
-                            default:
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
+                Uri uri2edit = null;
+                Intent intent = null;
+                switch (mSectionNumber) {
+                    case 1:
+                        intent = new Intent("intent.action.editussd");
+                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
+                                + listItems.get(position).getID());
+                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
+                        break;
+                    case 2:
+                        intent = new Intent("intent.action.editsms");
+                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
+                                + listItems.get(position).getID());
+                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_SMS, uri2edit);
+                        break;
+                }
+                mContext.startActivity(intent);
             }
         });
 
@@ -357,7 +339,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         public View mDragHandle;
         TextView txtTitle;
         TextView txtDescription;
-        TextView txtOptionDigit;
+        ImageView EditButton;
         ImageView imgIcon;
         CheckBox vhCheckBox;
 
@@ -367,14 +349,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             //mDragHandle = itemView.findViewById(R.id.drag_handle);
             txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
             txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
-            txtOptionDigit = (TextView) itemView.findViewById(R.id.txtOptionDigit);
+            EditButton = (ImageView) itemView.findViewById(R.id.EditButton);
             imgIcon = (ImageView) itemView.findViewById(R.id.my_image_view);
             vhCheckBox = (CheckBox) itemView.findViewById(R.id.checkBox);
         }
 //        RN_USSD.selected_items_count = 10;
         public void bind(final RecyclerItem item, final OnItemClickListener listener,
+                         final OnItemLongClickListener LongClickListener,
                          final int mSN, final int mode, final int selected_color, final int normal_color) {
-            //todo: selection mode bihavior
+            //todo: selection mode behavior
             //======================================================================================
             mContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -384,16 +367,37 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                         if (item.isSelected()) {
                             vhCheckBox.setChecked(true);
                             mContainer.setBackgroundColor(selected_color);
-                            RN_USSD.selected_items_count++;
+                            //RN_USSD.selected_items_count++;
+                            RN_USSD.myCount.setCount(RN_USSD.myCount.getCount() + 1);
                         }
                         else {
                             vhCheckBox.setChecked(false);
                             mContainer.setBackgroundColor(normal_color);
-                            RN_USSD.selected_items_count--;
+                            //RN_USSD.selected_items_count--;
+                            RN_USSD.myCount.setCount(RN_USSD.myCount.getCount() - 1);
                         };
 
                     } else
                         listener.onItemClick(item, mSN);
+                }
+            });
+
+            mContainer.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(View v){
+                    if (mode == NORMAL_MOD) {
+
+                        item.setSelected(!item.isSelected());
+                        vhCheckBox.setChecked(true);
+                        mContainer.setBackgroundColor(selected_color);
+//                        RN_USSD.myCount.setCount(RN_USSD.myCount.getCount() + 1);
+
+                        LongClickListener.onItemLongClick(item, mSN);
+                    }
+                    else {
+                        mContainer.performClick();
+                    }
+                    return true;
                 }
             });
         }
@@ -402,15 +406,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         @Override
         public void onItemSelected() {
             // itemView.setBackgroundColor(Color.MAGENTA);
-            itemView.setScaleY(1.05f);
-            itemView.setScaleX(1.05f);
+//            itemView.setScaleY(1.05f);
+//            itemView.setScaleX(1.05f);
         }
 
         @Override
         public void onItemClear() {
             // itemView.setBackgroundColor(0);
-            itemView.setScaleY(1f);
-            itemView.setScaleX(1f);
+//            itemView.setScaleY(1f);
+//            itemView.setScaleX(1f);
         }
 
     }
@@ -434,6 +438,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         for (int k = 0; k < listItems.size(); k++) {
             listItems.get(k).setSelected(true);
         }
+    }
+
+    public void setTouchHelper(ItemTouchHelper touchHelper) {
+
+        this.touchHelper = touchHelper;
     }
 }
 
