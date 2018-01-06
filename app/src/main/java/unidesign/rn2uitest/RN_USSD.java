@@ -1,11 +1,15 @@
 package unidesign.rn2uitest;
 
+import android.Manifest;
 import android.app.ActionBar;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.app.LoaderManager;
@@ -54,6 +58,7 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import unidesign.rn2uitest.MySQLight.TemplatesDataSource;
 import unidesign.rn2uitest.MySQLight.USSDSQLiteHelper;
+import unidesign.rn2uitest.SettingsTools.BackupTask;
 import unidesign.rn2uitest.TempContentProvider.TempContentProvider;
 import unidesign.rn2uitest.helper.SimpleItemTouchHelperCallback;
 
@@ -66,6 +71,7 @@ public class RN_USSD extends AppCompatActivity
     static final String LOG_TAG = "myLogs";
     static final String TAG = "Observer";
     static final int DISPOSE_OBSERVER = -100;
+    static final int PERMISSION_REQUEST_CODE = 1;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -91,6 +97,7 @@ public class RN_USSD extends AppCompatActivity
     private ActionMenuView amvMenu;
     static TextView select_toolbar_title;
     static View select_home;
+    private View view;
 
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
@@ -379,14 +386,35 @@ public class RN_USSD extends AppCompatActivity
 //            new ParseTask(getApplicationContext(), ma).execute();
             startActivity(new Intent("intent.action.import_templates"));
 
-        } else if (id == R.id.nav_gallery) {
-            startActivity(new Intent("intent.action.gallery"));
+        } else if (id == R.id.nav_backup) {
+            // int result = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
+            //if (result == PackageManager.PERMISSION_GRANTED){
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED){
 
-        } else if (id == R.id.nav_slideshow) {
+                BackupTask AsyncBackup = new BackupTask(this);
+                AsyncBackup.execute();
+            }
+            else {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+//                    Toast.makeText(this,"External storage permission allows us to write backup. " +
+//                            "Please allow in App Settings for additional functionality.",Toast.LENGTH_LONG).show();
+//                }
+//                else {
+                    ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);
+//                }
+//                if (ContextCompat.checkSelfPermission(this,
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED){
+//
+//                    BackupTask AsyncBackup = new BackupTask(this);
+//                    AsyncBackup.execute();
+//                }
+            }
+/*            BackupTask AsyncBackup = new BackupTask(this);
+            AsyncBackup.execute();*/
 
-
-
-        } else if (id == R.id.nav_manage) {
+        }  else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 
@@ -827,4 +855,22 @@ public class RN_USSD extends AppCompatActivity
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Snackbar.make(tabLayout,"Permission Granted, Now you can access location data.",Snackbar.LENGTH_LONG).show();
+                    BackupTask AsyncBackup = new BackupTask(this);
+                    AsyncBackup.execute();
+
+                } else {
+
+                    Snackbar.make(tabLayout,"Permission Denied, You cannot access External storage.",Snackbar.LENGTH_LONG).show();
+
+                }
+                break;
+        }
+    }
 }
