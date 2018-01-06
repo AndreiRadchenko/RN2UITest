@@ -43,7 +43,7 @@ import static com.h6ah4i.android.widget.advrecyclerview.animator.impl.ItemMoveAn
 
 public class BackupTask extends AsyncTask<String, Integer, String> {
 
-    final String DIR_SD = "RN2backup";
+    public static final String DIR_SD = "RN2backup";
     String SMSfile = "SMS_templates";
     String USSDfile = "USSD_templates";
     private Context mContext;
@@ -102,69 +102,36 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         //Log.d("doInBackground: ", String.valueOf(ussdsdFile));
 
         FileOutputStream fos = null;
+        FileOutputStream fos_sms = null;
 
         try {
             ussdsdFile.createNewFile();
+            smssdFile.createNewFile();
             fos = new FileOutputStream(ussdsdFile,true);
+            fos_sms = new FileOutputStream(smssdFile,true);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         PrintStream ps = new PrintStream(fos);
+        PrintStream ps_sms = new PrintStream(fos_sms);
 
-        List<USSD_Template> templates = new ArrayList<USSD_Template>();
-        USSD_Template template;
+        ps.append(db2JSON(TempContentProvider.CONTENT_URI_USSD).toString());
+        ps_sms.append(db2JSON(TempContentProvider.CONTENT_URI_SMS).toString());
 
-        Uri uri = TempContentProvider.CONTENT_URI_USSD;
-        Cursor mCursor = mContext.getContentResolver().query(uri,
-                TemplatesDataSource.allUSSDColumns, null, null, null);
-        mCursor.moveToFirst();
-
-        while (!mCursor.isAfterLast()) {
-            template = MyAdapter.cursorToTemplate(mCursor);
-            templates.add(template);
-            mCursor.moveToNext();
-        }
-
-        JSONObject tableObject = new JSONObject();
-        JSONArray ussdArray = new JSONArray();
-
-        int i = 0;
-        for (USSD_Template mtemplate: templates) {
-            JSONObject rObject = new JSONObject();
-            try {
-                rObject.put("id", mtemplate.getId());
-                rObject.put("name", mtemplate.getName());
-                rObject.put("template", mtemplate.getTemplate());
-                rObject.put("comment", mtemplate.getComment());
-                rObject.put("image", mtemplate.getImage());
-
-                ussdArray.put(i, rObject);
-                i++;
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            tableObject.put("data", "USSD");
-            tableObject.put("data1", "dbUSSDKyivstar");
-            tableObject.put("USSD", ussdArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        ps.append(tableObject.toString());
-
-        String result = "";
+        String result = mydate;
         return result;
     }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+        if (result != null) {
+//            Toast.makeText(mContext, mContext.getResources().getString(R.string.Backup_sucsess, result),
+//                    Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Backup is added", Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -218,9 +185,81 @@ public class BackupTask extends AsyncTask<String, Integer, String> {
         }
     }
 
+    private void deleteFile(String inputPath, String inputFile) {
+        try {
+            // delete the original file
+            new File(inputPath + inputFile).delete();
+        }
+        catch (Exception e) {
+            Log.e("tag", e.getMessage());
+        }
+    }
 
+public JSONObject db2JSON(Uri uri) {
 
+    List<USSD_Template> templates = new ArrayList<USSD_Template>();
+    USSD_Template template;
 
+    //Uri uri = TempContentProvider.CONTENT_URI_USSD;
+    Cursor mCursor = null;
+
+    if (uri == TempContentProvider.CONTENT_URI_USSD){
+        mCursor = mContext.getContentResolver().query(uri,
+                TemplatesDataSource.allUSSDColumns, null, null, null);
+    }
+    else {
+        mCursor = mContext.getContentResolver().query(uri,
+                TemplatesDataSource.allSMSColumns, null, null, null);
+    }
+
+    mCursor.moveToFirst();
+
+    while (!mCursor.isAfterLast()) {
+        template = MyAdapter.cursorToTemplate(mCursor);
+        templates.add(template);
+        mCursor.moveToNext();
+    }
+
+    JSONObject tableObject = new JSONObject();
+    JSONArray ussdArray = new JSONArray();
+
+    int i = 0;
+    for (USSD_Template mtemplate: templates) {
+        JSONObject rObject = new JSONObject();
+        try {
+            rObject.put("id", mtemplate.getId());
+            rObject.put("name", mtemplate.getName());
+            rObject.put("template", mtemplate.getTemplate());
+            if (mtemplate.getPhone() != null) {
+                rObject.put("Phone", mtemplate.getPhone());
+            }
+            rObject.put("comment", mtemplate.getComment());
+            rObject.put("image", mtemplate.getImage());
+
+            ussdArray.put(i, rObject);
+            i++;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    try {
+        if (uri == TempContentProvider.CONTENT_URI_USSD) {
+            tableObject.put("data", "USSD");
+            //tableObject.put("data1", "dbUSSDKyivstar");
+            tableObject.put("USSD", ussdArray);
+        }
+        else {
+            tableObject.put("data", "SMS");
+            tableObject.put("SMS", ussdArray);
+        }
+    } catch (JSONException e) {
+        e.printStackTrace();
+    }
+
+    return tableObject;
+}
 
 
 
