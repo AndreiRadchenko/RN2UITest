@@ -72,14 +72,14 @@
         android:layout_marginBottom="-16dp"
         android:layout_marginEnd="8dp"
         app:fabSize="normal"
-        app:layout_behavior="unidesign.rn2uitest.ScrollingFABBehavior"
+        app:layout_behavior="unidesign.ussdsmscodes.ScrollingFABBehavior"
         app:srcCompat="@drawable/ic_fab_plus" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_behavior="unidesign.rn2uitest.ScrollingViewBehavior">
+        app:layout_behavior="unidesign.ussdsmscodes.ScrollingViewBehavior">
 
             <unidesign.ussdsmscodes.CustomViewPager
                 android:id="@+id/container"

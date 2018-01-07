@@ -37,6 +37,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -519,21 +520,32 @@ public class RN_USSD extends AppCompatActivity
                             case 2:
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // At least KitKat
                                 {
-                                    String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getContext());
-                                    Uri _uri = Uri.parse("tel:" + item.getPhone());
-                                    intent = new Intent(Intent.ACTION_VIEW, _uri);
-                                    intent.putExtra("address", item.getPhone());
-                                    intent.putExtra("sms_body", item.getTemplate());
-                                    intent.setPackage(defaultSmsPackageName);
-                                    intent.setType("vnd.android-dir/mms-sms");
-                                    startActivity(intent);
+//                                    String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getContext());
+//                                    Uri _uri = Uri.parse("tel:" + item.getPhone());
+//                                    intent = new Intent(Intent.ACTION_VIEW, _uri);
+//                                    intent.putExtra("address", item.getPhone());
+//                                    intent.putExtra("sms_body", item.getTemplate());
+//                                    intent.setPackage(defaultSmsPackageName);
+//                                    intent.setType("vnd.android-dir/mms-sms");
+//                                    startActivity(intent);
+
+                                    Uri sms_uri = Uri.parse("smsto:+" + item.getPhone());
+                                    Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
+                                    sms_intent.putExtra("sms_body", item.getTemplate());
+                                    startActivity(sms_intent);
+
                                 } else // For early versions, do what worked for you before.
                                 {
-                                    intent = new Intent(android.content.Intent.ACTION_VIEW);
-                                    intent.setType("vnd.android-dir/mms-sms");
-                                    intent.putExtra("address", item.getPhone());
-                                    intent.putExtra("sms_body", item.getTemplate());
-                                    startActivity(intent);
+//                                    intent = new Intent(android.content.Intent.ACTION_VIEW);
+//                                    intent.setType("vnd.android-dir/mms-sms");
+//                                    intent.putExtra("address", item.getPhone());
+//                                    intent.putExtra("sms_body", item.getTemplate());
+//                                    startActivity(intent);
+
+                                    Uri sms_uri = Uri.parse("smsto:+" + item.getPhone());
+                                    Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
+                                    sms_intent.putExtra("sms_body", item.getTemplate());
+                                    startActivity(sms_intent);
                                 }
                                 break;
                         }

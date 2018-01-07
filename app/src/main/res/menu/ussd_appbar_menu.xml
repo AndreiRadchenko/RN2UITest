@@ -2,18 +2,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- "Mark Favorite", should appear as action button if possible -->
+
     <item
         android:id="@+id/action_done"
         android:icon="@android:drawable/ic_menu_save"
         android:title="@string/action_done"
-        app:showAsAction="ifRoom" />
-
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_copy"
-        android:icon="@drawable/ic_content_copy_black_24dp"
+        android:icon="@drawable/ic_action_copy"
         android:title="@string/action_copy"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
 
     <!-- Settings, should always be in the overflow
     <item android:id="@+id/action_settings"
