@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="unidesign.rn2uitest.RN_USSD$PlaceholderFragment"
+    tools:context="unidesign.ussdsmscodes.RN_USSD$PlaceholderFragment"
     tools:showIn="@layout/appbar_rn__ussd"
     >
 

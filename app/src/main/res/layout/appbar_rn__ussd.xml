@@ -6,7 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="unidesign.rn2uitest.RN_USSD"
+    tools:context="unidesign.ussdsmscodes.RN_USSD"
     android:fitsSystemWindows="true">
 
         <android.support.design.widget.AppBarLayout
@@ -81,7 +81,7 @@
         android:orientation="vertical"
         app:layout_behavior="unidesign.rn2uitest.ScrollingViewBehavior">
 
-            <unidesign.rn2uitest.CustomViewPager
+            <unidesign.ussdsmscodes.CustomViewPager
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

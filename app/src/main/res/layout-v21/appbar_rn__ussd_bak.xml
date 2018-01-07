@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unidesign.rn2uitest.RN_USSD"
+    tools:context="unidesign.ussdsmscodes.RN_USSD"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -70,7 +70,7 @@
         app:layout_behavior="unidesign.rn2uitest.ScrollingFABBehavior"
         app:fabSize="normal" />
 
-    <unidesign.rn2uitest.CustomViewPager
+    <unidesign.ussdsmscodes.CustomViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

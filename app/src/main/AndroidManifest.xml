@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="unidesign.rn2uitest"
+    package="unidesign.ussdsmscodes"
     android:installLocation = "preferExternal">
 
     <uses-permission android:name="android.permission.DIAL" />
@@ -18,7 +18,7 @@
         <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar" -->
 
         <activity
-            android:name=".RN_USSD"
+            android:name="unidesign.ussdsmscodes.RN_USSD"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="nosensor">
@@ -30,15 +30,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".editUSSDTemplate"
+            android:name="unidesign.ussdsmscodes.editUSSDTemplate"
             android:label="@string/ussd_edit_form"
-            android:parentActivityName=".RN_USSD"
+            android:parentActivityName="unidesign.ussdsmscodes.RN_USSD"
             android:windowSoftInputMode="stateHidden">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RN_USSD" />
+                android:value="unidesign.ussdsmscodes.RN_USSD" />
 
             <intent-filter>
                 <action android:name="intent.action.newussd" />
@@ -48,15 +48,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".editSMSTemplate"
+            android:name="unidesign.ussdsmscodes.editSMSTemplate"
             android:label="@string/sms_edit_form"
-            android:parentActivityName=".RN_USSD"
+            android:parentActivityName="unidesign.ussdsmscodes.RN_USSD"
             android:windowSoftInputMode="stateHidden">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RN_USSD" />
+                android:value="unidesign.ussdsmscodes.RN_USSD" />
 
             <intent-filter>
                 <action android:name="intent.action.newsms" />
@@ -66,16 +66,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ImportActivity.ImportTemplateActivity"
+            android:name="unidesign.ussdsmscodes.ImportActivity.ImportTemplateActivity"
             android:label="@string/import_template_form"
-            android:parentActivityName=".RN_USSD"
+            android:parentActivityName="unidesign.ussdsmscodes.RN_USSD"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RN_USSD" />
+                android:value="unidesign.ussdsmscodes.RN_USSD" />
 
             <intent-filter>
                 <action android:name="intent.action.import_templates" />
@@ -84,16 +84,16 @@
         </activity>
 
         <activity
-            android:name=".SettingsTools.RestoreActivity"
+            android:name="unidesign.ussdsmscodes.SettingsTools.RestoreActivity"
             android:label="@string/restore_activity_form"
-            android:parentActivityName=".RN_USSD"
+            android:parentActivityName="unidesign.ussdsmscodes.RN_USSD"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RN_USSD" />
+                android:value="unidesign.ussdsmscodes.RN_USSD" />
 
             <intent-filter>
                 <action android:name="intent.action.restore_templates" />
@@ -102,16 +102,16 @@
         </activity>
 
         <provider
-            android:name=".TempContentProvider.TempContentProvider"
-            android:authorities="unidesign.rn2uitest.TempContentProvider"
+            android:name="unidesign.ussdsmscodes.TempContentProvider.TempContentProvider"
+            android:authorities="unidesign.ussdsmscodes.TempContentProvider"
             android:label="USSD/SMS Templates Provider">
 
         </provider>
 
         <activity
-            android:name=".Gallery"
+            android:name="unidesign.ussdsmscodes.Gallery"
             android:label="Gallery"
-            android:parentActivityName=".RN_USSD">
+            android:parentActivityName="unidesign.ussdsmscodes.RN_USSD">
 
             <intent-filter>
                 <action android:name="intent.action.gallery" />
