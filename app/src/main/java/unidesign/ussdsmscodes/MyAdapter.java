@@ -261,7 +261,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
                 .error(android.R.drawable.ic_menu_camera)
                 .into(holder.imgIcon);
 
-        holder.imgIcon.setOnTouchListener(new View.OnTouchListener() {
+        holder.iconHolder.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
@@ -311,7 +311,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public void onItemDismiss(int position) {
         listItems.remove(position);
         notifyItemRemoved(position);
-        Log.d(LOG_TAG, "--- In MyAdapter() onItemDismiss --- position = " + position);
+        //Log.d(LOG_TAG, "--- In MyAdapter() onItemDismiss --- position = " + position);
     }
 
     @Override
@@ -333,6 +333,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         ImageView EditButton;
         ImageView imgIcon;
         CheckBox vhCheckBox;
+        RelativeLayout iconHolder;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -343,6 +344,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
             EditButton = (ImageView) itemView.findViewById(R.id.EditButton);
             imgIcon = (ImageView) itemView.findViewById(R.id.my_image_view);
             vhCheckBox = (CheckBox) itemView.findViewById(R.id.checkBox);
+            iconHolder = (RelativeLayout) itemView.findViewById(R.id.icon_holder);
         }
 //        RN_USSD.selected_items_count = 10;
         public void bind(final RecyclerItem item, final OnItemClickListener listener,
