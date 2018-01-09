@@ -36,5 +36,7 @@
     <string name="restore_activity_form">Restore backup</string>
     <string name="BackupRestoredMessage">Backup %1$s restored</string>
     <string name="backupDialogTitle">Save backup to phone storage</string>
+    <string name="setupDialogTitle">Request needs to be setup</string>
+    <string name="setupDialogMessage">Follow the instructions in the comment, and setup request</string>
 
 </resources>

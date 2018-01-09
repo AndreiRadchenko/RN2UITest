@@ -50,20 +50,20 @@ public class setupTemplateDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        //LayoutInflater inflater = getActivity().getLayoutInflater();
 
         final Long setup_id = getArguments().getLong("setup_id");
         final int mSecNumber = getArguments().getInt("setup_SecNumber");
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
 
-        final View dialogView = inflater.inflate(R.layout.dialog_backup, null);
-        final EditText eComment = (EditText) dialogView.findViewById(R.id.backup_comment);
+        //final View dialogView = inflater.inflate(R.layout.dialog_backup, null);
+        //final EditText eComment = (EditText) dialogView.findViewById(R.id.backup_comment);
 
-        builder.setView(dialogView);
+        //builder.setView(dialogView);
 
-        builder.setTitle("Request needs to be set up")
-                .setMessage("Follow the instructions in the comment, and set up request")
+        builder.setTitle(R.string.setupDialogTitle)
+                .setMessage(R.string.setupDialogMessage)
                 // Add action buttons
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
