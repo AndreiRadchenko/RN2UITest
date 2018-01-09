@@ -61,6 +61,7 @@ import unidesign.ussdsmscodes.MySQLight.TemplatesDataSource;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
 import unidesign.ussdsmscodes.SettingsTools.BackupDialog;
 import unidesign.ussdsmscodes.SettingsTools.BackupTask;
+import unidesign.ussdsmscodes.SettingsTools.setupTemplateDialog;
 import unidesign.ussdsmscodes.TempContentProvider.TempContentProvider;
 import unidesign.ussdsmscodes.helper.SimpleItemTouchHelperCallback;
 
@@ -69,7 +70,7 @@ import io.reactivex.disposables.Disposable;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        BackupDialog.NoticeDialogListener {
+        BackupDialog.NoticeDialogListener, setupTemplateDialog.mDialogListener {
 
     static final String LOG_TAG = "myLogs";
     static final String TAG = "Observer";
@@ -102,6 +103,7 @@ public class RN_USSD extends AppCompatActivity
     static TextView select_toolbar_title;
     static View select_home;
     private View view;
+    static FragmentManager mfragmentManager;
 
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
@@ -116,7 +118,7 @@ public class RN_USSD extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mfragmentManager = getSupportFragmentManager();
         //RxLifecycleAndroid.bindActivity(this);
 
         appbar = (AppBarLayout) findViewById(R.id.appbar);
@@ -504,6 +506,17 @@ public class RN_USSD extends AppCompatActivity
                     if (!toolbar.isShown()) {
 
                     }
+                    else if (item.getTemplate().contains("xx") || item.getTemplate().contains("XX") ||
+                             item.getTemplate().contains("ХХ") || item.getTemplate().contains("хх") ||
+                             item.getTemplate().contains("yy") || item.getTemplate().contains("YY") )
+                    {
+                        DialogFragment newFragment = new setupTemplateDialog();
+                        Bundle args = new Bundle();
+                        args.putLong("setup_id", item.getID());
+                        args.putInt("setup_SecNumber", mSecNumber);
+                        newFragment.setArguments(args);
+                        newFragment.show(mfragmentManager, "setup_dialog");
+                    }
                     else {
                         Intent intent;
                         switch (mSecNumber) {
@@ -518,35 +531,12 @@ public class RN_USSD extends AppCompatActivity
                                 }
                                 break;
                             case 2:
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // At least KitKat
-                                {
-//                                    String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getContext());
-//                                    Uri _uri = Uri.parse("tel:" + item.getPhone());
-//                                    intent = new Intent(Intent.ACTION_VIEW, _uri);
-//                                    intent.putExtra("address", item.getPhone());
-//                                    intent.putExtra("sms_body", item.getTemplate());
-//                                    intent.setPackage(defaultSmsPackageName);
-//                                    intent.setType("vnd.android-dir/mms-sms");
-//                                    startActivity(intent);
 
                                     Uri sms_uri = Uri.parse("smsto:+" + item.getPhone());
                                     Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
                                     sms_intent.putExtra("sms_body", item.getTemplate());
                                     startActivity(sms_intent);
 
-                                } else // For early versions, do what worked for you before.
-                                {
-//                                    intent = new Intent(android.content.Intent.ACTION_VIEW);
-//                                    intent.setType("vnd.android-dir/mms-sms");
-//                                    intent.putExtra("address", item.getPhone());
-//                                    intent.putExtra("sms_body", item.getTemplate());
-//                                    startActivity(intent);
-
-                                    Uri sms_uri = Uri.parse("smsto:+" + item.getPhone());
-                                    Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
-                                    sms_intent.putExtra("sms_body", item.getTemplate());
-                                    startActivity(sms_intent);
-                                }
                                 break;
                         }
                     }
@@ -912,6 +902,28 @@ public class RN_USSD extends AppCompatActivity
         // User touched the dialog's positive button
         BackupTask AsyncBackup = new BackupTask(this);
         AsyncBackup.execute(name, comment);
+    }
+
+    @Override
+    public void onSetupDialogPositiveClick(DialogFragment dialog, long id, int mSectionNumber) {
+        // User touched the dialog's positive button
+        Uri uri2edit = null;
+        Intent intent = null;
+        switch (mSectionNumber) {
+            case 1:
+                intent = new Intent("intent.action.editussd");
+                uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
+                        + id);
+                intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
+                break;
+            case 2:
+                intent = new Intent("intent.action.editsms");
+                uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
+                        + id);
+                intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_SMS, uri2edit);
+                break;
+        }
+        startActivity(intent);
 
     }
 

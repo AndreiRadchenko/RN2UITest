@@ -35,5 +35,6 @@
     <string name="comment">Comment</string>
     <string name="restore_activity_form">Restore backup</string>
     <string name="BackupRestoredMessage">Backup %1$s restored</string>
+    <string name="backupDialogTitle">Save backup to phone storage</string>
 
 </resources>
