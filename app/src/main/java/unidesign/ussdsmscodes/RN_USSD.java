@@ -876,7 +876,7 @@ public class RN_USSD extends AppCompatActivity
 
                 } else {
 
-                    Snackbar.make(tabLayout,"Permission Denied, You cannot access External storage.",
+                    Snackbar.make(tabLayout, getResources().getString(R.string.ext_stor_perm_denied),
                             Snackbar.LENGTH_LONG).show();
                 }
                 break;
@@ -888,7 +888,7 @@ public class RN_USSD extends AppCompatActivity
                     startActivity(new Intent("intent.action.restore_templates"));
                 }
                 else {
-                    Snackbar.make(tabLayout,"Permission Denied, You cannot access External storage.",
+                    Snackbar.make(tabLayout, getResources().getString(R.string.ext_stor_perm_denied),
                             Snackbar.LENGTH_LONG).show();
                 }
         }

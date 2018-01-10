@@ -5,31 +5,31 @@
         <item
             android:id="@+id/nav_import"
             android:icon="@drawable/ic_input"
-            android:title="Import" />
+            android:title="@string/naw_import" />
         <item
             android:id="@+id/nav_backup"
             android:icon="@drawable/ic_backup"
-            android:title="Backup" />
+            android:title="@string/naw_backup" />
         <item
             android:id="@+id/nav_restore"
             android:icon="@drawable/ic_restore"
-            android:title="Restore" />
+            android:title="@string/naw_restore" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_settings"
-            android:title="Settings" />
+            android:title="@string/naw_settings" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/naw_communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="@string/naw_share" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="@string/naw_send" />
         </menu>
     </item>
 

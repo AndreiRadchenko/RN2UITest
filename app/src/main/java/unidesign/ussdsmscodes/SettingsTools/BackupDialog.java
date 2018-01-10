@@ -61,7 +61,7 @@ public class BackupDialog extends DialogFragment {
 
         builder.setView(dialogView);
 
-        builder.setTitle("Save backup to phone storage")
+        builder.setTitle(getResources().getString(R.string.backupDialogTitle))
                 .setMessage(time_name)
                 // Add action buttons
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

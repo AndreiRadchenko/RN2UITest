@@ -1,0 +1,52 @@
+<resources>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="app_name">USSD та SMS коди</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="action_done">Зберегти</string>
+    <string name="action_copy">Копіювати</string>
+    <string name="ussd_edit_form">Редагувати USSD</string>
+    <string name="sms_edit_form">Редагувати SMS</string>
+    <string name="import_template_form">Імпорт кодів</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="phone_number">Номер телефону</string>
+    <string name="sms_template_name">Назва</string>
+    <string name="sms_template_template">Код</string>
+    <string name="sms_template_comment">Коментар</string>
+    <string name="select_templates">Обрати коди</string>
+    <string name="select_all">Обрати все</string>
+    <string name="delete_selection">Видалити обране</string>
+    <string name="action_selection_settings">Налаштування</string>
+    <string name="dele_items_snackbar">Обрані шаблони видалено</string>
+    <string name="Deleted_message">Deleted %1$d items</string>
+    <string name="items"> items</string>
+
+    <plurals name="Deleted_message">
+        <item quantity="one">Видалено %1$d шаблон</item>
+        <item quantity="few">Видалено %1$d шаблони</item>
+        <item quantity="many">Видалено %1$d шаблонів</item>
+    </plurals>
+
+    <string name="selection_toolbar_title">Обрати коди</string>
+    <string name="selection_toolbar_title_selected">Обрано</string>
+    <string name="LoadDialogText">Будь ласка, зачекайте...</string>
+    <string name="no_sdcard">Зовнішня пам\'ять недоступна</string>
+    <string name="Backup_sucsess">Резервна копія %1$s збережена</string>
+    <string name="comment">Коментар</string>
+    <string name="restore_activity_form">Відновити резервну копію</string>
+    <string name="BackupRestoredMessage">Резервна копія %1$s відновлена</string>
+    <string name="backupDialogTitle">Зберегти резервну копію у зовнішній пам\'яті телефону</string>
+    <string name="setupDialogTitle">Запит потребує налаштування</string>
+    <string name="setupDialogMessage">Скористайтесь інструкцією в коментарі, та налаштуйте запит</string>
+    <string name="naw_import">Імпорт кодів</string>
+    <string name="naw_backup">Резервна копія</string>
+    <string name="naw_restore">Відновити копію</string>
+    <string name="naw_settings">Налаштування</string>
+    <string name="naw_communicate">Спілкування</string>
+    <string name="naw_share">Поділитись</string>
+    <string name="naw_send">Надіслати</string>
+    <string name="snackbar_fill_form">Будь ласка, заповніть форму</string>
+    <string name="ext_stor_perm_denied">У дозволі відмовлено, ви не можете отримати доступ до зовнішньої пам\'яті.</string>
+    <string name="restore_select_title">Обрано </string>
+
+</resources>

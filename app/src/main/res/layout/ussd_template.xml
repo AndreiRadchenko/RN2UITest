@@ -37,7 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:selectAllOnFocus="false"
-                    android:hint="Name">
+                    android:hint="@string/sms_template_name">
                     <requestFocus>
                     </requestFocus>
                 </EditText>
@@ -53,7 +53,7 @@
                     style="@style/Widget.AppCompat.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint = "Template">
+                    android:hint = "@string/sms_template_template">
                 </EditText>
             </android.support.design.widget.TextInputLayout>
 
@@ -74,7 +74,7 @@
                     android:paddingTop="10dp"
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="16sp"
-                    android:hint="Comment">
+                    android:hint="@string/sms_template_comment">
                 </EditText>
             </android.support.design.widget.TextInputLayout>
 

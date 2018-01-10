@@ -22,9 +22,8 @@
     <string name="items"> items</string>
 
     <plurals name="Deleted_message">
-        <item quantity="one">Deleted %1$d шаблон</item>
-        <item quantity="few">Deleted %1$d шаблони</item>
-        <item quantity="other">Deleted %1$d шаблонів</item>
+        <item quantity="one">Deleted %1$d template</item>
+        <item quantity="other">Deleted %1$d templates</item>
     </plurals>
 
     <string name="selection_toolbar_title">Slect items</string>
@@ -38,5 +37,15 @@
     <string name="backupDialogTitle">Save backup to phone storage</string>
     <string name="setupDialogTitle">Request needs to be setup</string>
     <string name="setupDialogMessage">Follow the instructions in the comment, and setup request</string>
+    <string name="naw_import">Import</string>
+    <string name="naw_backup">Backup</string>
+    <string name="naw_restore">Restore</string>
+    <string name="naw_settings">Settings</string>
+    <string name="naw_communicate">Communicate</string>
+    <string name="naw_share">Share</string>
+    <string name="naw_send">Send</string>
+    <string name="snackbar_fill_form">Please, fill form for save template</string>
+    <string name="ext_stor_perm_denied">Permission Denied, You cannot access External storage.</string>
+    <string name="restore_select_title">selected </string>
 
 </resources>

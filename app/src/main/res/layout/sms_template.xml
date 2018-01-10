@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Name">
+                    android:hint="@string/sms_template_name">
                     <requestFocus>
                     </requestFocus>
                 </EditText>
@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Phone number">
+                    android:hint="@string/phone_number">
                 </EditText>
             </android.support.design.widget.TextInputLayout>
 
@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Template">
+                    android:hint="@string/sms_template_template">
                 </EditText>
             </android.support.design.widget.TextInputLayout>
 
@@ -75,7 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Comment"
+                    android:hint="@string/sms_template_comment"
                     android:background="@null"
                     android:paddingLeft="5dp"
                     android:paddingTop="10dp"

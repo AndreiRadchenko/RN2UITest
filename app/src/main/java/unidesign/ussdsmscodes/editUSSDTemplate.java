@@ -115,7 +115,7 @@ public class editUSSDTemplate extends AppCompatActivity{
                         .setAction("Action", null).show();*/
 
                 if (name.length() == 0 && template.length() == 0) {
-                    Snackbar.make(findViewById(R.id.ussd_toolbar), "Please, fill form for save template", Snackbar.LENGTH_LONG)
+                    Snackbar.make(findViewById(R.id.ussd_toolbar), R.string.snackbar_fill_form, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     return false;
                 }

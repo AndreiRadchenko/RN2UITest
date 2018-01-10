@@ -245,8 +245,8 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
 
         if (mActionMode != null)
             //set action mode title on item selection
-            mActionMode.setTitle(String.valueOf(mAdapter
-                    .getSelectedCount()) + " selected");
+            mActionMode.setTitle(getString(R.string.restore_select_title)+ " " + String.valueOf(mAdapter
+                    .getSelectedCount()));
 
 
     }
