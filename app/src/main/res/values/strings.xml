@@ -26,6 +26,11 @@
         <item quantity="other">Deleted %1$d templates</item>
     </plurals>
 
+    <plurals name="Deleted_backup_message">
+        <item quantity="one">Deleted %1$d backup</item>
+        <item quantity="other">Deleted %1$d backups</item>
+    </plurals>
+
     <string name="selection_toolbar_title">Slect items</string>
     <string name="selection_toolbar_title_selected">Slected</string>
     <string name="LoadDialogText">Loading...</string>

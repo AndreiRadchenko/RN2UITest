@@ -22,10 +22,17 @@
     <string name="items"> items</string>
 
     <plurals name="Deleted_message">
-        <item quantity="one">Видалено %1$d шаблон</item>
-        <item quantity="few">Видалено %1$d шаблони</item>
-        <item quantity="many">Видалено %1$d шаблонів</item>
+        <item quantity="one">Видалено %1$d код</item>
+        <item quantity="few">Видалено %1$d коди</item>
+        <item quantity="many">Видалено %1$d кодів</item>
     </plurals>
+
+    <plurals name="Deleted_backup_message">
+        <item quantity="one">Видалено %1$d резервну копію</item>
+        <item quantity="few">Видалено %1$d резервні копії</item>
+        <item quantity="many">Видалено %1$d резервних копій</item>
+    </plurals>
+
 
     <string name="selection_toolbar_title">Обрати коди</string>
     <string name="selection_toolbar_title_selected">Обрано</string>

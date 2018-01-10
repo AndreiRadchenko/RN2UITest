@@ -280,7 +280,9 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
 
             }
         }
-        Toast.makeText(this, selected.size() + " item deleted.", Toast.LENGTH_SHORT).show();//Show Toast
+        //selected.size()
+        Toast.makeText(this, getResources().getQuantityString(
+                R.plurals.Deleted_backup_message, selected.size(), selected.size()), Toast.LENGTH_SHORT).show();//Show Toast
         mActionMode.finish();//Finish action mode after use
 
     }
