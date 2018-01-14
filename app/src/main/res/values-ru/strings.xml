@@ -1,0 +1,57 @@
+<resources>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="app_name">USSD и SMS коды</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_done">Сохранить</string>
+    <string name="action_copy">Копировать</string>
+    <string name="ussd_edit_form">Редактирование USSD</string>
+    <string name="sms_edit_form">Редактирование SMS</string>
+    <string name="import_template_form">Импорт кодов</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="sms_template_name">Название</string>
+    <string name="sms_template_template">Код</string>
+    <string name="sms_template_comment">Комментарий</string>
+    <string name="select_templates">Выделить коды</string>
+    <string name="select_all">Выделить все</string>
+    <string name="delete_selection">Удалить выделенное</string>
+    <string name="action_selection_settings">Настройки</string>
+    <string name="dele_items_snackbar">Выделенные коды удалены</string>
+
+    <plurals name="Deleted_message">
+        <item quantity="one">Удален %1$d код</item>
+        <item quantity="few">Удалены %1$d кода</item>
+        <item quantity="many">Удалены %1$d кодов</item>
+    </plurals>
+
+    <plurals name="Deleted_backup_message">
+        <item quantity="one">Удалена %1$d резервная копия</item>
+        <item quantity="few">Удалены %1$d резервные копии</item>
+        <item quantity="many">Удалены %1$d резервных копий</item>
+    </plurals>
+
+
+    <string name="selection_toolbar_title">Выделить коды</string>
+    <string name="selection_toolbar_title_selected">Выделенно</string>
+    <string name="LoadDialogText">Пожалуйста, подождите...</string>
+    <string name="no_sdcard">Внешняяя память недоступна</string>
+    <string name="Backup_sucsess">Резервная копия %1$s сохранена</string>
+    <string name="comment">Комментарий</string>
+    <string name="restore_activity_form">Восстановить резервную копию</string>
+    <string name="BackupRestoredMessage">Резервная копия %1$s восстановлена</string>
+    <string name="backupDialogTitle">Сохранить резервную копию во внешней памяти телефона</string>
+    <string name="setupDialogTitle">Запрос необходимо настроить</string>
+    <string name="setupDialogMessage">Воспользуйтесь инструкциеей в комментарии, что бы настроить запрос</string>
+    <string name="naw_import">Импорт кодов</string>
+    <string name="naw_backup">Резервная копия</string>
+    <string name="naw_restore">Восстановить копию</string>
+    <string name="naw_settings">Настройки</string>
+    <string name="naw_communicate">Общение</string>
+    <string name="naw_share">Поделится</string>
+    <string name="naw_send">Отправить</string>
+    <string name="snackbar_fill_form">Пожалуйста, заполните форму</string>
+    <string name="ext_stor_perm_denied">В разрешении отказанно, вы не можете получить доступ ко внешней памяти.</string>
+    <string name="restore_select_title">Выделенно </string>
+
+</resources>

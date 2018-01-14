@@ -371,7 +371,9 @@ public class RN_USSD extends AppCompatActivity
         //noinspection SimplifiableIfStatement
 //=========================set selection mode========================================================
         if (id == R.id.action_select) {
-            setSelectionMode();
+            //setSelectionMode();
+            Log.d("R.id.action_intro", "intent.action.introslider");
+            startActivity(new Intent("intent.action.introslider"));
                 //getActionBar().hide();
                 //actionMode = startActionMode(actionModeCallback);
             return true;
