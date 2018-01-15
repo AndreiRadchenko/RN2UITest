@@ -53,5 +53,7 @@
     <string name="snackbar_fill_form">Пожалуйста, заполните форму</string>
     <string name="ext_stor_perm_denied">В разрешении отказанно, вы не можете получить доступ ко внешней памяти.</string>
     <string name="restore_select_title">Выделенно </string>
+    <string name="template_saved">Код сохранен</string>
+    <string name="new_template_aded">Новый код добавлен</string>
 
 </resources>

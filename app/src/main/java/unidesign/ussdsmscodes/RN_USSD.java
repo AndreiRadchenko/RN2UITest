@@ -534,7 +534,7 @@ public class RN_USSD extends AppCompatActivity
                                 break;
                             case 2:
 
-                                    Uri sms_uri = Uri.parse("smsto:+" + item.getPhone());
+                                    Uri sms_uri = Uri.parse("smsto:" + item.getPhone());
                                     Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
                                     sms_intent.putExtra("sms_body", item.getTemplate());
                                     startActivity(sms_intent);

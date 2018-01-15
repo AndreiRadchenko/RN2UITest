@@ -55,5 +55,7 @@
     <string name="snackbar_fill_form">Будь ласка, заповніть форму</string>
     <string name="ext_stor_perm_denied">У дозволі відмовлено, ви не можете отримати доступ до зовнішньої пам\'яті.</string>
     <string name="restore_select_title">Обрано </string>
+    <string name="template_saved">Код збережено</string>
+    <string name="new_template_aded">Новий код додано</string>
 
 </resources>

@@ -65,5 +65,7 @@
     <string name="slide_3_desc">Make your diet chart by the help of health experts</string>
     <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
     <string name="play_again">Play Again</string>
+    <string name="template_saved">Template saved</string>
+    <string name="new_template_aded">New Template aded</string>
 
 </resources>

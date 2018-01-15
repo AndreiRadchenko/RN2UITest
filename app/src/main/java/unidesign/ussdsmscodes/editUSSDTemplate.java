@@ -134,7 +134,7 @@ public class editUSSDTemplate extends AppCompatActivity{
                 }
 
                 //dbHelper.close();
-                Toast.makeText(getApplication(), "Template saved", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), R.string.template_saved, Toast.LENGTH_LONG).show();
                 finish();
 
                 return true;
@@ -145,7 +145,7 @@ public class editUSSDTemplate extends AppCompatActivity{
                         .setAction("Action", null).show();*/
 
                 if (name.length() == 0 && template.length() == 0) {
-                    Snackbar.make(findViewById(R.id.ussd_toolbar), "Please, fill form for save template", Snackbar.LENGTH_LONG)
+                    Snackbar.make(findViewById(R.id.ussd_toolbar), R.string.snackbar_fill_form, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     return false;
                 }
@@ -160,7 +160,7 @@ public class editUSSDTemplate extends AppCompatActivity{
                             TempContentProvider.CONTENT_URI_USSD, values);
 
                 //dbHelper.close();
-                Toast.makeText(getApplication(), "New Template aded", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), R.string.new_template_aded, Toast.LENGTH_LONG).show();
                 finish();
 
                 return true;
