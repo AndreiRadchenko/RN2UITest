@@ -57,5 +57,16 @@
     <string name="restore_select_title">Обрано </string>
     <string name="template_saved">Код збережено</string>
     <string name="new_template_aded">Новий код додано</string>
+    <!--Strings for intro slider  ============================================================== -->
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="next">Наступна</string>
+    <string name="skip">Пропустити</string>
+    <string name="start">Зрозуміло</string>
+    <string name="slide_1_title">Швидкий доступ</string>
+    <string name="slide_1_desc">Тримайте всі потрібні коди під рукою</string>
+    <string name="slide_2_title">Просте налаштування</string>
+    <string name="slide_2_desc">Імпортуйте коди або створіть свої власні</string>
+    <string name="slide_3_title">Безпечне використання</string>
+    <string name="slide_3_desc">Захистіть конфіденційність пін-кодом чи відбитком пальця</string>
 
 </resources>

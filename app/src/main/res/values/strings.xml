@@ -52,20 +52,18 @@
     <string name="snackbar_fill_form">Please, fill form for save template</string>
     <string name="ext_stor_perm_denied">Permission Denied, You cannot access External storage.</string>
     <string name="restore_select_title">selected </string>
+    <string name="template_saved">Template saved</string>
+    <string name="new_template_aded">New Template aded</string>
     <!--Strings for intro slider  ============================================================== -->
     <string name="title_activity_welcome">Home Screen</string>
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
-    <string name="slide_1_title">Daily Workout</string>
-    <string name="slide_1_desc">Set your daily workout routine by the help of trainer</string>
-    <string name="slide_2_title">Meditation Techniques </string>
-    <string name="slide_2_desc">Learn about the different meditation techniques and practice them</string>
-    <string name="slide_3_title">Diet Chart</string>
-    <string name="slide_3_desc">Make your diet chart by the help of health experts</string>
-    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
-    <string name="play_again">Play Again</string>
-    <string name="template_saved">Template saved</string>
-    <string name="new_template_aded">New Template aded</string>
+    <string name="slide_1_title">Quick access</string>
+    <string name="slide_1_desc">Keep all codes you need at fingertips</string>
+    <string name="slide_2_title">Simple settings </string>
+    <string name="slide_2_desc">Import codes and create their own</string>
+    <string name="slide_3_title">Secure usage</string>
+    <string name="slide_3_desc">Protect your privacy with pin code or fingerprint</string>
 
 </resources>
