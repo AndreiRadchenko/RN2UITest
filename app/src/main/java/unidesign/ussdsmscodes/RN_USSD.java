@@ -59,6 +59,7 @@ import java.util.TimerTask;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import unidesign.ussdsmscodes.MySQLight.TemplatesDataSource;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
+import unidesign.ussdsmscodes.Preferencec.SettingsPrefActivity;
 import unidesign.ussdsmscodes.SettingsTools.BackupDialog;
 import unidesign.ussdsmscodes.SettingsTools.BackupTask;
 import unidesign.ussdsmscodes.SettingsTools.setupTemplateDialog;
@@ -428,12 +429,17 @@ public class RN_USSD extends AppCompatActivity
                 ActivityCompat.requestPermissions(this, new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE},PERMISSION_READ_SD);
             }
+        }
+        else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_manage) {
+            Intent settings_intent = new Intent(this, SettingsPrefActivity.class);
+            startActivity(settings_intent);
+            //startActivity(new Intent("intent.action.settings"));
+        }
+        else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        }
+        else if (id == R.id.nav_send) {
 
         }
 

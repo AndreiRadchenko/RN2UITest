@@ -106,15 +106,30 @@
             android:label="USSD/SMS Templates Provider"></provider>
 
         <activity
-            android:name=".Gallery"
-            android:label="Gallery"
-            android:parentActivityName=".RN_USSD">
+            android:name=".Preferencec.SettingsPrefActivity"
+            android:label="Settings"
+            android:parentActivityName=".RN_USSD"
+            android:theme="@style/AppTheme.Settings">
             <intent-filter>
-                <action android:name="intent.action.gallery" />
+                <action android:name="intent.action.settings" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".Preferencec.Pin_lock_activity"
+            android:label="Enter PIN"
+            android:parentActivityName=".RN_USSD"
+            android:screenOrientation="nosensor"
+            android:theme="@style/AppTheme.PINWindow">
+            <intent-filter>
+                <action android:name="intent.action.pin_lock_activity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".IntroSlider.WelcomeActivity"
             android:screenOrientation="nosensor">

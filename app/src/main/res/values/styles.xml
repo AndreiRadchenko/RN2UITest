@@ -14,7 +14,26 @@
         <item name="actionModeBackground">@color/select_toolbar_background</item>
     </style>
 
+    <!-- Base application theme. -->
+    <style name="AppTheme.Settings" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here.
+        Theme.AppCompat.Light.DarkActionBar-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--  It should be true otherwise action mode will not overlay toolbar -->
+        <item name="windowActionModeOverlay">true</item>
+
+        <!--  For Custom Action Mode Background Color/Drawable -->
+        <item name="actionModeBackground">@color/select_toolbar_background</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.PINWindow" parent ="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

@@ -9,6 +9,13 @@
 
     </style>
 
+    <style name="AppTheme.PINWindow" parent ="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/mine_shaft</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
     <!--@android:color/colorPrimaryDark
     <item name="android:windowTranslucentStatus">false</item>
     -->
