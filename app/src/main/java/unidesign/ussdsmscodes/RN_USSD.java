@@ -2,9 +2,11 @@ package unidesign.ussdsmscodes;
 
 import android.Manifest;
 import android.app.ActionBar;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -59,7 +61,9 @@ import java.util.TimerTask;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import unidesign.ussdsmscodes.MySQLight.TemplatesDataSource;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
+import unidesign.ussdsmscodes.Preferencec.Pin_lock_activity;
 import unidesign.ussdsmscodes.Preferencec.SettingsPrefActivity;
+import unidesign.ussdsmscodes.Preferencec.pref_items;
 import unidesign.ussdsmscodes.SettingsTools.BackupDialog;
 import unidesign.ussdsmscodes.SettingsTools.BackupTask;
 import unidesign.ussdsmscodes.SettingsTools.setupTemplateDialog;
@@ -68,6 +72,9 @@ import unidesign.ussdsmscodes.helper.SimpleItemTouchHelperCallback;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+
+import static unidesign.ussdsmscodes.Preferencec.SettingsPrefActivity.PIN_REQUEST;
+import static unidesign.ussdsmscodes.Preferencec.pref_items.pref_Autorization;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -105,6 +112,9 @@ public class RN_USSD extends AppCompatActivity
     static View select_home;
     private View view;
     static FragmentManager mfragmentManager;
+    SharedPreferences sharedPrefs;
+    SharedPreferences.Editor editor;
+    public static boolean pinCheckComplete = false;
 
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
@@ -121,6 +131,9 @@ public class RN_USSD extends AppCompatActivity
         setContentView(R.layout.activity_main);
         mfragmentManager = getSupportFragmentManager();
         //RxLifecycleAndroid.bindActivity(this);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sharedPrefs.edit();
+        pinCheckComplete = false;
 
         appbar = (AppBarLayout) findViewById(R.id.appbar);
 
@@ -854,8 +867,26 @@ public class RN_USSD extends AppCompatActivity
 
     @Override
     public void onResume() {
-        super.onResume();
 
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false) && !pinCheckComplete){
+            Intent j = new Intent(this, Pin_lock_activity.class);
+            j.putExtra("lanchMode", "checkin");
+            startActivityForResult(j, PIN_REQUEST);
+            }
+        super.onResume();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        pinCheckComplete = false;
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        //pinCheckComplete = false;
     }
 
     @Override
@@ -939,5 +970,47 @@ public class RN_USSD extends AppCompatActivity
     public void onDialogNegativeClick(DialogFragment dialog) {
         // User touched the dialog's negative button
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String message = "";
+        Bundle extras = data.getExtras();
+        if (extras != null)
+            message = extras.getString("message");
+        // если пришло ОК
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PIN_REQUEST:
+                    pinCheckComplete = true;
+                    break;
+
+            }
+        }
+        // если вернулось не ОК
+        else {
+            switch (message){
+                //onBackPressed() pin deleted
+                case "":
+                      finish();
+//                    editor.putBoolean(pref_Autorization, authorization_switch_old_value);
+//                    editor.commit();
+//                    authorization_switch.setChecked(authorization_switch_old_value);
+                    break;
+                case "pin deleted":
+//                    editor.putBoolean(pref_Autorization, false);
+//                    editor.commit();
+//                    authorization_switch.setChecked(false);
+//                    Toast.makeText(mContext, "PIN set canceled", Toast.LENGTH_LONG).show();
+                    break;
+                case "delete app data":
+                    editor.putBoolean(pref_Autorization, false);
+                    editor.commit();
+                    Toast.makeText(this, "Application data deleted", Toast.LENGTH_LONG).show();
+                    break;
+            }
+
+
+        }
     }
 }

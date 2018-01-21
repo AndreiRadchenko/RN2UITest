@@ -1,6 +1,5 @@
 package unidesign.ussdsmscodes.Preferencec;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,9 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,8 +17,9 @@ import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 
 import unidesign.ussdsmscodes.R;
+import unidesign.ussdsmscodes.RN_USSD;
 
-import static unidesign.ussdsmscodes.Preferencec.preferences_item.pref_PIN;
+import static unidesign.ussdsmscodes.Preferencec.pref_items.pref_PIN;
 
 /**
  * Created by United on 1/19/2018.
@@ -47,13 +45,16 @@ public class Pin_lock_activity extends AppCompatActivity{
             enterPINattemption ++;
             //first lanch for set PIN
             if (lanchMode.equals("newPIN")){
-                //confirm PIN
+                //enter new PIN
                 if (IntermediatePIN.equals(pin)){
                     editor.putString(pref_PIN, pin);
                     editor.commit();
+//                    RN_USSD.pinCheckComplete = true;
                     setResult(RESULT_OK, new Intent());
+                    enterPINattemption = 0;
                     finish();
                 }
+                //confirm PIN
                 else if (enterPINattemption < 2){
                     profile_hint_text.setText("Confirm PIN");
                     IntermediatePIN = pin;
@@ -69,9 +70,69 @@ public class Pin_lock_activity extends AppCompatActivity{
                 }
 
             }
-            //confirm PIN
-            else if (lanchMode.equals("newPIN") && !IntermediatePIN.equals("")){
-
+            //delete PIN
+            else if (lanchMode.equals("deletePIN")){
+                    if (sharedPrefs.getString(pref_PIN, null).equals(pin)){
+                        editor.putString(pref_PIN, "");
+                        editor.commit();
+                        enterPINattemption = 0;
+                        Intent i = new Intent();
+                        i.putExtra("message", "pin deleted");
+                        setResult(RESULT_CANCELED, i);
+                        finish();
+                    }
+                    else {
+                        if (enterPINattemption < 3) {
+                            //enterPINattemption ++;
+                            mPinLockView.resetPinLockView();
+                            Toast.makeText(pin_lock_context, "Confirm fail, try again", Toast.LENGTH_LONG).show();
+                        }
+                        else if (enterPINattemption == 3){
+                            //enterPINattemption ++;
+                            mPinLockView.resetPinLockView();
+                            Toast.makeText(pin_lock_context, "If you enter incorrect PIN again, " +
+                                    "application data will be lost", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            //delete app data
+                            enterPINattemption =0;
+                            Intent i = new Intent();
+                            i.putExtra("message", "delete app data");
+                            setResult(RESULT_CANCELED, i);
+                            finish();
+                        }
+                    }
+            }
+            //lanch app check in
+            else if (lanchMode.equals("checkin")){
+                if (sharedPrefs.getString(pref_PIN, null).equals(pin)){
+                    enterPINattemption = 0;
+                    Intent i = new Intent();
+                    i.putExtra("message", "pin ok");
+                    setResult(RESULT_OK, i);
+                    finish();
+                }
+                else {
+                    if (enterPINattemption < 3) {
+                        //enterPINattemption ++;
+                        mPinLockView.resetPinLockView();
+                        Toast.makeText(pin_lock_context, "Confirm fail, try again", Toast.LENGTH_LONG).show();
+                    }
+                    else if (enterPINattemption == 3){
+                        //enterPINattemption ++;
+                        mPinLockView.resetPinLockView();
+                        Toast.makeText(pin_lock_context, "If you enter incorrect PIN again, " +
+                                "application data will be lost", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        //delete app data
+                        enterPINattemption =0;
+                        Intent i = new Intent();
+                        i.putExtra("message", "delete app data");
+                        setResult(RESULT_CANCELED, i);
+                        finish();
+                    }
+                }
             }
         }
 
@@ -112,7 +173,6 @@ public class Pin_lock_activity extends AppCompatActivity{
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPrefs.edit();
         IntermediatePIN = "";
-        enterPINattemption = 0;
         pin_lock_context = this;
 
         Bundle extras = getIntent().getExtras();
@@ -126,4 +186,18 @@ public class Pin_lock_activity extends AppCompatActivity{
         super.onBackPressed();
         }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        editor.putInt(pref_items.pref_enterPINattemption, enterPINattemption);
+        editor.commit();
+        Log.d("PIN_Lock_Activity", "onPause(), enterPINattemption = " + enterPINattemption);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        enterPINattemption = sharedPrefs.getInt(pref_items.pref_enterPINattemption, 0);
+        Log.d("PIN_Lock_Activity", "onResume(), enterPINattemption = " + enterPINattemption);
+    }
 }
