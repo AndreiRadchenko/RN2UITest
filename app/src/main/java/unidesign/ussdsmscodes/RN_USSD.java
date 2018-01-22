@@ -1,11 +1,13 @@
 package unidesign.ussdsmscodes;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
@@ -115,6 +117,10 @@ public class RN_USSD extends AppCompatActivity
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
     public static boolean pinCheckComplete = false;
+    public static Handler h;
+    public static final int TIMER_START = 1;
+    public static final int TIMER_COUNT = 2;
+    public static final int TIMER_STOP = 3;
 
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
@@ -343,6 +349,45 @@ public class RN_USSD extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        h = new Handler() {
+            @SuppressLint("NewApi")
+            public void handleMessage(android.os.Message msg) {
+                switch (msg.what) {
+                    case TIMER_START:
+                        pinCheckComplete = true;
+                        // MainTabActivity.Timer.setText((CharSequence) msg.obj);
+//                        MainTabActivity.SMS_tab_title
+//                                .setText((CharSequence) msg.obj);
+                        break;
+                    case TIMER_COUNT:
+                        // MainTabActivity.Timer.setText((CharSequence) msg.obj);
+//                        MainTabActivity.SMS_tab_title
+//                                .setText((CharSequence) msg.obj);
+                        break;
+                    case TIMER_STOP:
+                        pinCheckComplete = false;
+                       // MainTabActivity.SMS_tab_title.setText("SMS");
+
+                        // refresh SMS view only if they are exist and foreground
+                        //Log.d(TAG,
+                        //		"handler, TIMER_STOP, MainTabActivity.isVisible = "
+                        //				+ MainTabActivity.isVisible);
+//                        if (MainTabActivity.isVisible) {
+//                            Intent i = new Intent();
+//                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            i.setClassName("requests.notepad",
+//                                    "requests.notepad.MainTabActivity");
+//                            startActivity(i);
+//                            //	Log.d(TAG,
+//                            //			"handler, TIMER_STOP, MainTabActivity reload ");
+//                            // ((MainTabActivity)getParent()).tabHost.setCurrentTab(0);
+//                            // ((MainTabActivity)getParent()).tabHost.setCurrentTab(1);
+//                        }
+                        break;
+                }
+            };
+        };
 
     }
 
@@ -867,20 +912,27 @@ public class RN_USSD extends AppCompatActivity
 
     @Override
     public void onResume() {
-
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false) && !pinCheckComplete){
-            Intent j = new Intent(this, Pin_lock_activity.class);
-            j.putExtra("lanchMode", "checkin");
-            startActivityForResult(j, PIN_REQUEST);
-            }
+        boolean PINCountAlive = false;
+        try {
+            PINCountAlive = Pin_lock_activity.PINCountThread.isAlive();
+        }
+        catch (NullPointerException e) {
+
+        }
+        if (!PINCountAlive)
+            if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false) && !pinCheckComplete){
+                Intent j = new Intent(this, Pin_lock_activity.class);
+                j.putExtra("lanchMode", "checkin");
+                startActivityForResult(j, PIN_REQUEST);
+                }
         super.onResume();
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        pinCheckComplete = false;
+        //pinCheckComplete = false;
     }
 
     @Override
