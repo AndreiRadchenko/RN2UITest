@@ -1,4 +1,4 @@
-package unidesign.ussdsmscodes.Preferencec;
+package unidesign.ussdsmscodes.Preferences;
 
 /**
  * Created by United on 1/17/2018.

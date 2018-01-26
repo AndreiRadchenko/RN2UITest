@@ -16,9 +16,9 @@
         <Preference android:title="Change PIN"
             android:dependency="Authorization_switch">
             <intent
-                android:targetPackage="requests.notepad"
-                android:targetClass="requests.notepad.Preferences.EnterPINcode"
-                android:action="requests.notepad.enterPINcode"
+                android:targetPackage="unidesign.ussdsmscodes"
+                android:targetClass="unidesign.ussdsmscodes.Preferences.Pin_lock_activity"
+                android:action="intent.action.pin_lock_activity"
                 android:data="ussd">
                 <extra android:name="lanchMode" android:value="changePIN" />
             </intent>

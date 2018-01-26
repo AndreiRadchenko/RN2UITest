@@ -106,7 +106,7 @@
             android:label="USSD/SMS Templates Provider"></provider>
 
         <activity
-            android:name=".Preferencec.SettingsPrefActivity"
+            android:name=".Preferences.SettingsPrefActivity"
             android:label="Settings"
             android:parentActivityName=".RN_USSD"
             android:theme="@style/AppTheme.Settings">
@@ -118,7 +118,7 @@
         </activity>
 
         <activity
-            android:name=".Preferencec.Pin_lock_activity"
+            android:name=".Preferences.Pin_lock_activity"
             android:label="Enter PIN"
             android:parentActivityName=".RN_USSD"
             android:screenOrientation="nosensor"

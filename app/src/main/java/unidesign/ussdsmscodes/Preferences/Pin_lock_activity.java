@@ -1,4 +1,4 @@
-package unidesign.ussdsmscodes.Preferencec;
+package unidesign.ussdsmscodes.Preferences;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import unidesign.ussdsmscodes.R;
 import unidesign.ussdsmscodes.RN_USSD;
 
-import static unidesign.ussdsmscodes.Preferencec.pref_items.pref_PIN;
+import static unidesign.ussdsmscodes.Preferences.pref_items.pref_PIN;
 
 /**
  * Created by United on 1/19/2018.
@@ -41,7 +41,7 @@ public class Pin_lock_activity extends AppCompatActivity{
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
     Context pin_lock_context;
-    public static Thread PINCountThread;
+    public static CountThread PINCountThread = null;
 //    public static Thread PINCountThread;
 
     private PinLockListener mPinLockListener = new PinLockListener() {
@@ -53,11 +53,12 @@ public class Pin_lock_activity extends AppCompatActivity{
             if (lanchMode.equals("newPIN")){
                 //enter new PIN
                 if (IntermediatePIN.equals(pin)){
+                    PINCountThread = new CountThread();
+                    PINCountThread.start();
+                    enterPINattemption = 0;
                     editor.putString(pref_PIN, pin);
                     editor.commit();
-//                    RN_USSD.pinCheckComplete = true;
                     setResult(RESULT_OK, new Intent());
-                    enterPINattemption = 0;
                     finish();
                 }
                 //confirm PIN
@@ -80,8 +81,12 @@ public class Pin_lock_activity extends AppCompatActivity{
             else if (lanchMode.equals("deletePIN")){
                     if (sharedPrefs.getString(pref_PIN, null).equals(pin)){
                         editor.putString(pref_PIN, "");
+                        editor.putBoolean(pref_items.pref_Autorization, false);
                         editor.commit();
                         enterPINattemption = 0;
+
+                        PINCountThread.interrupt();
+
                         Intent i = new Intent();
                         i.putExtra("message", "pin deleted");
                         setResult(RESULT_CANCELED, i);
@@ -101,7 +106,16 @@ public class Pin_lock_activity extends AppCompatActivity{
                         }
                         else {
                             //delete app data
-                            enterPINattemption =0;
+                            editor.putString(pref_PIN, "");
+                            editor.putBoolean(pref_items.pref_Autorization, false);
+                            editor.commit();
+                            enterPINattemption = 0;
+                            try {
+                                PINCountThread.interrupt();
+                            } catch (NullPointerException e) {
+
+                            }
+
                             Intent i = new Intent();
                             i.putExtra("message", "delete app data");
                             setResult(RESULT_CANCELED, i);
@@ -113,8 +127,10 @@ public class Pin_lock_activity extends AppCompatActivity{
             else if (lanchMode.equals("checkin")){
                 if (sharedPrefs.getString(pref_PIN, null).equals(pin)){
                     enterPINattemption = 0;
+                    PINCountThread = new Pin_lock_activity.CountThread();
                     PINCountThread.start();
 
+                    //PINCountThread.interrupt();
                     Intent i = new Intent();
                     i.putExtra("message", "pin ok");
                     setResult(RESULT_OK, i);
@@ -186,57 +202,7 @@ public class Pin_lock_activity extends AppCompatActivity{
         Bundle extras = getIntent().getExtras();
         lanchMode = extras.getString("lanchMode");
 
-        PINCountThread = new Thread( new Runnable() {
-
-            Message msg;
-            String time_left;
-            int session_min;
-
-            public void run() {
-                //Code
-                try {
-
-                    session_min = Integer.parseInt(sharedPrefs
-                            .getString("session_time", "5"));
-                    int session_sec = session_min * 60;
-
-                    SimpleDateFormat sdf = new SimpleDateFormat(
-                            "mm:ss");
-                    time_left = "SMS  "
-                            + sdf.format(session_sec * 1000);
-                    // ������� ���������
-                    msg = RN_USSD.h.obtainMessage(RN_USSD.TIMER_START,
-                            time_left);
-                    // ����������
-                    RN_USSD.h.sendMessage(msg);
-                    TimeUnit.SECONDS.sleep(1);
-
-                    for (int i = 0; i < session_sec; i++) {
-                        // if application was closed - thread
-                        // finish too
-                        if (PINCountThread.isInterrupted())
-                            break;
-                        // return;
-
-                        time_left = "SMS  "
-                                + sdf.format((session_sec - i) * 1000);
-                        // Log.d("In new thread ", time_left);
-                        // ������� ���������
-                        msg = RN_USSD.h.obtainMessage(RN_USSD.TIMER_COUNT,
-                                time_left);
-                        // ����������
-                        RN_USSD.h.sendMessage(msg);
-                        TimeUnit.SECONDS.sleep(1);
-                    }
-
-                    RN_USSD.h.sendEmptyMessage(RN_USSD.TIMER_STOP);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    RN_USSD.h.sendEmptyMessage(RN_USSD.TIMER_STOP);
-                }
-            }
-        });
+//        RN_USSD.PINCountThread = new CountThread();
 
     }
 
@@ -265,5 +231,77 @@ public class Pin_lock_activity extends AppCompatActivity{
     public void onDestroy() {
         //PINCountThread.interrupt();
         super.onDestroy();
+    }
+
+    public static class CountThread extends Thread {
+
+        Message msg;
+        String time_left;
+        int session_min;
+
+        @Override
+        public void run() {
+            super.run();
+            //Code
+            try {
+
+                session_min = 3;//Integer.parseInt(sharedPrefs.getString("session_time", "3"));
+                int session_sec = session_min * 60;
+
+                SimpleDateFormat sdf = new SimpleDateFormat(
+                        "mm:ss");
+                time_left = "SMS  "
+                        + sdf.format(session_sec * 1000);
+                // ������� ���������
+                msg = RN_USSD.h.obtainMessage(RN_USSD.TIMER_START,
+                        time_left);
+                // ����������
+                RN_USSD.h.sendMessage(msg);
+                //TimeUnit.SECONDS.sleep(1);
+                Thread thisThread = Thread.currentThread();
+
+                for (int i = 0; i < session_sec; i++) {
+                    // if application was closed - thread
+                    // finish too
+                    try {
+                        if (PINCountThread.interrupted()) {
+                            Log.d("In new thread ", "PINCountThread, break cycle success");
+                            break;
+                        }
+                    } catch (Exception e) {
+                        Log.d("In new thread ", "PINCountThread, break cycle Exception " + e);
+                    }
+
+                    // return;
+
+                    time_left = "SMS  "
+                            + sdf.format((session_sec - i) * 1000);
+                    Log.d("In new thread ", time_left);
+                    // ������� ���������
+                    msg = RN_USSD.h.obtainMessage(RN_USSD.TIMER_COUNT,
+                            time_left);
+                    // ����������
+                    RN_USSD.h.sendMessage(msg);
+
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        Log.d(TAG, "Interrupting and stopping the Random Number Thread");
+                        return;
+                    }
+
+                    //TimeUnit.SECONDS.sleep(1);
+                }
+
+                RN_USSD.h.sendEmptyMessage(RN_USSD.TIMER_STOP);
+                //Looper.myLooper().quit();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                RN_USSD.h.sendEmptyMessage(RN_USSD.TIMER_STOP);
+                //Looper.myLooper().quit();
+            }
+
+        }
     }
 }

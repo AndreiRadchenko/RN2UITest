@@ -1,4 +1,4 @@
-package unidesign.ussdsmscodes.Preferencec;
+package unidesign.ussdsmscodes.Preferences;
 
 /**
  * Created by United on 1/17/2018.
@@ -12,13 +12,13 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import unidesign.ussdsmscodes.R;
-import unidesign.ussdsmscodes.RN_USSD;
 
-import static unidesign.ussdsmscodes.Preferencec.pref_items.pref_Autorization;
+import static unidesign.ussdsmscodes.Preferences.pref_items.pref_Autorization;
 
 public class SettingsPrefActivity extends AppCompatPreferenceActivity {
     private static final String TAG = SettingsPrefActivity.class.getSimpleName();
@@ -137,7 +137,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                     editor.putBoolean(pref_Autorization, true);
                     editor.commit();
                     authorization_switch.setChecked(true);
-                    RN_USSD.pinCheckComplete = true;
+                    //RN_USSD.pinCheckComplete = true;
                     Toast.makeText(mContext, "PIN set", Toast.LENGTH_LONG).show();
                     //finish();
                     break;
@@ -154,14 +154,11 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                     authorization_switch.setChecked(authorization_switch_old_value);
                     break;
                 case "pin deleted":
-                    editor.putBoolean(pref_Autorization, false);
-                    editor.commit();
+
                     authorization_switch.setChecked(false);
                     Toast.makeText(mContext, "PIN set canceled", Toast.LENGTH_LONG).show();
                     break;
                 case "delete app data":
-                    editor.putBoolean(pref_Autorization, false);
-                    editor.commit();
                     authorization_switch.setChecked(false);
                     Toast.makeText(mContext, "Application data deleted", Toast.LENGTH_LONG).show();
                     break;

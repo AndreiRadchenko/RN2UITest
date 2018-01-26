@@ -3,13 +3,15 @@ package unidesign.ussdsmscodes;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.Telephony;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -41,7 +43,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,9 +64,9 @@ import java.util.TimerTask;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import unidesign.ussdsmscodes.MySQLight.TemplatesDataSource;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
-import unidesign.ussdsmscodes.Preferencec.Pin_lock_activity;
-import unidesign.ussdsmscodes.Preferencec.SettingsPrefActivity;
-import unidesign.ussdsmscodes.Preferencec.pref_items;
+import unidesign.ussdsmscodes.Preferences.Pin_lock_activity;
+import unidesign.ussdsmscodes.Preferences.SettingsPrefActivity;
+import unidesign.ussdsmscodes.Preferences.pref_items;
 import unidesign.ussdsmscodes.SettingsTools.BackupDialog;
 import unidesign.ussdsmscodes.SettingsTools.BackupTask;
 import unidesign.ussdsmscodes.SettingsTools.setupTemplateDialog;
@@ -75,8 +76,8 @@ import unidesign.ussdsmscodes.helper.SimpleItemTouchHelperCallback;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
-import static unidesign.ussdsmscodes.Preferencec.SettingsPrefActivity.PIN_REQUEST;
-import static unidesign.ussdsmscodes.Preferencec.pref_items.pref_Autorization;
+import static unidesign.ussdsmscodes.Preferences.SettingsPrefActivity.PIN_REQUEST;
+import static unidesign.ussdsmscodes.Preferences.pref_items.pref_Autorization;
 
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -87,6 +88,7 @@ public class RN_USSD extends AppCompatActivity
     static final int DISPOSE_OBSERVER = -100;
     static final int PERMISSION_REQUEST_CODE = 1;
     public static final int PERMISSION_READ_SD = 2;
+    //public static Pin_lock_activity.CountThread PINCountThread = null;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -134,12 +136,37 @@ public class RN_USSD extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        boolean PINCountAlive = false;
+//        try {
+//            PINCountAlive = Pin_lock_activity.PINCountThread.isAlive();
+//        }
+//        catch (NullPointerException e) {
+//
+//        }
+//        if (!PINCountAlive) {
+//            //PINCountThread = new Pin_lock_activity.CountThread();
+//            if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false)) {
+//                Intent j = new Intent(this, Pin_lock_activity.class);
+//                j.putExtra("lanchMode", "checkin");
+//                startActivityForResult(j, PIN_REQUEST);
+//            }
+//        }
+
         setContentView(R.layout.activity_main);
         mfragmentManager = getSupportFragmentManager();
         //RxLifecycleAndroid.bindActivity(this);
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPrefs.edit();
         pinCheckComplete = false;
+
+        // receiver for kill app when phone gonna idle mode (screen off)
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_REBOOT);
+        filter.addAction(Intent.ACTION_SHUTDOWN);
+        // ("kill.Requests.Notepad");
+        registerReceiver(screenOffReceiver, filter);
 
         appbar = (AppBarLayout) findViewById(R.id.appbar);
 
@@ -912,7 +939,7 @@ public class RN_USSD extends AppCompatActivity
 
     @Override
     public void onResume() {
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean PINCountAlive = false;
         try {
             PINCountAlive = Pin_lock_activity.PINCountThread.isAlive();
@@ -920,12 +947,14 @@ public class RN_USSD extends AppCompatActivity
         catch (NullPointerException e) {
 
         }
-        if (!PINCountAlive)
-            if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false) && !pinCheckComplete){
+        if (!PINCountAlive) {
+            //PINCountThread = new Pin_lock_activity.CountThread();
+            if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false)) {
                 Intent j = new Intent(this, Pin_lock_activity.class);
                 j.putExtra("lanchMode", "checkin");
                 startActivityForResult(j, PIN_REQUEST);
-                }
+            }
+        }
         super.onResume();
     }
 
@@ -939,6 +968,11 @@ public class RN_USSD extends AppCompatActivity
     public void onStop(){
         super.onStop();
         //pinCheckComplete = false;
+    }
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(screenOffReceiver);
+        super.onDestroy();
     }
 
     @Override
@@ -1034,7 +1068,7 @@ public class RN_USSD extends AppCompatActivity
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case PIN_REQUEST:
-                    pinCheckComplete = true;
+                    //pinCheckComplete = true;
                     break;
 
             }
@@ -1065,4 +1099,12 @@ public class RN_USSD extends AppCompatActivity
 
         }
     }
+
+    BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "screenOffReceiver onReceive()");
+            //finish();
+        }
+    };
 }
