@@ -157,6 +157,11 @@ public class Pin_lock_activity extends AppCompatActivity{
                     else {
                         //delete app data
                         enterPINattemption =0;
+                        try {
+                            PINCountThread.interrupt();
+                        } catch (NullPointerException e) {
+
+                        }
                         Intent i = new Intent();
                         i.putExtra("message", "delete app data");
                         setResult(RESULT_CANCELED, i);
