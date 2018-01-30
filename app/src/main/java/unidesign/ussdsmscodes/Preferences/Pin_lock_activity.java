@@ -4,7 +4,9 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -19,6 +21,12 @@ import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,8 +35,11 @@ import java.util.concurrent.TimeUnit;
 
 import unidesign.ussdsmscodes.R;
 import unidesign.ussdsmscodes.RN_USSD;
+import unidesign.ussdsmscodes.SettingsTools.BackupTask;
+import unidesign.ussdsmscodes.TempContentProvider.TempContentProvider;
 
 import static unidesign.ussdsmscodes.Preferences.pref_items.pref_PIN;
+import static unidesign.ussdsmscodes.SettingsTools.BackupTask.DIR_SD;
 
 /**
  * Created by United on 1/19/2018.
@@ -121,7 +132,7 @@ public class Pin_lock_activity extends AppCompatActivity{
                             } catch (NullPointerException e) {
 
                             }
-
+                            deleteUserData();
                             Intent i = new Intent();
                             i.putExtra("message", "delete app data");
                             setResult(RESULT_CANCELED, i);
@@ -162,6 +173,7 @@ public class Pin_lock_activity extends AppCompatActivity{
                         } catch (NullPointerException e) {
 
                         }
+                        deleteUserData();
                         Intent i = new Intent();
                         i.putExtra("message", "delete app data");
                         setResult(RESULT_CANCELED, i);
@@ -300,6 +312,7 @@ public class Pin_lock_activity extends AppCompatActivity{
                     try {
                         TimeUnit.SECONDS.sleep(5);
                     } catch (InterruptedException e) {
+                        //Thread.interrupted();
                         Log.d(TAG, "Interrupting and stopping the PINCountThread");
                         return;
                     }
@@ -333,4 +346,59 @@ public class Pin_lock_activity extends AppCompatActivity{
              return  false;
         }
     }
+
+    public void deleteUserData(){
+//        Uri uri = Uri.parse(String.valueOf(TempContentProvider.CONTENT_URI_USSD));
+        Uri uri = TempContentProvider.CONTENT_URI_USSD;
+        getContentResolver().delete(uri, null, null);
+        uri = TempContentProvider.CONTENT_URI_SMS;
+        getContentResolver().delete(uri, null, null);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (!Environment.getExternalStorageState().equals(
+                        Environment.MEDIA_MOUNTED)) {
+                    Toast.makeText(pin_lock_context, R.string.no_sdcard, Toast.LENGTH_LONG).show();
+
+                }
+                File sdPath = new File(Environment.getExternalStorageDirectory()
+                        + File.separator + DIR_SD);
+                if (sdPath.exists()) {
+                    deleteFileOrDirectory(sdPath);
+                }
+            }
+        }).start();
+    }
+    //method deleted all files and directories inside delDir
+    public void deleteFileOrDirectory(File delDir){
+        try{
+            File src = delDir;
+
+            if (src.isDirectory()){
+                String files[] = src.list();
+                int filesLength = files.length;
+                for (int i = 0; i < filesLength; i++) {
+                    File src1 = new File(src.getPath(), files[i]);
+                     deleteFileOrDirectory(src1);
+                     if (src1.isDirectory())
+                         src1.delete();
+                }
+            }
+            else {
+                try {
+                    src.delete();
+                }
+                catch (Exception e) {
+                    Log.e("tag", e.getMessage());
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 }

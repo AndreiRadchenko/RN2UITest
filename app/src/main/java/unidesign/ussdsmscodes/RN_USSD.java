@@ -141,21 +141,6 @@ public class RN_USSD extends AppCompatActivity
 
         //mLockTime =
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        boolean PINCountAlive = false;
-//        try {
-//            PINCountAlive = Pin_lock_activity.PINCountThread.isAlive();
-//        }
-//        catch (NullPointerException e) {
-//
-//        }
-//        if (!PINCountAlive) {
-//            //PINCountThread = new Pin_lock_activity.CountThread();
-//            if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false)) {
-//                Intent j = new Intent(this, Pin_lock_activity.class);
-//                j.putExtra("lanchMode", "checkin");
-//                startActivityForResult(j, PIN_REQUEST);
-//            }
-//        }
 
         setContentView(R.layout.activity_main);
         mfragmentManager = getSupportFragmentManager();
@@ -399,23 +384,7 @@ public class RN_USSD extends AppCompatActivity
                         break;
                     case TIMER_STOP:
                         pinCheckComplete = false;
-                       // MainTabActivity.SMS_tab_title.setText("SMS");
 
-                        // refresh SMS view only if they are exist and foreground
-                        //Log.d(TAG,
-                        //		"handler, TIMER_STOP, MainTabActivity.isVisible = "
-                        //				+ MainTabActivity.isVisible);
-//                        if (MainTabActivity.isVisible) {
-//                            Intent i = new Intent();
-//                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            i.setClassName("requests.notepad",
-//                                    "requests.notepad.MainTabActivity");
-//                            startActivity(i);
-//                            //	Log.d(TAG,
-//                            //			"handler, TIMER_STOP, MainTabActivity reload ");
-//                            // ((MainTabActivity)getParent()).tabHost.setCurrentTab(0);
-//                            // ((MainTabActivity)getParent()).tabHost.setCurrentTab(1);
-//                        }
                         break;
                 }
             };

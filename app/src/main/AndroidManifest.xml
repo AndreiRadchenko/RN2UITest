@@ -103,7 +103,9 @@
         <provider
             android:name=".TempContentProvider.TempContentProvider"
             android:authorities="unidesign.ussdsmscodes.TempContentProvider"
-            android:label="USSD/SMS Templates Provider"></provider>
+            android:label="USSD/SMS Templates Provider">
+
+        </provider>
 
         <activity
             android:name=".Preferences.SettingsPrefActivity"
