@@ -58,6 +58,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -123,6 +124,7 @@ public class RN_USSD extends AppCompatActivity
     public static final int TIMER_START = 1;
     public static final int TIMER_COUNT = 2;
     public static final int TIMER_STOP = 3;
+    public static long mLockTime  = 0;
 
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
@@ -137,6 +139,7 @@ public class RN_USSD extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //mLockTime =
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 //        boolean PINCountAlive = false;
 //        try {
@@ -386,11 +389,13 @@ public class RN_USSD extends AppCompatActivity
                         // MainTabActivity.Timer.setText((CharSequence) msg.obj);
 //                        MainTabActivity.SMS_tab_title
 //                                .setText((CharSequence) msg.obj);
+                        mLockTime = (long) msg.obj;
                         break;
                     case TIMER_COUNT:
                         // MainTabActivity.Timer.setText((CharSequence) msg.obj);
 //                        MainTabActivity.SMS_tab_title
 //                                .setText((CharSequence) msg.obj);
+                        mLockTime = (long) msg.obj;
                         break;
                     case TIMER_STOP:
                         pinCheckComplete = false;
@@ -940,14 +945,16 @@ public class RN_USSD extends AppCompatActivity
     @Override
     public void onResume() {
         //sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean PINCountAlive = false;
-        try {
-            PINCountAlive = Pin_lock_activity.PINCountThread.isAlive();
-        }
-        catch (NullPointerException e) {
-
-        }
-        if (!PINCountAlive) {
+//        boolean PINCountAlive = false;
+//        try {
+//            PINCountAlive = Pin_lock_activity.PINCountThread.isAlive();
+//        }
+//        catch (NullPointerException e) {
+//
+//        }
+        Date currDate = new Date(System.currentTimeMillis());
+//        if (!PINCountAlive) {
+            if (currDate.getTime() > mLockTime) {
             //PINCountThread = new Pin_lock_activity.CountThread();
             if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false)) {
                 Intent j = new Intent(this, Pin_lock_activity.class);

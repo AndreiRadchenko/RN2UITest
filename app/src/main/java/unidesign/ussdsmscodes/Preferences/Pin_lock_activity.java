@@ -1,11 +1,13 @@
 package unidesign.ussdsmscodes.Preferences;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,7 +19,10 @@ import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import unidesign.ussdsmscodes.R;
@@ -40,8 +45,9 @@ public class Pin_lock_activity extends AppCompatActivity{
     int enterPINattemption;
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
-    Context pin_lock_context;
+    public static Context pin_lock_context;
     public static CountThread PINCountThread = null;
+    public static final long IDLE_LOCK_INTERVAL = 3*60*1000; // in millisecond
 //    public static Thread PINCountThread;
 
     private PinLockListener mPinLockListener = new PinLockListener() {
@@ -238,29 +244,25 @@ public class Pin_lock_activity extends AppCompatActivity{
         Message msg;
         String time_left;
         int session_min;
+        Date currDate;
+        long mLockTime;
+        boolean newLockTimeSet;
+        //ActivityManager.RunningAppProcessInfo myAppProcess;
 
         @Override
         public void run() {
             super.run();
             //Code
             try {
+                currDate = new Date(System.currentTimeMillis());
+                mLockTime = currDate.getTime() + IDLE_LOCK_INTERVAL;
+                newLockTimeSet = true;
 
-                session_min = 3;//Integer.parseInt(sharedPrefs.getString("session_time", "3"));
-                int session_sec = session_min * 60;
-
-                SimpleDateFormat sdf = new SimpleDateFormat(
-                        "mm:ss");
-                time_left = "SMS  "
-                        + sdf.format(session_sec * 1000);
-                // ������� ���������
                 msg = RN_USSD.h.obtainMessage(RN_USSD.TIMER_START,
-                        time_left);
-                // ����������
+                        mLockTime);
                 RN_USSD.h.sendMessage(msg);
-                //TimeUnit.SECONDS.sleep(1);
-                Thread thisThread = Thread.currentThread();
 
-                for (int i = 0; i < session_sec; i++) {
+                for (;;) {
                     // if application was closed - thread
                     // finish too
                     try {
@@ -271,22 +273,29 @@ public class Pin_lock_activity extends AppCompatActivity{
                     } catch (Exception e) {
                         Log.d("In new thread ", "PINCountThread, break cycle Exception " + e);
                     }
+                    //finish tread when idle time is up
+                    currDate = new Date(System.currentTimeMillis());
+                    if (currDate.getTime() > mLockTime)
+                        break;
 
-                    // return;
-
-                    time_left = "SMS  "
-                            + sdf.format((session_sec - i) * 1000);
-                    Log.d("In new thread ", time_left);
-                    // ������� ���������
-                    msg = RN_USSD.h.obtainMessage(RN_USSD.TIMER_COUNT,
-                            time_left);
-                    // ����������
-                    RN_USSD.h.sendMessage(msg);
+                    if (!appInForeground(pin_lock_context)){
+                        Log.d("In new thread ", "Time left: " +
+                                (mLockTime - currDate.getTime()));
+                    }
+                    else {
+                        mLockTime = currDate.getTime() + IDLE_LOCK_INTERVAL;
+                        Log.d("In new thread ", "mLockTime set to: " +
+                                mLockTime);
+                        //renew LockTime in UI (RN_USSD)
+                        msg = RN_USSD.h.obtainMessage(RN_USSD.TIMER_COUNT,
+                                mLockTime);
+                        RN_USSD.h.sendMessage(msg);
+                    }
 
                     try {
-                        TimeUnit.SECONDS.sleep(1);
+                        TimeUnit.SECONDS.sleep(5);
                     } catch (InterruptedException e) {
-                        Log.d(TAG, "Interrupting and stopping the Random Number Thread");
+                        Log.d(TAG, "Interrupting and stopping the PINCountThread");
                         return;
                     }
 
@@ -302,6 +311,21 @@ public class Pin_lock_activity extends AppCompatActivity{
                 //Looper.myLooper().quit();
             }
 
+        }
+
+        private boolean appInForeground(@NonNull Context context) {
+
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = activityManager.getRunningAppProcesses();
+            if (runningAppProcesses == null)
+                return false;
+
+            for (ActivityManager.RunningAppProcessInfo runningAppProcess : runningAppProcesses) {
+                    if (runningAppProcess.processName.equals(context.getPackageName()) &&
+                            runningAppProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND)
+                     return true;
+                }
+             return  false;
         }
     }
 }
