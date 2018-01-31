@@ -32,7 +32,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
       static Context activityContext;
       static SwitchPreference authorization_switch;
       public final static int PIN_REQUEST = 1;
-      static boolean authorization_switch_old_value = false;
+      static boolean authorization_switch_old_value;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPrefs.edit();
+        authorization_switch_old_value = sharedPrefs.getBoolean(pref_items.pref_Autorization, false);
     }
 
     public static class MainPreferenceFragment extends PreferenceFragment {
@@ -78,6 +79,19 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                             }
 
                     });
+
+            Preference change_pin = (Preference) getPreferenceManager()
+                    .findPreference("Change_PIN");
+
+            change_pin.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent j = new Intent(activityContext, Pin_lock_activity.class);
+                    j.putExtra("lanchMode", "changePIN");
+                    getActivity().startActivityForResult(j, PIN_REQUEST);
+                    return false;
+                }
+            });
 
             SwitchPreference fingerprint_switch = (SwitchPreference) getPreferenceManager()
                     .findPreference("Fingerprint_switch");
@@ -134,14 +148,13 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case PIN_REQUEST:
-                    editor.putBoolean(pref_Autorization, true);
-                    editor.commit();
-                    authorization_switch.setChecked(true);
+//                    editor.putBoolean(pref_Autorization, true);
+//                    editor.commit();
+//                    authorization_switch.setChecked(true);
                     //RN_USSD.pinCheckComplete = true;
                     Toast.makeText(mContext, "PIN set", Toast.LENGTH_LONG).show();
                     //finish();
                     break;
-
             }
         }
         // если вернулось не ОК
@@ -149,18 +162,24 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
             switch (message){
                 //onBackPressed() pin deleted
                 case "":
-                    editor.putBoolean(pref_Autorization, authorization_switch_old_value);
-                    editor.commit();
-                    authorization_switch.setChecked(authorization_switch_old_value);
+//                    editor.putBoolean(pref_Autorization, authorization_switch_old_value);
+//                    editor.commit();
+//                    authorization_switch.setChecked(authorization_switch_old_value);
                     break;
                 case "pin deleted":
 
-                    authorization_switch.setChecked(false);
+                    //authorization_switch.setChecked(false);
                     Toast.makeText(mContext, "PIN set canceled", Toast.LENGTH_LONG).show();
                     break;
                 case "delete app data":
-                    authorization_switch.setChecked(false);
+                    //authorization_switch.setChecked(false);
                     Toast.makeText(mContext, "Application data deleted", Toast.LENGTH_LONG).show();
+                    break;
+                case "enter new pin":
+                    authorization_switch.setChecked(false);
+                    Intent j = new Intent(activityContext, Pin_lock_activity.class);
+                    j.putExtra("lanchMode", "newPIN");
+                    startActivityForResult(j, PIN_REQUEST);
                     break;
             }
 

@@ -38,6 +38,7 @@ import unidesign.ussdsmscodes.RN_USSD;
 import unidesign.ussdsmscodes.SettingsTools.BackupTask;
 import unidesign.ussdsmscodes.TempContentProvider.TempContentProvider;
 
+import static unidesign.ussdsmscodes.Preferences.pref_items.pref_Autorization;
 import static unidesign.ussdsmscodes.Preferences.pref_items.pref_PIN;
 import static unidesign.ussdsmscodes.SettingsTools.BackupTask.DIR_SD;
 
@@ -66,14 +67,23 @@ public class Pin_lock_activity extends AppCompatActivity{
         public void onComplete(String pin) {
             Log.d(TAG, "Pin complete: " + pin);
             enterPINattemption ++;
-            //first lanch for set PIN
+            //first lanch for set PIN===============================================================
             if (lanchMode.equals("newPIN")){
                 //enter new PIN
                 if (IntermediatePIN.equals(pin)){
+                    if (PINCountThread.isAlive()){
+                        try {
+                            PINCountThread.interrupt();
+                        } catch (Exception e) {
+
+                        }
+                    }
                     PINCountThread = new CountThread();
                     PINCountThread.start();
                     enterPINattemption = 0;
-                    editor.putString(pref_PIN, pin);
+                    IntermediatePIN = "";
+                    editor.putString(pref_items.pref_PIN, pin);
+                    editor.putBoolean(pref_items.pref_Autorization, true);
                     editor.commit();
                     setResult(RESULT_OK, new Intent());
                     finish();
@@ -94,7 +104,7 @@ public class Pin_lock_activity extends AppCompatActivity{
                 }
 
             }
-            //delete PIN
+            //delete PIN ===========================================================================
             else if (lanchMode.equals("deletePIN")){
                     if (sharedPrefs.getString(pref_PIN, null).equals(pin)){
                         editor.putString(pref_PIN, "");
@@ -123,7 +133,7 @@ public class Pin_lock_activity extends AppCompatActivity{
                         }
                         else {
                             //delete app data
-                            editor.putString(pref_PIN, "");
+                            editor.putString(pref_items.pref_PIN, "");
                             editor.putBoolean(pref_items.pref_Autorization, false);
                             editor.commit();
                             enterPINattemption = 0;
@@ -140,7 +150,7 @@ public class Pin_lock_activity extends AppCompatActivity{
                         }
                     }
             }
-            //lanch app check in
+            //lanch app check in ===================================================================
             else if (lanchMode.equals("checkin")){
                 if (sharedPrefs.getString(pref_PIN, null).equals(pin)){
                     enterPINattemption = 0;
@@ -167,7 +177,58 @@ public class Pin_lock_activity extends AppCompatActivity{
                     }
                     else {
                         //delete app data
+                        editor.putString(pref_items.pref_PIN, "");
+                        editor.putBoolean(pref_items.pref_Autorization, false);
+                        editor.commit();
                         enterPINattemption =0;
+                        try {
+                            PINCountThread.interrupt();
+                        } catch (NullPointerException e) {
+
+                        }
+                        deleteUserData();
+                        Intent i = new Intent();
+                        i.putExtra("message", "delete app data");
+                        setResult(RESULT_CANCELED, i);
+                        finish();
+                    }
+                }
+            }
+            //change PIN ===========================================================================
+            else if (lanchMode.equals("changePIN")){
+                   // profile_hint_text.setText("Enter current PIN");
+                if (sharedPrefs.getString(pref_PIN, null).equals(pin)){
+                    profile_hint_text.setText("Enter new PIN");
+                    enterPINattemption = 0;
+
+                    lanchMode = "newPIN";
+                    mPinLockView.resetPinLockView();
+//                    Intent i = new Intent();
+//                    if (lanchMode.equals("changePIN"))
+//                        i.putExtra("message", "enter new pin");
+//                    else
+//                        i.putExtra("message", "pin deleted");
+//                    setResult(RESULT_CANCELED, i);
+//                    finish();
+                }
+                else {
+                    if (enterPINattemption < 3) {
+                        //enterPINattemption ++;
+                        mPinLockView.resetPinLockView();
+                        Toast.makeText(pin_lock_context, "Confirm fail, try again", Toast.LENGTH_LONG).show();
+                    }
+                    else if (enterPINattemption == 3){
+                        //enterPINattemption ++;
+                        mPinLockView.resetPinLockView();
+                        Toast.makeText(pin_lock_context, "If you enter incorrect PIN again, " +
+                                "application data will be lost", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        //delete app data
+                        editor.putString(pref_PIN, "");
+                        editor.putBoolean(pref_items.pref_Autorization, false);
+                        editor.commit();
+                        enterPINattemption = 0;
                         try {
                             PINCountThread.interrupt();
                         } catch (NullPointerException e) {
@@ -224,6 +285,10 @@ public class Pin_lock_activity extends AppCompatActivity{
 
         Bundle extras = getIntent().getExtras();
         lanchMode = extras.getString("lanchMode");
+
+        if (lanchMode.equals("changePIN"))
+            profile_hint_text.setText("Enter current PIN");
+
 
 //        RN_USSD.PINCountThread = new CountThread();
 
@@ -400,5 +465,31 @@ public class Pin_lock_activity extends AppCompatActivity{
 
     }
 
+    void first_lanch_set_pin(String pin){
+        //enter new PIN
+        if (IntermediatePIN.equals(pin)){
+            PINCountThread = new CountThread();
+            PINCountThread.start();
+            enterPINattemption = 0;
+            editor.putString(pref_PIN, pin);
+            editor.commit();
+            setResult(RESULT_OK, new Intent());
+            finish();
+        }
+        //confirm PIN
+        else if (enterPINattemption < 2){
+            profile_hint_text.setText("Confirm PIN");
+            IntermediatePIN = pin;
+            mPinLockView.resetPinLockView();
+        }
+        //confirm fail, try new pin
+        else {
+            profile_hint_text.setText("Enter PIN");
+            IntermediatePIN = "";
+            enterPINattemption = 0;
+            mPinLockView.resetPinLockView();
+            Toast.makeText(pin_lock_context, "Confirm fail, try new pin", Toast.LENGTH_LONG).show();
+        }
+    }
 
 }

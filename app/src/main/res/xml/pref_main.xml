@@ -13,15 +13,17 @@
             android:title="Authorization">
         </SwitchPreference>
 
-        <Preference android:title="Change PIN"
+        <Preference
+            android:key="Change_PIN"
+            android:title="Change PIN"
             android:dependency="Authorization_switch">
-            <intent
+            <!--intent
                 android:targetPackage="unidesign.ussdsmscodes"
                 android:targetClass="unidesign.ussdsmscodes.Preferences.Pin_lock_activity"
                 android:action="intent.action.pin_lock_activity"
                 android:data="ussd">
                 <extra android:name="lanchMode" android:value="changePIN" />
-            </intent>
+            </intent-->
 
         </Preference>
 
