@@ -27,10 +27,11 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
 //    Preference change_pin;
 //    SwitchPreference fingerprint_switch;
       static SharedPreferences sharedPrefs;
-      SharedPreferences.Editor editor;
+      static SharedPreferences.Editor editor;
       public static Context mContext;
       static Context activityContext;
       static SwitchPreference authorization_switch;
+      static SwitchPreference fingerprint_switch;
       public final static int PIN_REQUEST = 1;
       static boolean authorization_switch_old_value;
 
@@ -93,30 +94,32 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                 }
             });
 
-            SwitchPreference fingerprint_switch = (SwitchPreference) getPreferenceManager()
+            fingerprint_switch = (SwitchPreference) getPreferenceManager()
                     .findPreference("Fingerprint_switch");
 
             fingerprint_switch
                     .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                         public boolean onPreferenceChange(Preference preference,
                                                           Object newValue) {
-//                            if (newValue.toString().equals("true")) {
-//                                // Toast.makeText(getApplicationContext(), "CB: " +
-//                                // "true", Toast.LENGTH_SHORT).show();
-//
-//                                Intent j = new Intent(getApplicationContext(),
-//                                        EnterPINcode.class);
-//                                j.putExtra("lanchMode", "newPIN");
-//                                startActivity(j);
-//                            } else {
-//                                // Toast.makeText(getApplicationContext(), "CB: " +
-//                                // "false", Toast.LENGTH_SHORT).show();
-//
-//                                Intent j = new Intent(getApplicationContext(),
-//                                        EnterPINcode.class);
-//                                j.putExtra("lanchMode", "deletePIN");
-//                                startActivityForResult(j, UNCHEK_PIN);
-//                            }
+                            if (newValue.toString().equals("true")) {
+                                Bundle fBundle = FingerPrintDialog.checkFingerFeatures(mContext);
+                                if (fBundle.getBoolean(FingerPrintDialog.FINGER_FEATURES_ENABLE)){
+                                    editor.putBoolean(pref_items.pref_useFingerPrint, true);
+                                    editor.commit();
+                                }
+                                else {
+                                     Toast.makeText(mContext, fBundle.getString(FingerPrintDialog.FAIL_STRING),
+                                             Toast.LENGTH_SHORT).show();
+                                    return false;
+
+                                }
+
+                            } else {
+                                editor.putBoolean(pref_items.pref_useFingerPrint, false);
+                                editor.commit();
+                                // Toast.makeText(getApplicationContext(), "CB: " +
+                                // "false", Toast.LENGTH_SHORT).show();
+                            }
                             return true;
                         }
                     });
@@ -126,6 +129,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
         public void onResume(){
             super.onResume();
             authorization_switch.setChecked(sharedPrefs.getBoolean(pref_items.pref_Autorization, false));
+            fingerprint_switch.setChecked(sharedPrefs.getBoolean(pref_items.pref_useFingerPrint, false));
         }
     }
 

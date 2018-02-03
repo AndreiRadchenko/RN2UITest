@@ -10,10 +10,13 @@ import android.os.Environment;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 import unidesign.ussdsmscodes.R;
 import unidesign.ussdsmscodes.RN_USSD;
+import unidesign.ussdsmscodes.SettingsTools.BackupDialog;
 import unidesign.ussdsmscodes.SettingsTools.BackupTask;
 import unidesign.ussdsmscodes.TempContentProvider.TempContentProvider;
 
@@ -62,7 +66,7 @@ public class Pin_lock_activity extends AppCompatActivity{
     public static final long IDLE_LOCK_INTERVAL = 3*60*1000; // in millisecond
 //    public static Thread PINCountThread;
 
-    private PinLockListener mPinLockListener = new PinLockListener() {
+    PinLockListener mPinLockListener = new PinLockListener() {
         @Override
         public void onComplete(String pin) {
             Log.d(TAG, "Pin complete: " + pin);
@@ -71,13 +75,13 @@ public class Pin_lock_activity extends AppCompatActivity{
             if (lanchMode.equals("newPIN")){
                 //enter new PIN
                 if (IntermediatePIN.equals(pin)){
-                    if (PINCountThread.isAlive()){
-                        try {
+                    try {
+                        if (PINCountThread.isAlive())
                             PINCountThread.interrupt();
-                        } catch (Exception e) {
-
                         }
-                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                        }
                     PINCountThread = new CountThread();
                     PINCountThread.start();
                     enterPINattemption = 0;
@@ -203,13 +207,7 @@ public class Pin_lock_activity extends AppCompatActivity{
 
                     lanchMode = "newPIN";
                     mPinLockView.resetPinLockView();
-//                    Intent i = new Intent();
-//                    if (lanchMode.equals("changePIN"))
-//                        i.putExtra("message", "enter new pin");
-//                    else
-//                        i.putExtra("message", "pin deleted");
-//                    setResult(RESULT_CANCELED, i);
-//                    finish();
+
                 }
                 else {
                     if (enterPINattemption < 3) {
@@ -263,7 +261,7 @@ public class Pin_lock_activity extends AppCompatActivity{
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.pin_lock_layout);
         //getWindow().setStatusBarColor(getResources().getColor(R.color.mine_shaft));
-
+        ImageView fingerprint_btn = findViewById(R.id.profile_fingerprint_image);
         profile_hint_text = findViewById(R.id.profile_hint_text);
         mPinLockView = (PinLockView) findViewById(R.id.pin_lock_view);
         mIndicatorDots = (IndicatorDots) findViewById(R.id.indicator_dots);
@@ -289,6 +287,17 @@ public class Pin_lock_activity extends AppCompatActivity{
         if (lanchMode.equals("changePIN"))
             profile_hint_text.setText("Enter current PIN");
 
+        fingerprint_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sharedPrefs.getBoolean(pref_items.pref_useFingerPrint, false)) {
+                    //DialogFragment newFragment = new FingerPrintDialog();
+                    DialogFragment newFragment = FingerPrintDialog.newInstance((Pin_lock_activity) pin_lock_context);
+                    newFragment.show(getSupportFragmentManager(), "fingerprint_dialog");
+                }
+            }
+        });
+
 
 //        RN_USSD.PINCountThread = new CountThread();
 
@@ -313,6 +322,11 @@ public class Pin_lock_activity extends AppCompatActivity{
         super.onResume();
         enterPINattemption = sharedPrefs.getInt(pref_items.pref_enterPINattemption, 0);
         Log.d("PIN_Lock_Activity", "onResume(), enterPINattemption = " + enterPINattemption);
+        if (sharedPrefs.getBoolean(pref_items.pref_useFingerPrint, false)) {
+            //DialogFragment newFragment = new FingerPrintDialog();
+            DialogFragment newFragment = FingerPrintDialog.newInstance(this);
+            newFragment.show(getSupportFragmentManager(), "fingerprint_dialog");
+        }
     }
 
     @Override
@@ -463,33 +477,6 @@ public class Pin_lock_activity extends AppCompatActivity{
             e.printStackTrace();
         }
 
-    }
-
-    void first_lanch_set_pin(String pin){
-        //enter new PIN
-        if (IntermediatePIN.equals(pin)){
-            PINCountThread = new CountThread();
-            PINCountThread.start();
-            enterPINattemption = 0;
-            editor.putString(pref_PIN, pin);
-            editor.commit();
-            setResult(RESULT_OK, new Intent());
-            finish();
-        }
-        //confirm PIN
-        else if (enterPINattemption < 2){
-            profile_hint_text.setText("Confirm PIN");
-            IntermediatePIN = pin;
-            mPinLockView.resetPinLockView();
-        }
-        //confirm fail, try new pin
-        else {
-            profile_hint_text.setText("Enter PIN");
-            IntermediatePIN = "";
-            enterPINattemption = 0;
-            mPinLockView.resetPinLockView();
-            Toast.makeText(pin_lock_context, "Confirm fail, try new pin", Toast.LENGTH_LONG).show();
-        }
     }
 
 }
