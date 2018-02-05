@@ -10,9 +10,11 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.Manifest;
 import android.os.Build;
 import android.os.CancellationSignal;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,30 +45,39 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     @Override
     public void onAuthenticationError(int errMsgId,
                                       CharSequence errString) {
-        Toast.makeText(context,
-                "Authentication error\n" + errString,
-                Toast.LENGTH_LONG).show();
-        String msg = "Authentication error\n" + errString;
-        //dialog.setMessage(msg);
+//        Toast.makeText(context,
+//                "Authentication error\n" + errString,
+//                Toast.LENGTH_LONG).show();
+        Log.d("FingerprintHandler", "Authentication error\n" + errString);
     }
 
     @Override
     public void onAuthenticationFailed() {
-        Toast.makeText(context,
-                "Authentication failed",
-                Toast.LENGTH_LONG).show();
-        String msg = "Authentication failed";
+//        Toast.makeText(context,
+//                "Authentication failed",
+//                Toast.LENGTH_LONG).show();
+        String msg = "Authentication failed\n";
         dialog.setMessage(msg);
+        Log.d("FingerprintHandler", msg);
+
+        Handler h = new Handler();
+        h.postDelayed(reset_message, 3000);
+        //h.removeCallbacks(reset_exit);
+
     }
 
     @Override
     public void onAuthenticationHelp(int helpMsgId,
                                      CharSequence helpString) {
-        Toast.makeText(context,
-                "Authentication help\n" + helpString,
-                Toast.LENGTH_LONG).show();
-        String msg = "Authentication help\n" + helpString;
+//        Toast.makeText(context,
+//                "Authentication help\n" + helpString,
+//                Toast.LENGTH_LONG).show();
+        String msg = helpString.toString();
         dialog.setMessage(msg);
+        Log.d("FingerprintHandler", "Authentication help\n" + helpString);
+
+        Handler h = new Handler();
+        h.postDelayed(reset_message, 3000);
     }
 
 
@@ -74,14 +85,27 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     public void onAuthenticationSucceeded(
             FingerprintManager.AuthenticationResult result) {
 
-        Toast.makeText(context,
-                "Success!",
-                Toast.LENGTH_LONG).show();
-        String msg = "Success!";
-        dialog.setMessage(msg);
+//        Toast.makeText(context,
+//                "Success!",
+//                Toast.LENGTH_LONG).show();
+//        String msg = "Success!";
+//        dialog.setMessage(msg);
+        Log.d("FingerprintHandler", "Authentication success\n");
         dialog.passFingerprint();
     }
 
+    // reset dialog "message" afte 3 sec spend
+    Runnable reset_message = new Runnable() {
+        public void run() {
+            Log.d("post delayed handler", "run dialog.resetMessage()");
+            try {
+                dialog.resetMessage();
+            } catch (Exception e){
+                Log.d("post delayed exeption", e.toString());
+            }
+
+        }
+    };
 
 }
 

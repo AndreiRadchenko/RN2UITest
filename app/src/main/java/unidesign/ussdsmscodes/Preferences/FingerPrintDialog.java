@@ -167,6 +167,12 @@ public class FingerPrintDialog extends DialogFragment {
         msg.setTextColor(getResources().getColor(R.color.colorAccent));
     }
 
+    void resetMessage(){
+//        TextView msg = (TextView) this.getDialog().findViewById(android.R.id.message);
+        msg.setText("Use your fingerprint to verify your identity");
+        msg.setTextColor(getResources().getColor(android.R.color.black));
+    }
+
     public static Bundle checkFingerFeatures(Context mContext) {
         Bundle rBundle = new Bundle();
         rBundle.putBoolean(FINGER_FEATURES_ENABLE, true);

@@ -115,6 +115,7 @@ public class Pin_lock_activity extends AppCompatActivity{
                     if (sharedPrefs.getString(pref_PIN, null).equals(pin)){
                         editor.putString(pref_PIN, "");
                         editor.putBoolean(pref_items.pref_Autorization, false);
+                        editor.putBoolean(pref_items.pref_useFingerPrint, false);
                         editor.commit();
                         enterPINattemption = 0;
 
@@ -324,16 +325,16 @@ public class Pin_lock_activity extends AppCompatActivity{
         super.onResume();
         enterPINattemption = sharedPrefs.getInt(pref_items.pref_enterPINattemption, 0);
         Log.d("PIN_Lock_Activity", "onResume(), enterPINattemption = " + enterPINattemption);
-        if (sharedPrefs.getBoolean(pref_items.pref_useFingerPrint, false)) {
-            //DialogFragment newFragment = new FingerPrintDialog();
-            DialogFragment newFragment = FingerPrintDialog.newInstance(this);
-            newFragment.show(getSupportFragmentManager(), "fingerprint_dialog");
 
-//            Dialog alert = (Dialog) newFragment.getDialog();
-//            TextView msg = (TextView) alert.findViewById(android.R.id.message);
-//            ((FingerPrintDialog) newFragment).initTextMessage(msg);
-//            alert.setMessage("");
+        if (lanchMode.equals("changePIN") || lanchMode.equals("deletePIN")) {
+
         }
+        else
+            if (sharedPrefs.getBoolean(pref_items.pref_useFingerPrint, false)) {
+                //DialogFragment newFragment = new FingerPrintDialog();
+                DialogFragment newFragment = FingerPrintDialog.newInstance(this);
+                newFragment.show(getSupportFragmentManager(), "fingerprint_dialog");
+            }
     }
 
     @Override
