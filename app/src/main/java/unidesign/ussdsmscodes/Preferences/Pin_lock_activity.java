@@ -1,6 +1,7 @@
 package unidesign.ussdsmscodes.Preferences;
 
 import android.app.ActivityManager;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -326,6 +328,11 @@ public class Pin_lock_activity extends AppCompatActivity{
             //DialogFragment newFragment = new FingerPrintDialog();
             DialogFragment newFragment = FingerPrintDialog.newInstance(this);
             newFragment.show(getSupportFragmentManager(), "fingerprint_dialog");
+
+//            Dialog alert = (Dialog) newFragment.getDialog();
+//            TextView msg = (TextView) alert.findViewById(android.R.id.message);
+//            ((FingerPrintDialog) newFragment).initTextMessage(msg);
+//            alert.setMessage("");
         }
     }
 

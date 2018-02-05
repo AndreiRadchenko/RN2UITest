@@ -69,6 +69,7 @@ public class FingerPrintDialog extends DialogFragment {
     PinLockListener mPinLockListener;
     static Pin_lock_activity Pin_lock_activity;
     CancellationSignal cancellationSignal;
+    TextView msg;
 
     public static FingerPrintDialog newInstance(Pin_lock_activity mPin_lock_activity){
         Pin_lock_activity = mPin_lock_activity;
@@ -85,20 +86,32 @@ public class FingerPrintDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        // Get the layout inflater
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        final View dialogView = inflater.inflate(R.layout.dialog_fingerprint, null);
+        final TextView txtMessage = (TextView) dialogView.findViewById(R.id.fingerprint_message);
+        txtMessage.setText("Use your fingerprint to verify your identity");
+        msg = txtMessage;
+
         cancellationSignal = new CancellationSignal();
         mContext = getContext().getApplicationContext();
+        //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+        builder.setView(dialogView);
+
         builder.setTitle("Touch the sensor")
-                .setMessage("Use your fingerprint to verify your identity")
+//                .setMessage("Use your fingerprint to verify your identity")
                 .setIcon(R.drawable.ic_fingerprint_accent)
                 // Add action buttons
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        cancellationSignal.cancel();
+                       // cancellationSignal.cancel();
                     }
                 });
+        //TextView msg = (TextView) alert.
         return builder.create();
     }
 
@@ -106,6 +119,8 @@ public class FingerPrintDialog extends DialogFragment {
     @Override
     public void onStart(){
         super.onStart();
+
+        //TextView msg = (TextView) this.getDialog().findViewById(android.R.id.message);
 
         Bundle fbundle = checkFingerFeatures(mContext);
         if (fbundle.getBoolean(FingerPrintDialog.FINGER_FEATURES_ENABLE)){
@@ -125,12 +140,31 @@ public class FingerPrintDialog extends DialogFragment {
                     Toast.LENGTH_SHORT).show();
             dismiss();
         }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onStop() {
+        Log.d("FingerPrintDialog", "onStop(), set cancellationSignal.cancel()");
+        cancellationSignal.cancel();
+        super.onStop();
     }
 
     void passFingerprint(){
         String pin = Pin_lock_activity.sharedPrefs.getString(pref_items.pref_PIN, "");
         Pin_lock_activity.mPinLockListener.onComplete(pin);
         dismiss();
+    }
+
+    void initTextMessage(TextView tv){
+        msg = tv;
+    }
+
+    void setMessage(String message){
+//        TextView msg = (TextView) this.getDialog().findViewById(android.R.id.message);
+        msg.setText(message);
+        msg.setTextColor(getResources().getColor(R.color.colorAccent));
     }
 
     public static Bundle checkFingerFeatures(Context mContext) {

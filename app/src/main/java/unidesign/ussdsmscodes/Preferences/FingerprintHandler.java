@@ -13,6 +13,7 @@ import android.os.CancellationSignal;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -45,6 +46,8 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         Toast.makeText(context,
                 "Authentication error\n" + errString,
                 Toast.LENGTH_LONG).show();
+        String msg = "Authentication error\n" + errString;
+        //dialog.setMessage(msg);
     }
 
     @Override
@@ -52,6 +55,8 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         Toast.makeText(context,
                 "Authentication failed",
                 Toast.LENGTH_LONG).show();
+        String msg = "Authentication failed";
+        dialog.setMessage(msg);
     }
 
     @Override
@@ -60,6 +65,8 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         Toast.makeText(context,
                 "Authentication help\n" + helpString,
                 Toast.LENGTH_LONG).show();
+        String msg = "Authentication help\n" + helpString;
+        dialog.setMessage(msg);
     }
 
 
@@ -70,6 +77,8 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         Toast.makeText(context,
                 "Success!",
                 Toast.LENGTH_LONG).show();
+        String msg = "Success!";
+        dialog.setMessage(msg);
         dialog.passFingerprint();
     }
 
