@@ -41,7 +41,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
         mContext = getApplicationContext();
         activityContext = this;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        this.setTitle(R.string.settings);
         // load settings fragment
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
 
@@ -156,7 +156,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
 //                    editor.commit();
 //                    authorization_switch.setChecked(true);
                     //RN_USSD.pinCheckComplete = true;
-                    Toast.makeText(mContext, "PIN set", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.pin_set, Toast.LENGTH_LONG).show();
                     //finish();
                     break;
             }
@@ -173,11 +173,11 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                 case "pin deleted":
 
                     //authorization_switch.setChecked(false);
-                    Toast.makeText(mContext, "PIN set canceled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.pin_set_canceled, Toast.LENGTH_LONG).show();
                     break;
                 case "delete app data":
                     //authorization_switch.setChecked(false);
-                    Toast.makeText(mContext, "Application data deleted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.app_data_deleted, Toast.LENGTH_LONG).show();
                     break;
                 case "enter new pin":
                     authorization_switch.setChecked(false);

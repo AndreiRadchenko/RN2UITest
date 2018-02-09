@@ -2,20 +2,20 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="settings_screen"
-    android:title="Settings"
+    android:title="@string/settings"
     android:theme="@android:style/Theme.Light">
 
-    <PreferenceCategory android:title="Security">
+    <PreferenceCategory android:title="@string/security">
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="Authorization_switch"
-            android:title="Authorization">
+            android:title="@string/authorization">
         </SwitchPreference>
 
         <Preference
             android:key="Change_PIN"
-            android:title="Change PIN"
+            android:title="@string/change_pin"
             android:dependency="Authorization_switch">
             <!--intent
                 android:targetPackage="unidesign.ussdsmscodes"
@@ -30,8 +30,8 @@
         <SwitchPreference
             android:key="Fingerprint_switch"
             android:defaultValue="false"
-            android:title="Fingerprint"
-            android:summary="Use fingerprint for authorization"
+            android:title="@string/fingerprint"
+            android:summary="@string/fingerprint_summary"
             android:dependency="Authorization_switch">
         </SwitchPreference>
 

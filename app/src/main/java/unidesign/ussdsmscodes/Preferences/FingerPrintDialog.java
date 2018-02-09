@@ -91,7 +91,7 @@ public class FingerPrintDialog extends DialogFragment {
 
         final View dialogView = inflater.inflate(R.layout.dialog_fingerprint, null);
         final TextView txtMessage = (TextView) dialogView.findViewById(R.id.fingerprint_message);
-        txtMessage.setText("Use your fingerprint to verify your identity");
+        txtMessage.setText(R.string.dialog_def_msg);
         msg = txtMessage;
 
         cancellationSignal = new CancellationSignal();
@@ -101,7 +101,7 @@ public class FingerPrintDialog extends DialogFragment {
 
         builder.setView(dialogView);
 
-        builder.setTitle("Touch the sensor")
+        builder.setTitle(R.string.dialog_title)
 //                .setMessage("Use your fingerprint to verify your identity")
                 .setIcon(R.drawable.ic_fingerprint_accent)
                 // Add action buttons
@@ -169,7 +169,7 @@ public class FingerPrintDialog extends DialogFragment {
 
     void resetMessage(){
 //        TextView msg = (TextView) this.getDialog().findViewById(android.R.id.message);
-        msg.setText("Use your fingerprint to verify your identity");
+        msg.setText(R.string.dialog_def_msg);
         msg.setTextColor(getResources().getColor(android.R.color.black));
     }
 
@@ -187,29 +187,29 @@ public class FingerPrintDialog extends DialogFragment {
                     (FingerprintManager) mContext.getSystemService(FINGERPRINT_SERVICE);
 
             if (!fingerprintManager.isHardwareDetected()) {
-                rBundle.putString(FAIL_STRING, "Your device doesn't support fingerprint authentication");
+                rBundle.putString(FAIL_STRING, mContext.getString(R.string.not_support_fingerprint));
                 rBundle.putBoolean(FINGER_FEATURES_ENABLE, false);
 
                 }
 
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                rBundle.putString(FAIL_STRING, "Please enable the fingerprint permission");
+                rBundle.putString(FAIL_STRING, mContext.getString(R.string.enable_fingerprint));
                 rBundle.putBoolean(FINGER_FEATURES_ENABLE, false);
             }
 
             if (!fingerprintManager.hasEnrolledFingerprints()) {
-                rBundle.putString(FAIL_STRING, "No fingerprint configured. Please register at least one fingerprint in your device's Settings");
+                rBundle.putString(FAIL_STRING, mContext.getString(R.string.register_fingerprint));
                 rBundle.putBoolean(FINGER_FEATURES_ENABLE, false);
             }
 
             if (!keyguardManager.isKeyguardSecure()) {
-                rBundle.putString(FAIL_STRING, "Please enable lockscreen security in your device's Settings");
+                rBundle.putString(FAIL_STRING, mContext.getString(R.string.enable_lockscreen));
                 rBundle.putBoolean(FINGER_FEATURES_ENABLE, false);
             }
 
         }
         else {
-            rBundle.putString(FAIL_STRING, "Your android version doesn't support fingerprint authentication");
+            rBundle.putString(FAIL_STRING, mContext.getString(R.string.incompatible_android_version));
             rBundle.putBoolean(FINGER_FEATURES_ENABLE, false);
         }
 

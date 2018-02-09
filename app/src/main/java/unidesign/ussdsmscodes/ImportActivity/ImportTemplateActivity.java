@@ -13,6 +13,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -25,7 +30,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.Pointer;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
 import unidesign.ussdsmscodes.R;
+
 
 /**
  * Created by United on 9/12/2017.
@@ -44,11 +54,63 @@ public class   ImportTemplateActivity extends AppCompatActivity
     ContentValues values = new ContentValues();
     public List<ImportRecyclerItem> listItems = new ArrayList<>();
     public ParseTask AsyncImport;
+    public Animation enterAnimation, exitAnimation;
+    public TourGuide mTutorialHandler;
+    TextView demo_item3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.import_activity);
+
+                /* setup enter and exit animation for TourGuide*/
+        enterAnimation = new AlphaAnimation(0f, 1f);
+        enterAnimation.setDuration(600);
+        enterAnimation.setFillAfter(true);
+
+        exitAnimation = new AlphaAnimation(1f, 0f);
+        exitAnimation.setDuration(600);
+        exitAnimation.setFillAfter(true);
+
+//        final Overlay overlay = new Overlay()
+//                .setEnterAnimation(enterAnimation)
+//                .setExitAnimation(exitAnimation)
+//                .disableClick(false)
+//                .disableClickThroughHole(true)
+//                .setStyle(Overlay.Style.Circle)
+//                .setHolePadding(0)
+//                //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
+//                .setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        mTutorialHandler.cleanUp();
+//                    }
+//                });
+
+        /* initialize TourGuide without playOn() */
+        mTutorialHandler = TourGuide.init(this).with(TourGuide.Technique.CLICK)
+                .setPointer(null)
+                .setToolTip(new ToolTip()
+                                .setTitle("Step two")
+                                .setDescription("Choose a set of codes, and download it")
+                                .setGravity(Gravity.BOTTOM)
+                        //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
+                )
+                .setOverlay(new Overlay()
+                                .setEnterAnimation(enterAnimation)
+                                .setExitAnimation(exitAnimation)
+                                .disableClick(false)
+                                .setStyle(Overlay.Style.NO_HOLE)
+                                //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
+                                .setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mTutorialHandler.cleanUp();
+                            }
+                        }));
+
+        demo_item3 = findViewById(R.id.demo_item3);
+        mTutorialHandler.playOn(demo_item3);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.import_toolbar);
         setSupportActionBar(myToolbar);

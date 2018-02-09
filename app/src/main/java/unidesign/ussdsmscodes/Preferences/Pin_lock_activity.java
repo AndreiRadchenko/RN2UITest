@@ -96,17 +96,17 @@ public class Pin_lock_activity extends AppCompatActivity{
                 }
                 //confirm PIN
                 else if (enterPINattemption < 2){
-                    profile_hint_text.setText("Confirm PIN");
+                    profile_hint_text.setText(R.string.confirm_pin);
                     IntermediatePIN = pin;
                     mPinLockView.resetPinLockView();
                 }
                 //confirm fail, try new pin
                 else {
-                    profile_hint_text.setText("Enter PIN");
+                    profile_hint_text.setText(R.string.enter_pin);
                     IntermediatePIN = "";
                     enterPINattemption = 0;
                     mPinLockView.resetPinLockView();
-                    Toast.makeText(pin_lock_context, "Confirm fail, try new pin", Toast.LENGTH_LONG).show();
+                    Toast.makeText(pin_lock_context, R.string.confirm_fail, Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -130,13 +130,12 @@ public class Pin_lock_activity extends AppCompatActivity{
                         if (enterPINattemption < 3) {
                             //enterPINattemption ++;
                             mPinLockView.resetPinLockView();
-                            Toast.makeText(pin_lock_context, "Confirm fail, try again", Toast.LENGTH_LONG).show();
+                            Toast.makeText(pin_lock_context, R.string.confirm_fail, Toast.LENGTH_LONG).show();
                         }
                         else if (enterPINattemption == 3){
                             //enterPINattemption ++;
                             mPinLockView.resetPinLockView();
-                            Toast.makeText(pin_lock_context, "If you enter incorrect PIN again, " +
-                                    "application data will be lost", Toast.LENGTH_LONG).show();
+                            Toast.makeText(pin_lock_context, R.string.warning_data_lost, Toast.LENGTH_LONG).show();
                         }
                         else {
                             //delete app data
@@ -174,13 +173,12 @@ public class Pin_lock_activity extends AppCompatActivity{
                     if (enterPINattemption < 3) {
                         //enterPINattemption ++;
                         mPinLockView.resetPinLockView();
-                        Toast.makeText(pin_lock_context, "Confirm fail, try again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(pin_lock_context, getString(R.string.confirm_fail), Toast.LENGTH_LONG).show();
                     }
                     else if (enterPINattemption == 3){
                         //enterPINattemption ++;
                         mPinLockView.resetPinLockView();
-                        Toast.makeText(pin_lock_context, "If you enter incorrect PIN again, " +
-                                "application data will be lost", Toast.LENGTH_LONG).show();
+                        Toast.makeText(pin_lock_context, getString(R.string.warning_data_lost), Toast.LENGTH_LONG).show();
                     }
                     else {
                         //delete app data
@@ -205,7 +203,7 @@ public class Pin_lock_activity extends AppCompatActivity{
             else if (lanchMode.equals("changePIN")){
                    // profile_hint_text.setText("Enter current PIN");
                 if (sharedPrefs.getString(pref_PIN, null).equals(pin)){
-                    profile_hint_text.setText("Enter new PIN");
+                    profile_hint_text.setText(R.string.enter_new_pin);
                     enterPINattemption = 0;
 
                     lanchMode = "newPIN";
@@ -216,13 +214,12 @@ public class Pin_lock_activity extends AppCompatActivity{
                     if (enterPINattemption < 3) {
                         //enterPINattemption ++;
                         mPinLockView.resetPinLockView();
-                        Toast.makeText(pin_lock_context, "Confirm fail, try again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(pin_lock_context, getString(R.string.confirm_fail), Toast.LENGTH_LONG).show();
                     }
                     else if (enterPINattemption == 3){
                         //enterPINattemption ++;
                         mPinLockView.resetPinLockView();
-                        Toast.makeText(pin_lock_context, "If you enter incorrect PIN again, " +
-                                "application data will be lost", Toast.LENGTH_LONG).show();
+                        Toast.makeText(pin_lock_context, getString(R.string.warning_data_lost), Toast.LENGTH_LONG).show();
                     }
                     else {
                         //delete app data
@@ -288,7 +285,7 @@ public class Pin_lock_activity extends AppCompatActivity{
         lanchMode = extras.getString("lanchMode");
 
         if (lanchMode.equals("changePIN"))
-            profile_hint_text.setText("Enter current PIN");
+            profile_hint_text.setText(R.string.enter_current_pin);
 
         fingerprint_btn.setOnClickListener(new View.OnClickListener() {
             @Override

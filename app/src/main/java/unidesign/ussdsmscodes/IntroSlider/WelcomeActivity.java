@@ -36,7 +36,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private TextView[] dots;
     private int[] layouts;
     private Button btnSkip, btnNext;
-    private PreferenceManager prefManager;
+    public static PreferenceManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -56,4 +56,6 @@
     <color name="select_mod_status_bar">#757575</color>
     <color name="bg_item_selected_state">#c9c9c9</color>
 
+    <color name="overlay_transparent">#b0222222</color>
+
 </resources>

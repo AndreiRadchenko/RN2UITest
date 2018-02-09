@@ -18,6 +18,10 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import unidesign.ussdsmscodes.R;
+
+import static android.hardware.fingerprint.FingerprintManager.FINGERPRINT_ERROR_LOCKOUT;
+
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
@@ -45,9 +49,10 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     @Override
     public void onAuthenticationError(int errMsgId,
                                       CharSequence errString) {
-//        Toast.makeText(context,
-//                "Authentication error\n" + errString,
-//                Toast.LENGTH_LONG).show();
+        if (errMsgId == FINGERPRINT_ERROR_LOCKOUT)
+            dialog.setMessage(errString.toString());
+        else
+            Toast.makeText(context, errString, Toast.LENGTH_LONG).show();
         Log.d("FingerprintHandler", "Authentication error\n" + errString);
     }
 
@@ -56,7 +61,7 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
 //        Toast.makeText(context,
 //                "Authentication failed",
 //                Toast.LENGTH_LONG).show();
-        String msg = "Authentication failed\n";
+        String msg = context.getString(R.string.authentication_failed);
         dialog.setMessage(msg);
         Log.d("FingerprintHandler", msg);
 

@@ -8,10 +8,13 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -43,7 +46,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,7 +57,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +75,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.Pointer;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
 import unidesign.ussdsmscodes.MySQLight.TemplatesDataSource;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
 import unidesign.ussdsmscodes.Preferences.Pin_lock_activity;
@@ -125,10 +141,15 @@ public class RN_USSD extends AppCompatActivity
     public static final int TIMER_COUNT = 2;
     public static final int TIMER_STOP = 3;
     public static long mLockTime  = 0;
+    //ImageView demo_item1;
+    TextView  demo_item1, demo_item2;
+    static RelativeLayout relativeLayout;
+    public Animation enterAnimation, exitAnimation;
 
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
     public static StaticCount myCount;
+    public TourGuide mTutorialHandler, mTutorialHandler2;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -139,10 +160,37 @@ public class RN_USSD extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /* setup enter and exit animation for TourGuide*/
+        enterAnimation = new AlphaAnimation(0f, 1f);
+        enterAnimation.setDuration(600);
+        enterAnimation.setFillAfter(true);
+
+        exitAnimation = new AlphaAnimation(1f, 0f);
+        exitAnimation.setDuration(600);
+        exitAnimation.setFillAfter(true);
+
+        /* initialize TourGuide without playOn() */
+        mTutorialHandler = TourGuide.init(this).with(TourGuide.Technique.CLICK)
+                .setPointer(new Pointer()
+                        .setGravity(Gravity.LEFT))
+                .setToolTip(new ToolTip()
+                        .setTitle("Get started here!")
+                        .setDescription("Please, take two steps to get acquainted with the application.")
+                        .setGravity(Gravity.BOTTOM)
+                        //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
+                )
+                .setOverlay(new Overlay()
+                        .setEnterAnimation(enterAnimation)
+                        .setExitAnimation(exitAnimation)
+                        //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
+                );
+
         //mLockTime =
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.activity_main);
+        demo_item1 = findViewById(R.id.demo_item1);
+        demo_item2 = findViewById(R.id.demo_item2);
         mfragmentManager = getSupportFragmentManager();
         //RxLifecycleAndroid.bindActivity(this);
 //        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -159,10 +207,12 @@ public class RN_USSD extends AppCompatActivity
         appbar = (AppBarLayout) findViewById(R.id.appbar);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        relativeLayout = (RelativeLayout)  findViewById(R.id.dummy_relative);
         setSupportActionBar(toolbar);
         //scroll_params - for manipulate with scroll behawior
         scroll_params =
-                (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+                (AppBarLayout.LayoutParams) relativeLayout.getLayoutParams();
+
 
         select_toolbar = (Toolbar) findViewById(R.id.select_toolbar);
         select_toolbar_title = (TextView) findViewById(R.id.toolbar_title);
@@ -307,6 +357,7 @@ public class RN_USSD extends AppCompatActivity
         fab = (FloatingActionButton) findViewById(R.id.fab);
         final AppBarLayout mAppBar = (AppBarLayout) findViewById(R.id.appbar);
         ActionBar actionBar = getActionBar();
+
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -354,16 +405,44 @@ public class RN_USSD extends AppCompatActivity
             }
         });
 
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         //magicButton.getAnimationOnShow().setDuration(5000);
+        //ConstraintLayout rootView = (ConstraintLayout) navigationView.getMenu().findItem(R.id.nav_import).getActionView();
+        //locButton.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        //locButton.setClickable(false);
+        //import_icon = (ImageView) rootView.findViewById(R.id.ic_action_import);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                mTutorialHandler.cleanUp();
+                mTutorialHandler
+                        .setToolTip(new ToolTip()
+                            .setTitle("Step one")
+                            .setDescription("Navigate to the screen of codes download")
+                            //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
+                            .setGravity(Gravity.TOP|Gravity.RIGHT))
+                        .setOverlay(new Overlay()
+                                .setEnterAnimation(enterAnimation)
+                                .setExitAnimation(exitAnimation))
+                        .playOn(demo_item2);
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                mTutorialHandler.cleanUp();
+            }
+        };
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        toggle.syncState();
+        //View Home_btn = findViewById(android.R.id.home);
+        mTutorialHandler.playOn(demo_item1);
 
         h = new Handler() {
             @SuppressLint("NewApi")
@@ -397,6 +476,7 @@ public class RN_USSD extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+            //mTutorialHandler.cleanUp();
         }
         else if (!toolbar.isShown()) {
 
@@ -450,6 +530,7 @@ public class RN_USSD extends AppCompatActivity
 
         if (id == R.id.nav_import) {
 
+            mTutorialHandler.cleanUp();
             startActivity(new Intent("intent.action.import_templates"));
 
         }
@@ -779,7 +860,8 @@ public class RN_USSD extends AppCompatActivity
     void setSelectionMode(){
 
         appbar.setBackgroundColor(this.getResources().getColor(R.color.select_toolbar_background));
-        toolbar.setVisibility(toolbar.GONE);
+        //toolbar.setVisibility(toolbar.GONE);
+        relativeLayout.setVisibility(toolbar.GONE);
         select_toolbar.setVisibility(select_toolbar.VISIBLE);
 
         select_toolbar.setAlpha(0);
@@ -829,7 +911,8 @@ public class RN_USSD extends AppCompatActivity
 
         myCount.setCount(DISPOSE_OBSERVER);
         appbar.setBackgroundColor(this.getResources().getColor(R.color.colorPrimary));
-        toolbar.setVisibility(toolbar.VISIBLE);
+        //toolbar.setVisibility(toolbar.VISIBLE);
+        relativeLayout.setVisibility(toolbar.VISIBLE);
         toolbar.setAlpha(0);
         toolbar.animate().setDuration(500).alpha(1);
 

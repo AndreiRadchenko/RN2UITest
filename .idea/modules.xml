@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RN2UITest.iml" filepath="$PROJECT_DIR$/RN2UITest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tourguide/RN2UITest-tourguide.iml" filepath="$PROJECT_DIR$/tourguide/RN2UITest-tourguide.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mytourguide/mytourguide.iml" filepath="$PROJECT_DIR$/mytourguide/mytourguide.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tourguide/tourguide/tourguide-tourguide.iml" filepath="$PROJECT_DIR$/tourguide/tourguide/tourguide-tourguide.iml" />
     </modules>
   </component>
 </project>

@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="com.andrognito.pinlockview:pinlockview-2.1.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/pinlockview-2.1.0.aar/e36a45deccb90becda0b86b14c7cc6fc/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/pinlockview-2.1.0.aar/e36a45deccb90becda0b86b14c7cc6fc/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/pinlockview-2.1.0.aar/fd5c66ee55a439f16d76a1fbdeb58b6b/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/pinlockview-2.1.0.aar/fd5c66ee55a439f16d76a1fbdeb58b6b/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

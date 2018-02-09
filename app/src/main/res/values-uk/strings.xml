@@ -67,6 +67,30 @@
     <string name="slide_2_title">Просте налаштування</string>
     <string name="slide_2_desc">Імпортуйте коди або створіть свої власні</string>
     <string name="slide_3_title">Безпечне використання</string>
-    <string name="slide_3_desc">Захистіть конфіденційність пін-кодом чи відбитком пальця</string>
+    <string name="slide_3_desc">Захистіть конфіденційність PIN-кодом чи відбитком пальця</string>
+    <!--Strings for authentication activity's ================================================== -->
+    <string name="dialog_def_msg">Скористайтесь відбитком пальця для підтвердження особистості</string>
+    <string name="dialog_title">Торкнітся сенсора</string>
+    <string name="not_support_fingerprint">Ваш телефон не підтримує автентифікацію відбитком пальця</string>
+    <string name="enable_fingerprint">Будь ласка, увімкніть дозвіл розпізнавання відбитка пальця</string>
+    <string name="register_fingerprint">Функція відбитку пальця не налаштована. Будьласка, додайте хочаб один відбиток в налаштуваннях вашого телефону</string>
+    <string name="enable_lockscreen">Будь ласка, увімкніть екран блокування в налаштуваннях безпеки вашого телефону</string>
+    <string name="incompatible_android_version">Версія вашого програмного забезпечення не підтримує автентифікацію відбитком пальця</string>
+    <string name="authentication_failed">Відбиток не розпізнано \n</string>
+    <string name="confirm_fail">Невірний PIN-код, повторіть спробу</string>
+    <string name="warning_data_lost">Якщо ви введете невірний код знову, дані додатка будуть видалені</string>
+    <string name="enter_pin">Введіть PIN-код</string>
+    <string name="enter_new_pin">Введіть новий PIN</string>
+    <string name="enter_current_pin">Введіть діючий PIN</string>
+    <string name="pin_set">PIN-код встановлено</string>
+    <string name="pin_set_canceled">PIN-код скасовано</string>
+    <string name="app_data_deleted">Дані додатка видалено</string>
+    <string name="settings">Налаштування</string>
+    <string name="security">Безпека</string>
+    <string name="authorization">Захист доступу PIN-кодом</string>
+    <string name="change_pin">Змінити PIN-код</string>
+    <string name="fingerprint">Відбиток пальця</string>
+    <string name="fingerprint_summary">Використовуйте відбиток для доступу</string>
+    <string name="confirm_pin">Підтвердіть PIN</string>
 
 </resources>
