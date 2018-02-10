@@ -34,7 +34,9 @@ import tourguide.tourguide.Overlay;
 import tourguide.tourguide.Pointer;
 import tourguide.tourguide.ToolTip;
 import tourguide.tourguide.TourGuide;
+import unidesign.ussdsmscodes.IntroSlider.WelcomeActivity;
 import unidesign.ussdsmscodes.R;
+import unidesign.ussdsmscodes.RN_USSD;
 
 
 /**
@@ -63,54 +65,42 @@ public class   ImportTemplateActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.import_activity);
 
-                /* setup enter and exit animation for TourGuide*/
-        enterAnimation = new AlphaAnimation(0f, 1f);
-        enterAnimation.setDuration(600);
-        enterAnimation.setFillAfter(true);
+        if (RN_USSD.prefManager.isShowMainDemo() ) {
+        /* setup enter and exit animation for TourGuide*/
+            enterAnimation = new AlphaAnimation(0f, 1f);
+            enterAnimation.setDuration(600);
+            enterAnimation.setFillAfter(true);
 
-        exitAnimation = new AlphaAnimation(1f, 0f);
-        exitAnimation.setDuration(600);
-        exitAnimation.setFillAfter(true);
-
-//        final Overlay overlay = new Overlay()
-//                .setEnterAnimation(enterAnimation)
-//                .setExitAnimation(exitAnimation)
-//                .disableClick(false)
-//                .disableClickThroughHole(true)
-//                .setStyle(Overlay.Style.Circle)
-//                .setHolePadding(0)
-//                //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
-//                .setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        mTutorialHandler.cleanUp();
-//                    }
-//                });
+            exitAnimation = new AlphaAnimation(1f, 0f);
+            exitAnimation.setDuration(600);
+            exitAnimation.setFillAfter(true);
 
         /* initialize TourGuide without playOn() */
-        mTutorialHandler = TourGuide.init(this).with(TourGuide.Technique.CLICK)
-                .setPointer(null)
-                .setToolTip(new ToolTip()
-                                .setTitle("Step two")
-                                .setDescription("Choose a set of codes, and download it")
-                                .setGravity(Gravity.BOTTOM)
-                        //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
-                )
-                .setOverlay(new Overlay()
-                                .setEnterAnimation(enterAnimation)
-                                .setExitAnimation(exitAnimation)
-                                .disableClick(false)
-                                .setStyle(Overlay.Style.NO_HOLE)
-                                //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
-                                .setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        mTutorialHandler.cleanUp();
-                            }
-                        }));
+            mTutorialHandler = TourGuide.init(this).with(TourGuide.Technique.CLICK)
+                    .setPointer(null)
+                    .setToolTip(new ToolTip()
+                                    .setTitle("Step two")
+                                    .setDescription("Choose a set of codes, and download it")
+                                    .setGravity(Gravity.TOP)
+                            //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
+                    )
+                    .setOverlay(new Overlay()
+                            .setEnterAnimation(enterAnimation)
+                            .setExitAnimation(exitAnimation)
+                            .disableClick(false)
+                            .setStyle(Overlay.Style.NO_HOLE)
+                            //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
+                            .setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mTutorialHandler.cleanUp();
+                                    RN_USSD.prefManager.setShowMainDemo(false);
+                                }
+                            }));
 
-        demo_item3 = findViewById(R.id.demo_item3);
-        mTutorialHandler.playOn(demo_item3);
+            demo_item3 = findViewById(R.id.demo_item3);
+            mTutorialHandler.playOn(demo_item3);
+        }
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.import_toolbar);
         setSupportActionBar(myToolbar);
@@ -172,6 +162,15 @@ public class   ImportTemplateActivity extends AppCompatActivity
 
     };
 
+            @Override
+            public void onBackPressed() {
+                if (RN_USSD.prefManager.isShowMainDemo() ){
+
+                    }
+                else {
+                    super.onBackPressed();
+                }
+            }
 
     @Override
     public void processFinish(List<ImportRecyclerItem> output) {

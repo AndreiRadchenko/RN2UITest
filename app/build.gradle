@@ -14,8 +14,8 @@ android {
         applicationId "unidesign.ussdsmscodes"
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 4
-        versionName "1.0"
+        versionCode 5
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -60,5 +60,4 @@ dependencies {
     //        transitive=true
     //    }
     androidTestCompile 'junit:junit:4.12'
-    compile project(':mytourguide')
 }

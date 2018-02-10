@@ -14,8 +14,8 @@ public class PreferenceManager {
 
     // Shared preferences file name
     private static final String PREF_NAME = "intro_slider-welcome";
-
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
+    private static final String IS_SHOW_MAIN_DEMO = "isShowMainDemo";
 
     public PreferenceManager(Context context) {
         this._context = context;
@@ -30,5 +30,14 @@ public class PreferenceManager {
 
     public boolean isFirstTimeLaunch() {
         return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
+    }
+
+    public void setShowMainDemo(boolean isFirstTime) {
+        editor.putBoolean(IS_SHOW_MAIN_DEMO, isFirstTime);
+        editor.commit();
+    }
+
+    public boolean isShowMainDemo() {
+        return pref.getBoolean(IS_SHOW_MAIN_DEMO, true);
     }
 }

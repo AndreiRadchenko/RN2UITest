@@ -79,6 +79,7 @@ import tourguide.tourguide.Overlay;
 import tourguide.tourguide.Pointer;
 import tourguide.tourguide.ToolTip;
 import tourguide.tourguide.TourGuide;
+import unidesign.ussdsmscodes.IntroSlider.WelcomeActivity;
 import unidesign.ussdsmscodes.MySQLight.TemplatesDataSource;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
 import unidesign.ussdsmscodes.Preferences.Pin_lock_activity;
@@ -135,6 +136,7 @@ public class RN_USSD extends AppCompatActivity
     static FragmentManager mfragmentManager;
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
+    public static unidesign.ussdsmscodes.IntroSlider.PreferenceManager prefManager;
     public static boolean pinCheckComplete = false;
     public static Handler h;
     public static final int TIMER_START = 1;
@@ -149,7 +151,7 @@ public class RN_USSD extends AppCompatActivity
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
     public static StaticCount myCount;
-    public TourGuide mTutorialHandler, mTutorialHandler2;
+    public TourGuide mTutorialHandler;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -160,33 +162,36 @@ public class RN_USSD extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /* setup enter and exit animation for TourGuide*/
-        enterAnimation = new AlphaAnimation(0f, 1f);
-        enterAnimation.setDuration(600);
-        enterAnimation.setFillAfter(true);
+        prefManager = new unidesign.ussdsmscodes.IntroSlider.PreferenceManager(this);
 
-        exitAnimation = new AlphaAnimation(1f, 0f);
-        exitAnimation.setDuration(600);
-        exitAnimation.setFillAfter(true);
+        if(prefManager.isShowMainDemo()) {
+        /* setup enter and exit animation for TourGuide*/
+            enterAnimation = new AlphaAnimation(0f, 1f);
+            enterAnimation.setDuration(600);
+            enterAnimation.setFillAfter(true);
+
+            exitAnimation = new AlphaAnimation(1f, 0f);
+            exitAnimation.setDuration(600);
+            exitAnimation.setFillAfter(true);
 
         /* initialize TourGuide without playOn() */
-        mTutorialHandler = TourGuide.init(this).with(TourGuide.Technique.CLICK)
-                .setPointer(new Pointer()
-                        .setGravity(Gravity.LEFT))
-                .setToolTip(new ToolTip()
-                        .setTitle("Get started here!")
-                        .setDescription("Please, take two steps to get acquainted with the application.")
-                        .setGravity(Gravity.BOTTOM)
-                        //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
-                )
-                .setOverlay(new Overlay()
-                        .setEnterAnimation(enterAnimation)
-                        .setExitAnimation(exitAnimation)
-                        //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
-                );
-
+            mTutorialHandler = TourGuide.init(this).with(TourGuide.Technique.CLICK)
+                    .setPointer(new Pointer()
+                            .setGravity(Gravity.LEFT))
+                    .setToolTip(new ToolTip()
+                                    .setTitle("Get started here!")
+                                    .setDescription("Please, take two steps to get acquainted with the application.")
+                                    .setGravity(Gravity.BOTTOM)
+                            //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
+                    )
+                    .setOverlay(new Overlay()
+                                    .setEnterAnimation(enterAnimation)
+                                    .setExitAnimation(exitAnimation)
+                            //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
+                    );
+        }
         //mLockTime =
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.activity_main);
         demo_item1 = findViewById(R.id.demo_item1);
@@ -420,29 +425,32 @@ public class RN_USSD extends AppCompatActivity
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                mTutorialHandler.cleanUp();
-                mTutorialHandler
-                        .setToolTip(new ToolTip()
-                            .setTitle("Step one")
-                            .setDescription("Navigate to the screen of codes download")
-                            //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
-                            .setGravity(Gravity.TOP|Gravity.RIGHT))
-                        .setOverlay(new Overlay()
-                                .setEnterAnimation(enterAnimation)
-                                .setExitAnimation(exitAnimation))
-                        .playOn(demo_item2);
+                if(prefManager.isShowMainDemo()) {
+                    mTutorialHandler.cleanUp();
+                    mTutorialHandler
+                            .setToolTip(new ToolTip()
+                                    .setTitle("Step one")
+                                    .setDescription("Navigate to the screen of codes download")
+                                    //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
+                                    .setGravity(Gravity.TOP | Gravity.RIGHT))
+                            .setOverlay(new Overlay()
+                                    .setEnterAnimation(enterAnimation)
+                                    .setExitAnimation(exitAnimation))
+                            .playOn(demo_item2);
+                }
             }
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                mTutorialHandler.cleanUp();
+                if(prefManager.isShowMainDemo())
+                        mTutorialHandler.cleanUp();
             }
         };
         drawer.addDrawerListener(toggle);
 
         toggle.syncState();
-        //View Home_btn = findViewById(android.R.id.home);
-        mTutorialHandler.playOn(demo_item1);
+        if(prefManager.isShowMainDemo())
+            mTutorialHandler.playOn(demo_item1);
 
         h = new Handler() {
             @SuppressLint("NewApi")
@@ -475,7 +483,11 @@ public class RN_USSD extends AppCompatActivity
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+            if (prefManager.isShowMainDemo() ){
+
+            }
+            else
+                drawer.closeDrawer(GravityCompat.START);
             //mTutorialHandler.cleanUp();
         }
         else if (!toolbar.isShown()) {
@@ -513,7 +525,10 @@ public class RN_USSD extends AppCompatActivity
         if (id == R.id.action_select) {
             //setSelectionMode();
             Log.d("R.id.action_intro", "intent.action.introslider");
+            prefManager.setFirstTimeLaunch(true);
+            prefManager.setShowMainDemo(true);
             startActivity(new Intent("intent.action.introslider"));
+            finish();
                 //getActionBar().hide();
                 //actionMode = startActionMode(actionModeCallback);
             return true;
@@ -529,8 +544,8 @@ public class RN_USSD extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_import) {
-
-            mTutorialHandler.cleanUp();
+            if (prefManager.isShowMainDemo())
+                    mTutorialHandler.cleanUp();
             startActivity(new Intent("intent.action.import_templates"));
 
         }

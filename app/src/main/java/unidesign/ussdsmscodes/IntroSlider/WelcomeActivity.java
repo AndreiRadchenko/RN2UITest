@@ -129,7 +129,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void launchHomeScreen(String startaction) {
-        if (!startaction.equals("intent.action.introslider"))
+        //if (!startaction.equals("intent.action.introslider"))
         {
             prefManager.setFirstTimeLaunch(false);
             startActivity(new Intent(WelcomeActivity.this, RN_USSD.class));

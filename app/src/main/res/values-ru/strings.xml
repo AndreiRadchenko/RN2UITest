@@ -18,6 +18,8 @@
     <string name="delete_selection">Удалить выделенное</string>
     <string name="action_selection_settings">Настройки</string>
     <string name="dele_items_snackbar">Выделенные коды удалены</string>
+    <string name="Deleted_message">Deleted %1$d items</string>
+    <string name="items"> items</string>
 
     <plurals name="Deleted_message">
         <item quantity="one">Удален %1$d код</item>
@@ -76,6 +78,7 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="confirm_fail">Confirm fail, try again</string>
     <string name="warning_data_lost">If you enter incorrect PIN again, application data will be lost</string>
+    <string name="enter_pin">Enter PIN</string>
     <string name="enter_new_pin">Enter new PIN</string>
     <string name="enter_current_pin">Enter current PIN</string>
     <string name="pin_set">PIN set</string>

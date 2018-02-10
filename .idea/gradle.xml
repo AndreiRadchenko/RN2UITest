@@ -10,9 +10,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/mytourguide" />
             <option value="$PROJECT_DIR$/tourguide" />
-            <option value="$PROJECT_DIR$/tourguide/tourguide" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

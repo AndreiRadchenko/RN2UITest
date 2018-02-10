@@ -1,1 +1,1 @@
-include ':app', ':mytourguide', ':tourguide:tourguide'
+include ':app', ':tourguide'

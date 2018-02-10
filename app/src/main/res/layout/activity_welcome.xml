@@ -19,7 +19,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/dots_margin_bottom"
         android:gravity="center"
-        android:orientation="horizontal"></LinearLayout>
+        android:orientation="horizontal">
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -35,6 +37,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@null"
+        android:paddingRight="25dp"
+        android:paddingEnd="25dp"
         android:text="@string/next"
         android:textColor="@android:color/white" />
 
@@ -45,8 +49,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:background="@null"
-        android:paddingLeft="5dp"
-        android:paddingStart="5dp"
+        android:paddingLeft="25dp"
+        android:paddingStart="25dp"
         android:text="@string/skip"
         android:textColor="@android:color/white" />
 
