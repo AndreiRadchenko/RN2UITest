@@ -98,6 +98,6 @@
     <string name="demo_one_title">Крок перший</string>
     <string name="demo_one_description">Перейдіть на сторінку завантаження кодів</string>
     <string name="demo_two_title">Крок другий</string>
-    <string name="demo_two_descriptin">Оберіть набір кодів, та завантажте їх</string>
+    <string name="demo_two_descriptin">Оберіть та завантажте набір кодів</string>
 
 </resources>

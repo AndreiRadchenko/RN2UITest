@@ -291,9 +291,10 @@ public class Pin_lock_activity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 if (sharedPrefs.getBoolean(pref_items.pref_useFingerPrint, false)) {
-                    //DialogFragment newFragment = new FingerPrintDialog();
-                    DialogFragment newFragment = FingerPrintDialog.newInstance((Pin_lock_activity) pin_lock_context);
-                    newFragment.show(getSupportFragmentManager(), "fingerprint_dialog");
+                    if (!lanchMode.equals("changePIN")) {
+                        DialogFragment newFragment = FingerPrintDialog.newInstance((Pin_lock_activity) pin_lock_context);
+                        newFragment.show(getSupportFragmentManager(), "fingerprint_dialog");
+                    }
                 }
             }
         });

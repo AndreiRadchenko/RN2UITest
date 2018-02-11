@@ -182,12 +182,13 @@ public class RN_USSD extends AppCompatActivity
                                     .setTitle(getString(R.string.demo_start_title))
                                     .setDescription("\n" + getString(R.string.demo_start_description))
                                     .setGravity(Gravity.BOTTOM|Gravity.RIGHT)
-                            //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
+                                    //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen2))
+                                    .setShadow(true)
                     )
                     .setOverlay(new Overlay()
                                     .setEnterAnimation(enterAnimation)
                                     .setExitAnimation(exitAnimation)
-                            //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
+                                    .setBackgroundColor(R.color.holo_yellow_dark)
                     );
         }
         //mLockTime =
@@ -422,14 +423,20 @@ public class RN_USSD extends AppCompatActivity
                 if(prefManager.isShowMainDemo()) {
                     mTutorialHandler.cleanUp();
                     mTutorialHandler
+                            .setPointer(new Pointer())
                             .setToolTip(new ToolTip()
                                     .setTitle(getString(R.string.demo_one_title))
                                     .setDescription("\n" + getString(R.string.demo_one_description))
-                                    //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
-                                    .setGravity(Gravity.TOP | Gravity.RIGHT))
+                                    .setGravity(Gravity.TOP | Gravity.RIGHT)
+                                    //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen2))
+                                    //.setTextColor(getResources().getColor(R.color.colorPrimaryDark))
+                                    .setShadow(true)
+                            )
                             .setOverlay(new Overlay()
                                     .setEnterAnimation(enterAnimation)
-                                    .setExitAnimation(exitAnimation))
+                                    .setExitAnimation(exitAnimation)
+                                    .setBackgroundColor(R.color.holo_yellow_dark)
+                            )
                             .playOn(demo_item2);
                 }
             }

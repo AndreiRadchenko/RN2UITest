@@ -216,6 +216,7 @@ public class TourGuide {
         setupFrameLayout();
         /* setup tooltip view */
         setupToolTip();
+
     }
 
     private void handleDisableClicking(FrameLayoutWithHole frameLayoutWithHole){
@@ -295,7 +296,7 @@ public class TourGuide {
 
             Point resultPoint = new Point(); // this holds the final position of tooltip
             float density = mActivity.getResources().getDisplayMetrics().density;
-            final float adjustment = 10 * density; //adjustment is that little overlapping area of tooltip and targeted button
+            final float adjustment = 1 * density; //adjustment is that little overlapping area of tooltip and targeted button
 
             // calculate x position, based on gravity, tooltipMeasuredWidth, parent max width, x position of target view, adjustment
             if (toolTipMeasuredWidth > parent.getWidth()){
@@ -435,8 +436,7 @@ public class TourGuide {
         contentArea.getLocationOnScreen(pos);
         // frameLayoutWithHole's coordinates are calculated taking full screen height into account
         // but we're adding it to the content area only, so we need to offset it to the same Y value of contentArea
-
-        layoutParams.setMargins(0,-pos[1],0,0);
+        //layoutParams.setMargins(0,-pos[1],0,0);
         contentArea.addView(mFrameLayout, layoutParams);
     }
 

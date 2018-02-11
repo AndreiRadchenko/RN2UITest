@@ -81,8 +81,8 @@
     <string name="warning_data_lost">Если вы снова введете неверный PIN-код, данные приложения будут удалены</string>
     <string name="enter_pin">Введите PIN</string>
     <string name="enter_new_pin">Введите новый PIN</string>
-    <string name="enter_current_pin">Введите действующий PIN</string>
-    <string name="pin_set">PIN-код установленt</string>
+    <string name="enter_current_pin">Введите текущий PIN</string>
+    <string name="pin_set">PIN-код установлен</string>
     <string name="pin_set_canceled">PIN-код отменен</string>
     <string name="app_data_deleted">Данные приложения удалены</string>
     <string name="settings">Настройки</string>
@@ -98,6 +98,6 @@
     <string name="demo_one_title">Шаг первый</string>
     <string name="demo_one_description">Перейдите на страницу загрузки кодов</string>
     <string name="demo_two_title">Шаг второй</string>
-    <string name="demo_two_descriptin">Выберите набор кодов, и загрузите их</string>
+    <string name="demo_two_descriptin">Выберите и загрузите набор кодов</string>
 
 </resources>

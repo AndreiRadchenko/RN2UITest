@@ -34,7 +34,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Default Description"
-            android:textColor="@color/White" />
+            android:textColor="@color/White"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </LinearLayout>

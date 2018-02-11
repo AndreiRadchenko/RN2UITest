@@ -65,43 +65,6 @@ public class   ImportTemplateActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.import_activity);
 
-//        if (RN_USSD.prefManager.isShowMainDemo() ) {
-//        /* setup enter and exit animation for TourGuide*/
-//            enterAnimation = new AlphaAnimation(0f, 1f);
-//            enterAnimation.setDuration(600);
-//            enterAnimation.setFillAfter(true);
-//
-//            exitAnimation = new AlphaAnimation(1f, 0f);
-//            exitAnimation.setDuration(600);
-//            exitAnimation.setFillAfter(true);
-//
-//        /* initialize TourGuide without playOn() */
-//            mTutorialHandler = TourGuide.init(this).with(TourGuide.Technique.CLICK)
-//                    .setPointer(null)
-//                    .setToolTip(new ToolTip()
-//                                    .setTitle(getString(R.string.demo_two_title))
-//                                    .setDescription("\n" + getString(R.string.demo_two_descriptin))
-//                                    .setGravity(Gravity.TOP)
-//                            //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
-//                    )
-//                    .setOverlay(new Overlay()
-//                            .setEnterAnimation(enterAnimation)
-//                            .setExitAnimation(exitAnimation)
-//                            .disableClick(false)
-//                            .setStyle(Overlay.Style.NO_HOLE)
-//                            //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))
-//                            .setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    mTutorialHandler.cleanUp();
-//                                    RN_USSD.prefManager.setShowMainDemo(false);
-//                                }
-//                            }));
-//
-//            demo_item3 = findViewById(R.id.demo_item3);
-//            mTutorialHandler.playOn(demo_item3);
-//        }
-
         Toolbar myToolbar = (Toolbar) findViewById(R.id.import_toolbar);
         setSupportActionBar(myToolbar);
         // Get a support ActionBar corresponding to this toolbar
@@ -200,13 +163,18 @@ public class   ImportTemplateActivity extends AppCompatActivity
                     .setPointer(null)
                     .setToolTip(new ToolTip()
                                     .setTitle(getString(R.string.demo_two_title))
-                                    .setDescription("\n" + getString(R.string.demo_two_descriptin))
+                                    .setDescription(getString(R.string.demo_two_descriptin) + "\n")
                                     .setGravity(Gravity.TOP)
+                                    //.setWidth(720)
+                                    //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen2))
+                                    //.setTextColor(getResources().getColor(R.color.colorPrimaryDark))
+                                    .setShadow(true)
                             //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
                     )
                     .setOverlay(new Overlay()
                             .setEnterAnimation(enterAnimation)
                             .setExitAnimation(exitAnimation)
+                            .setBackgroundColor(R.color.holo_yellow_dark)
                             .disableClick(false)
                             .setStyle(Overlay.Style.NO_HOLE)
                             //.setBackgroundColor(getResources().getColor(R.color.overlay_transparent))

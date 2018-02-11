@@ -95,6 +95,6 @@
     <string name="demo_one_title">Step one</string>
     <string name="demo_one_description">Navigate to the screen of codes download</string>
     <string name="demo_two_title">Step two</string>
-    <string name="demo_two_descriptin">Choose a set of codes, and download it</string>
+    <string name="demo_two_descriptin">Choose and download a set of codes</string>
 
 </resources>
