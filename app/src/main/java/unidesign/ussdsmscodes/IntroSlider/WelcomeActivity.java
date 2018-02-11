@@ -41,12 +41,13 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefManager = new PreferenceManager(this);
 
         final Intent startintent = getIntent();
         Log.d("WelcomeActivity", startintent.getAction());
         if (!startintent.getAction().equals("intent.action.introslider")) {
             // Checking for first time launch - before calling setContentView()
-            prefManager = new PreferenceManager(this);
+//            prefManager = new PreferenceManager(this);
             if (!prefManager.isFirstTimeLaunch()) {
                 launchHomeScreen(startintent.getAction());
                 finish();

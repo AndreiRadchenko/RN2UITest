@@ -179,9 +179,9 @@ public class RN_USSD extends AppCompatActivity
                     .setPointer(new Pointer()
                             .setGravity(Gravity.LEFT))
                     .setToolTip(new ToolTip()
-                                    .setTitle("Get started here!")
-                                    .setDescription("Please, take two steps to get acquainted with the application.")
-                                    .setGravity(Gravity.BOTTOM)
+                                    .setTitle(getString(R.string.demo_start_title))
+                                    .setDescription("\n" + getString(R.string.demo_start_description))
+                                    .setGravity(Gravity.BOTTOM|Gravity.RIGHT)
                             //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
                     )
                     .setOverlay(new Overlay()
@@ -413,12 +413,6 @@ public class RN_USSD extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //magicButton.getAnimationOnShow().setDuration(5000);
-        //ConstraintLayout rootView = (ConstraintLayout) navigationView.getMenu().findItem(R.id.nav_import).getActionView();
-        //locButton.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        //locButton.setClickable(false);
-        //import_icon = (ImageView) rootView.findViewById(R.id.ic_action_import);
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
@@ -429,8 +423,8 @@ public class RN_USSD extends AppCompatActivity
                     mTutorialHandler.cleanUp();
                     mTutorialHandler
                             .setToolTip(new ToolTip()
-                                    .setTitle("Step one")
-                                    .setDescription("Navigate to the screen of codes download")
+                                    .setTitle(getString(R.string.demo_one_title))
+                                    .setDescription("\n" + getString(R.string.demo_one_description))
                                     //.setBackgroundColor(getResources().getColor(R.color.bg_slider_screen3))
                                     .setGravity(Gravity.TOP | Gravity.RIGHT))
                             .setOverlay(new Overlay()

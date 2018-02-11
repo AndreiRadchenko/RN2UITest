@@ -92,5 +92,12 @@
     <string name="fingerprint">Відбиток пальця</string>
     <string name="fingerprint_summary">Використовуйте відбиток для доступу</string>
     <string name="confirm_pin">Підтвердіть PIN</string>
+    <!-- TourGuide Demo ======================================================================== -->
+    <string name="demo_start_title">Розпочніть звідси!</string>
+    <string name="demo_start_description">Будь ласка, виконайте два кроки, для ознайомлення з додатком</string>
+    <string name="demo_one_title">Крок перший</string>
+    <string name="demo_one_description">Перейдіть на сторінку завантаження кодів</string>
+    <string name="demo_two_title">Крок другий</string>
+    <string name="demo_two_descriptin">Оберіть набір кодів, та завантажте їх</string>
 
 </resources>

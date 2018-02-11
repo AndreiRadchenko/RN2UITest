@@ -71,10 +71,10 @@
     <string name="not_support_fingerprint">Your device doesn\'t support fingerprint authentication</string>
     <string name="enable_fingerprint">Please enable the fingerprint permission</string>
     <string name="register_fingerprint">No fingerprint configured. Please register at least one fingerprint in your device\'s Settings</string>
-    <string name="enable_lockscreen">Please enable lockscreen security in your device\'s Settings</string>
+    <string name="enable_lockscreen">Please enable lock screen security in your device\'s Settings</string>
     <string name="incompatible_android_version">Your android version doesn\'t support fingerprint authentication</string>
     <string name="authentication_failed">Authentication failed</string>
-    <string name="confirm_fail">Confirm fail, try again</string>
+    <string name="confirm_fail">Confirmation fail, try again</string>
     <string name="warning_data_lost">If you enter incorrect PIN again, application data will be lost</string>
     <string name="enter_pin">Enter PIN</string>
     <string name="enter_new_pin">Enter new PIN</string>
@@ -89,5 +89,12 @@
     <string name="fingerprint">Fingerprint</string>
     <string name="fingerprint_summary">Use fingerprint for authorization</string>
     <string name="confirm_pin">Confirm PIN</string>
+    <!-- TourGuide Demo ======================================================================== -->
+    <string name="demo_start_title">Start here!</string>
+    <string name="demo_start_description">Please, take two steps to get acquainted with the application.</string>
+    <string name="demo_one_title">Step one</string>
+    <string name="demo_one_description">Navigate to the screen of codes download</string>
+    <string name="demo_two_title">Step two</string>
+    <string name="demo_two_descriptin">Choose a set of codes, and download it</string>
 
 </resources>
