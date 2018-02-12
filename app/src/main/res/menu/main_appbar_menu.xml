@@ -5,8 +5,7 @@
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
         android:id="@+id/action_intro"
-        android:icon="@android:drawable/checkbox_on_background"
         android:title="@string/select_templates"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
 
 </menu>

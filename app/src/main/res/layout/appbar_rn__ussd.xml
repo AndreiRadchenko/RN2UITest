@@ -53,6 +53,7 @@
                     android:visibility="visible"
                     app:contentInsetEnd="0dp"
                     app:contentInsetStart="0dp"
+                    app:popupTheme="@style/popupMenuStyle"
                     />
             </RelativeLayout>
 

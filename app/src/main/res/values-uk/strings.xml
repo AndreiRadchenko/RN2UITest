@@ -13,7 +13,7 @@
     <string name="sms_template_name">Назва</string>
     <string name="sms_template_template">Код</string>
     <string name="sms_template_comment">Коментар</string>
-    <string name="select_templates">Обрати коди</string>
+    <string name="select_templates">Інтро</string>
     <string name="select_all">Обрати все</string>
     <string name="delete_selection">Видалити обране</string>
     <string name="action_selection_settings">Налаштування</string>
