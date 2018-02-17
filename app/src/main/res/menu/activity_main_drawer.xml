@@ -27,16 +27,17 @@
             android:title="@string/naw_settings" />
     </group>
 
-    <item android:title="@string/naw_communicate">
+    <item
+        android:title="@string/naw_communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="@string/naw_share" />
+                android:title="@string/naw_share"/>
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/naw_send" />
+                android:id="@+id/nav_rate"
+                android:icon="@android:drawable/star_big_on"
+                android:title="@string/naw_rate" />
         </menu>
     </item>
 

@@ -12,6 +12,7 @@ import android.util.Log;
 
 import unidesign.ussdsmscodes.MyAdapter;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
+import unidesign.ussdsmscodes.RecyclerItem;
 import unidesign.ussdsmscodes.TempContentProvider.TempContentProvider;
 
 /**
@@ -116,15 +117,16 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         switch (adapter.mSectionNumber) {
             case 1:
                 for (int k  = 0 ; k < adapter.listItems.size(); k++){
-                    if (adapter.listItems.get(k).getID() != adapter.templates.get(k).getId()){
+                    RecyclerItem mRecyclerItem = (RecyclerItem) adapter.listItems.get(k);
+                    if (mRecyclerItem.getID() != adapter.templates.get(k).getId()){
 
                         uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                                 + adapter.templates.get(k).getId());
 
-                        values.put(USSDSQLiteHelper.COLUMN_NAME, adapter.listItems.get(k).getTitle());
-                        values.put(USSDSQLiteHelper.COLUMN_COMMENT, adapter.listItems.get(k).getDescription());
-                        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, adapter.listItems.get(k).getTemplate());
-                        values.put(USSDSQLiteHelper.COLUMN_IMAGE, adapter.listItems.get(k).getImageName());
+                        values.put(USSDSQLiteHelper.COLUMN_NAME, mRecyclerItem.getTitle());
+                        values.put(USSDSQLiteHelper.COLUMN_COMMENT, mRecyclerItem.getDescription());
+                        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, mRecyclerItem.getTemplate());
+                        values.put(USSDSQLiteHelper.COLUMN_IMAGE, mRecyclerItem.getImageName());
 
                         adapter.mContext.getContentResolver().update(uri, values, null, null);
                         Log.d(LOG_TAG, "--- In reallyMoved update USSD, from = " + from + ", to = " + to );
@@ -134,16 +136,17 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
                 break;
             case 2:
                 for (int k  = 0 ; k < adapter.listItems.size(); k++){
-                    if (adapter.listItems.get(k).getID() != adapter.templates.get(k).getId()){
+                    RecyclerItem mRecyclerItem = (RecyclerItem) adapter.listItems.get(k);
+                    if (mRecyclerItem.getID() != adapter.templates.get(k).getId()){
 
                         uri = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
                                 + adapter.templates.get(k).getId());
 
-                        values.put(USSDSQLiteHelper.COLUMN_NAME, adapter.listItems.get(k).getTitle());
-                        values.put(USSDSQLiteHelper.COLUMN_COMMENT, adapter.listItems.get(k).getDescription());
-                        values.put(USSDSQLiteHelper.COLUMN_PHONE_NUMBER, adapter.listItems.get(k).getPhone());
-                        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, adapter.listItems.get(k).getTemplate());
-                        values.put(USSDSQLiteHelper.COLUMN_IMAGE, adapter.listItems.get(k).getImageName());
+                        values.put(USSDSQLiteHelper.COLUMN_NAME, mRecyclerItem.getTitle());
+                        values.put(USSDSQLiteHelper.COLUMN_COMMENT, mRecyclerItem.getDescription());
+                        values.put(USSDSQLiteHelper.COLUMN_PHONE_NUMBER, mRecyclerItem.getPhone());
+                        values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, mRecyclerItem.getTemplate());
+                        values.put(USSDSQLiteHelper.COLUMN_IMAGE, mRecyclerItem.getImageName());
 
                         adapter.mContext.getContentResolver().update(uri, values, null, null);
                         Log.d(LOG_TAG, "--- In reallyMoved update SMS, from = " + from + ", to = " + to );

@@ -1,7 +1,11 @@
+<!DOCTYPE resources [
+    <!ENTITY app_name "USSD и SMS коды">
+    ]>
+
 <resources>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="app_name">USSD и SMS коды</string>
+    <string name="app_name">&app_name;</string>
     <string name="action_settings">Настройки</string>
     <string name="action_done">Сохранить</string>
     <string name="action_copy">Копировать</string>
@@ -49,9 +53,11 @@
     <string name="naw_backup">Резервная копия</string>
     <string name="naw_restore">Восстановить копию</string>
     <string name="naw_settings">Настройки</string>
+
     <string name="naw_communicate">Общение</string>
-    <string name="naw_share">Поделится</string>
-    <string name="naw_send">Отправить</string>
+    <string name="naw_share">Поделиться</string>
+    <string name="naw_rate">Оценить приложение</string>
+
     <string name="snackbar_fill_form">Пожалуйста, заполните форму</string>
     <string name="ext_stor_perm_denied">В разрешении отказанно, вы не можете получить доступ ко внешней памяти.</string>
     <string name="restore_select_title">Выделенно </string>
@@ -99,5 +105,9 @@
     <string name="demo_one_description">Перейдите на страницу загрузки кодов</string>
     <string name="demo_two_title">Шаг второй</string>
     <string name="demo_two_descriptin">Выберите и загрузите набор кодов</string>
+
+    <string name="share_link_subject">Ссылка для загрузки приложения \"&app_name;\"</string>
+    <string name="share_link_text">Откройте ссылку и установите \"&app_name;\"</string>
+    <string name="share_via">Поделиться через</string>
 
 </resources>

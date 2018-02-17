@@ -6,7 +6,8 @@
         android:id="@+id/action_select"
         android:icon="@drawable/ic_done_black_24dp"
         android:title="@string/select_templates"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        android:visible="false"/>
 
     <item
         android:id="@+id/action_settings"

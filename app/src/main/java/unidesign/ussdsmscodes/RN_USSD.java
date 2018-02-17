@@ -97,6 +97,12 @@ import io.reactivex.disposables.Disposable;
 import static unidesign.ussdsmscodes.Preferences.SettingsPrefActivity.PIN_REQUEST;
 import static unidesign.ussdsmscodes.Preferences.pref_items.pref_Autorization;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         BackupDialog.NoticeDialogListener, setupTemplateDialog.mDialogListener {
@@ -148,6 +154,8 @@ public class RN_USSD extends AppCompatActivity
     static RelativeLayout relativeLayout;
     public Animation enterAnimation, exitAnimation;
 
+    public static final String ADMOB_APP_ID = "ca-app-pub-3260829463635761~1132663635";
+    private AdView mAdView;
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
     public static StaticCount myCount;
@@ -195,6 +203,13 @@ public class RN_USSD extends AppCompatActivity
         sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.activity_main);
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, ADMOB_APP_ID);
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         demo_item1 = findViewById(R.id.demo_item1);
         demo_item2 = findViewById(R.id.demo_item2);
         mfragmentManager = getSupportFragmentManager();
@@ -295,9 +310,10 @@ public class RN_USSD extends AppCompatActivity
                             case 0:
                                 for (int k = 0; k < USSDTabAdapter.getItemCount(); k++)
                                 {
-                                    if (USSDTabAdapter.listItems.get(k).isSelected()) {
+                                    RecyclerItem mRecycleItem = (RecyclerItem) USSDTabAdapter.listItems.get(k);
+                                    if (mRecycleItem.isSelected()) {
                                         uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                                                + USSDTabAdapter.listItems.get(k).getID());
+                                                + mRecycleItem.getID());
                                         getContentResolver().delete(uri, null, null);
                                     }
                                 }
@@ -307,9 +323,10 @@ public class RN_USSD extends AppCompatActivity
                             case 1:
                                 for (int k = 0; k < currentTabAdapter.getItemCount(); k++)
                                 {
-                                    if (currentTabAdapter.listItems.get(k).isSelected()) {
+                                    RecyclerItem mRecycleItem = (RecyclerItem) currentTabAdapter.listItems.get(k);
+                                    if (mRecycleItem.isSelected()) {
                                         uri = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
-                                                + currentTabAdapter.listItems.get(k).getID());
+                                                + mRecycleItem.getID());
                                         getContentResolver().delete(uri, null, null);
                                     }
                                 }
@@ -593,10 +610,28 @@ public class RN_USSD extends AppCompatActivity
             //startActivity(new Intent("intent.action.settings"));
         }
         else if (id == R.id.nav_share) {
+            String appPackageName= getPackageName();
+            String shareBody = "https://play.google.com/store/apps/details?id=" + appPackageName;
+
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_link_subject));
+
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+                    getString(R.string.share_link_text) + " " + shareBody);
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via)));
 
         }
-        else if (id == R.id.nav_send) {
+        else if (id == R.id.nav_rate) {
+            String appPackageName= getPackageName();
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+appPackageName));
+            marketIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET|
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            try {
+                startActivity(marketIntent);
+            } catch (Exception e) {
 
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -656,6 +691,9 @@ public class RN_USSD extends AppCompatActivity
                 case 1:
                     Log.d(LOG_TAG, "--- OnCreateView() PlaceholderFragment sectionNumber: ---" + sectionNumber);
                     getLoaderManager().initLoader(0, null, this);
+                    //============================add ads here============================================
+
+                    //====================================================================================
                     break;
                 case 2:
                     Log.d(LOG_TAG, "--- OnCreateView() PlaceholderFragment sectionNumber: ---" + sectionNumber);
@@ -1170,8 +1208,6 @@ public class RN_USSD extends AppCompatActivity
                     Toast.makeText(this, "Application data deleted", Toast.LENGTH_LONG).show();
                     break;
             }
-
-
         }
     }
 

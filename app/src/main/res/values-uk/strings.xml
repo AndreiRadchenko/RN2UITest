@@ -1,7 +1,11 @@
+<!DOCTYPE resources [
+    <!ENTITY app_name "USSD та SMS коди">
+    ]>
+
 <resources>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="app_name">USSD та SMS коди</string>
+    <string name="app_name">&app_name;</string>
     <string name="action_settings">Налаштування</string>
     <string name="action_done">Зберегти</string>
     <string name="action_copy">Копіювати</string>
@@ -49,9 +53,11 @@
     <string name="naw_backup">Резервна копія</string>
     <string name="naw_restore">Відновити копію</string>
     <string name="naw_settings">Налаштування</string>
+
     <string name="naw_communicate">Спілкування</string>
     <string name="naw_share">Поділитись</string>
-    <string name="naw_send">Надіслати</string>
+    <string name="naw_rate">Оцінити додаток</string>
+
     <string name="snackbar_fill_form">Будь ласка, заповніть форму</string>
     <string name="ext_stor_perm_denied">У дозволі відмовлено, ви не можете отримати доступ до зовнішньої пам\'яті.</string>
     <string name="restore_select_title">Обрано </string>
@@ -99,5 +105,9 @@
     <string name="demo_one_description">Перейдіть на сторінку завантаження кодів</string>
     <string name="demo_two_title">Крок другий</string>
     <string name="demo_two_descriptin">Оберіть та завантажте набір кодів</string>
+
+    <string name="share_link_subject">Посилання для завантаження додатка \"&app_name;\"</string>
+    <string name="share_link_text">Відкрийте посилання та встановіть \"&app_name;\"</string>
+    <string name="share_via">Поділитися через</string>
 
 </resources>

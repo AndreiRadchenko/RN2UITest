@@ -97,6 +97,17 @@
                 android:layout_height="?attr/actionBarSize"
                 android:visibility="visible" />
 
+            <!--com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adSize="SMART_BANNER"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+            </com.google.android.gms.ads.AdView-->
+
         </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -110,41 +121,53 @@
         app:layout_behavior="unidesign.ussdsmscodes.ScrollingFABBehavior"
         app:srcCompat="@drawable/ic_fab_plus" />
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_behavior="unidesign.ussdsmscodes.ScrollingViewBehavior"
+        app:layout_insetEdge="none">
+
+        <unidesign.ussdsmscodes.CustomViewPager
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_behavior="unidesign.ussdsmscodes.ScrollingViewBehavior">
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:visibility="visible" />
+        <!-- app:layout_behavior="@string/appbar_scrolling_view_behavior"  -->
 
-                <unidesign.ussdsmscodes.CustomViewPager
-                    android:id="@+id/container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:scrollbars="vertical"
-                    android:visibility="visible"/>
-                <!-- app:layout_behavior="@string/appbar_scrolling_view_behavior"  -->
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="bottom"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        </com.google.android.gms.ads.AdView>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/select_toolbar_bottom"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/select_toolbar_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="0.1"
+            android:alwaysDrawnWithCache="false"
+            android:animateLayoutChanges="true"
+            android:background="@color/select_toolbar_background"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:visibility="gone">
+
+            <android.support.v7.widget.ActionMenuView
+                android:id="@+id/amvMenu"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_weight="0.1"
-                android:alwaysDrawnWithCache="false"
-                android:animateLayoutChanges="true"
-                android:background="@color/select_toolbar_background"
-                android:theme="@style/AppTheme.AppBarOverlay"
-                android:visibility="gone">
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="center_horizontal" />
 
-                <android.support.v7.widget.ActionMenuView
-                    android:id="@+id/amvMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:gravity="center_horizontal" />
-
-            </android.support.v7.widget.Toolbar>
-        </LinearLayout>
+        </android.support.v7.widget.Toolbar>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
 

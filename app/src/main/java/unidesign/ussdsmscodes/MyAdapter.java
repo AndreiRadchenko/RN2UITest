@@ -31,6 +31,10 @@ import unidesign.ussdsmscodes.TempContentProvider.TempContentProvider;
 import unidesign.ussdsmscodes.helper.ItemTouchHelperViewHolder;
 import unidesign.ussdsmscodes.helper.ItemTouchHelperAdapter;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.squareup.picasso.Picasso;
@@ -65,7 +69,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public OnItemClickListener listener;
     public OnItemLongClickListener LongClicklistener;
     //public onItemLongClickListener listener;
-    public List<RecyclerItem> listItems = new ArrayList<>();
+    public List<Object> listItems = new ArrayList<>();
     public List<USSD_Template> templates;
     public Context mContext;
     public int mSectionNumber;
@@ -75,6 +79,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     //public static String selected_color = String.format("#%08X", (0xFFFFFFFF & R.color.bg_item_selected_state));
     public int  selected_color;
     public int  normal_color;
+
+    // A banner ad is placed in every 8th position in the RecyclerView.
+    public static final int ITEMS_PER_AD = 5;
+
+    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111";
+    // A menu item view type.
+    private static final int MENU_ITEM_VIEW_TYPE = 0;
+
+    // The banner ad view type.
+    private static final int BANNER_AD_VIEW_TYPE = 1;
 
     public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener,
                      OnItemLongClickListener mLongClickListener) {
@@ -117,14 +131,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         ContentValues values = new ContentValues();
 
         for (int k = 0; k < listItems.size(); k++) {
-            if (listItems.get(k).getID() != templates.get(k).getId()) {
+            RecyclerItem mRecycleItem = (RecyclerItem) listItems.get(k);
+            if (mRecycleItem.getID() != templates.get(k).getId()) {
 
                 uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                         + templates.get(k).getId());
 
-                values.put(USSDSQLiteHelper.COLUMN_NAME, listItems.get(k).getTitle());
-                values.put(USSDSQLiteHelper.COLUMN_COMMENT, listItems.get(k).getDescription());
-                values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, listItems.get(k).getTemplate());
+                values.put(USSDSQLiteHelper.COLUMN_NAME, mRecycleItem.getTitle());
+                values.put(USSDSQLiteHelper.COLUMN_COMMENT, mRecycleItem.getDescription());
+                values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, mRecycleItem.getTemplate());
 
                 mContext.getContentResolver().update(uri, values, null, null);
                 Log.d(LOG_TAG, "--- In MyAdapter updateDB() ---");
@@ -149,6 +164,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
             listItems.clear();
             listItems.addAll(mlistItems);
+            addBannerAds();
+            loadBannerAds();
             notifyDataSetChanged();
         } else {
             notifyDataSetChanged();
@@ -171,6 +188,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
             listItems.clear();
             listItems.addAll(mlistItems);
+            addBannerAds();
+            loadBannerAds();
             notifyDataSetChanged();
         } else {
             notifyDataSetChanged();
@@ -216,89 +235,128 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     //==========================================================================================================
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
-        return new ViewHolder(v);
+//        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
+//        return new ViewHolder(v);
+
+        switch (viewType) {
+            case MENU_ITEM_VIEW_TYPE:
+                final View v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.recycler_item, parent, false);
+                return new ViewHolder(v);
+            case BANNER_AD_VIEW_TYPE:
+                // fall through
+            default:
+                View bannerLayoutView = LayoutInflater.from(
+                        parent.getContext()).inflate(R.layout.banner_ad_container,
+                        parent, false);
+                return new AdViewHolder(bannerLayoutView);
+        }
+
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        //dbHelper = new TemplatesDataSource(getActivity());
-        //dbHelper.open();
-        //holder.getAdapterPosition();
-        final RecyclerItem itemList = listItems.get(position);
-        //final RecyclerItem itemList = listItems.get(holder.getAdapterPosition());
+        int viewType = getItemViewType(position);
+        switch (viewType) {
+            case MENU_ITEM_VIEW_TYPE:
 
-        File file = new File(mContext.getFilesDir().getPath() + "/" + "icons", itemList.getImageName() + ".png");
-        //Log.d(LOG_TAG, file.getAbsolutePath());
+                final RecyclerItem itemList = (RecyclerItem) listItems.get(position);
+                //final RecyclerItem itemList = listItems.get(holder.getAdapterPosition());
+
+                File file = new File(mContext.getFilesDir().getPath() + "/" + "icons", itemList.getImageName() + ".png");
+                //Log.d(LOG_TAG, file.getAbsolutePath());
 
 // check selection due to RecycleView reuse ViewHolders
-        if (itemList.isSelected()) {
-            holder.vhCheckBox.setChecked(true);
-            holder.mContainer.setBackgroundColor(selected_color);
-        }
-        else {
-            holder.vhCheckBox.setChecked(false);
-            holder.mContainer.setBackgroundColor(normal_color);
-        };
-        //RN_USSD.selected_items_count = 10;
-        holder.bind(itemList, listener, LongClicklistener, mSectionNumber, mode, selected_color, normal_color);
+                if (itemList.isSelected()) {
+                    holder.vhCheckBox.setChecked(true);
+                    holder.mContainer.setBackgroundColor(selected_color);
+                }
+                else {
+                    holder.vhCheckBox.setChecked(false);
+                    holder.mContainer.setBackgroundColor(normal_color);
+                };
+                //RN_USSD.selected_items_count = 10;
+                holder.bind(itemList, listener, LongClicklistener, mSectionNumber, mode, selected_color, normal_color);
 //==========================set selection/normal mode================================================
-        if (mode == SELECTION_MOD) {
-            holder.vhCheckBox.setVisibility(holder.vhCheckBox.VISIBLE);
-            holder.EditButton.setVisibility(holder.EditButton.INVISIBLE);
-        }
-        else {
-            holder.vhCheckBox.setVisibility(holder.vhCheckBox.INVISIBLE);
-            holder.EditButton.setVisibility(holder.EditButton.VISIBLE);
-        }
+                if (mode == SELECTION_MOD) {
+                    holder.vhCheckBox.setVisibility(holder.vhCheckBox.VISIBLE);
+                    holder.EditButton.setVisibility(holder.EditButton.INVISIBLE);
+                }
+                else {
+                    holder.vhCheckBox.setVisibility(holder.vhCheckBox.INVISIBLE);
+                    holder.EditButton.setVisibility(holder.EditButton.VISIBLE);
+                }
 //===================================================================================================
-        //holder.imgIcon.setImageResource(R.mipmap.ic_kyivstar);
-        //Picasso.with(holder.txtTitle.getContext()).setIndicatorsEnabled(true);
-        Picasso.with(holder.txtTitle.getContext())
-                .load(file)
-                .placeholder(android.R.drawable.ic_menu_rotate)
-                .error(android.R.drawable.ic_menu_camera)
-                .into(holder.imgIcon);
+                //holder.imgIcon.setImageResource(R.mipmap.ic_kyivstar);
+                //Picasso.with(holder.txtTitle.getContext()).setIndicatorsEnabled(true);
+                Picasso.with(holder.txtTitle.getContext())
+                        .load(file)
+                        .placeholder(android.R.drawable.ic_menu_rotate)
+                        .error(android.R.drawable.ic_menu_camera)
+                        .into(holder.imgIcon);
 
-        holder.iconHolder.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    touchHelper.startDrag(holder);
+                holder.iconHolder.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                            touchHelper.startDrag(holder);
+                        }
+                        return false;
+                    }
+                });
+
+                holder.txtTitle.setText(itemList.getTitle());
+                holder.txtDescription.setText(itemList.getDescription());
+                holder.EditButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Uri uri2edit = null;
+                        Intent intent = null;
+                        RecyclerItem mRecyclerItem = (RecyclerItem) listItems.get(position);
+                        switch (mSectionNumber) {
+                            case 1:
+                                intent = new Intent("intent.action.editussd");
+                                uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
+                                        + mRecyclerItem.getID());
+                                intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
+                                break;
+                            case 2:
+                                intent = new Intent("intent.action.editsms");
+                                uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
+                                        + mRecyclerItem.getID());
+                                intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_SMS, uri2edit);
+                                break;
+                        }
+                        mContext.startActivity(intent);
+                    }
+                });
+
+                // set background resource (target view ID: container)
+                final int dragState = holder.getDragStateFlags();
+                break;
+            case BANNER_AD_VIEW_TYPE:
+                // fall through
+            default:
+                AdViewHolder bannerHolder = (AdViewHolder) holder;
+                AdView adView = (AdView) listItems.get(position);
+                ViewGroup adCardView = (ViewGroup) bannerHolder.itemView;
+                // The AdViewHolder recycled by the RecyclerView may be a different
+                // instance than the one used previously for this position. Clear the
+                // AdViewHolder of any subviews in case it has a different
+                // AdView associated with it, and make sure the AdView for this position doesn't
+                // already have a parent of a different recycled AdViewHolder.
+                if (adCardView.getChildCount() > 0) {
+                    adCardView.removeAllViews();
                 }
-                return false;
-            }
-        });
-
-        holder.txtTitle.setText(itemList.getTitle());
-        holder.txtDescription.setText(itemList.getDescription());
-        holder.EditButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Uri uri2edit = null;
-                Intent intent = null;
-                switch (mSectionNumber) {
-                    case 1:
-                        intent = new Intent("intent.action.editussd");
-                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                                + listItems.get(position).getID());
-                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_USSD, uri2edit);
-                        break;
-                    case 2:
-                        intent = new Intent("intent.action.editsms");
-                        uri2edit = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
-                                + listItems.get(position).getID());
-                        intent.putExtra(TempContentProvider.CONTENT_ITEM_TYPE_SMS, uri2edit);
-                        break;
+                if (adView.getParent() != null) {
+                    ((ViewGroup) adView.getParent()).removeView(adView);
                 }
-                mContext.startActivity(intent);
-            }
-        });
 
-        // set background resource (target view ID: container)
-        final int dragState = holder.getDragStateFlags();
+                // Add the banner ad to the ad view.
+                adCardView.addView(adView);
+        }
     }
 
     @Override
@@ -306,6 +364,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         return listItems.size();
     }
 
+    /**
+     * Determines the view type for the given position.
+     */
+    @Override
+    public int getItemViewType(int position) {
+        return (position % ITEMS_PER_AD == 0) ? BANNER_AD_VIEW_TYPE
+                : MENU_ITEM_VIEW_TYPE;
+    }
 
     @Override
     public void onItemDismiss(int position) {
@@ -316,7 +382,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
-        RecyclerItem prev = listItems.remove(fromPosition);
+        RecyclerItem prev = (RecyclerItem) listItems.remove(fromPosition);
         //listItems.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
         listItems.add(toPosition, prev);
         notifyItemMoved(fromPosition, toPosition);
@@ -337,14 +403,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mContainer = (RelativeLayout) itemView.findViewById(R.id.container);
-            //mDragHandle = itemView.findViewById(R.id.drag_handle);
-            txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
-            txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
-            EditButton = (ImageView) itemView.findViewById(R.id.EditButton);
-            imgIcon = (ImageView) itemView.findViewById(R.id.my_image_view);
-            vhCheckBox = (CheckBox) itemView.findViewById(R.id.checkBox);
-            iconHolder = (RelativeLayout) itemView.findViewById(R.id.icon_holder);
+            try {
+                mContainer = (RelativeLayout) itemView.findViewById(R.id.container);
+                mContainer = (RelativeLayout) itemView.findViewById(R.id.container);
+                //mDragHandle = itemView.findViewById(R.id.drag_handle);
+                txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
+                txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
+                EditButton = (ImageView) itemView.findViewById(R.id.EditButton);
+                imgIcon = (ImageView) itemView.findViewById(R.id.my_image_view);
+                vhCheckBox = (CheckBox) itemView.findViewById(R.id.checkBox);
+                iconHolder = (RelativeLayout) itemView.findViewById(R.id.icon_holder);
+            } catch (Exception e) {
+
+            }
+
         }
 //        RN_USSD.selected_items_count = 10;
         public void bind(final RecyclerItem item, final OnItemClickListener listener,
@@ -412,6 +484,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
     }
 
+    /**
+     * The {@link AdViewHolder} class.
+     */
+    public class AdViewHolder extends ViewHolder {
+
+        AdViewHolder(View view) {
+            super(view);
+        }
+    }
+
     void setMod(int mmode) {
         this.mode = mmode;
 
@@ -423,13 +505,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 // deselect all items when exit selection mode
     void deselectAllItems(){
         for (int k = 0; k < listItems.size(); k++) {
-            listItems.get(k).setSelected(false);
+            RecyclerItem mRecycleItem = (RecyclerItem) listItems.get(k);
+            mRecycleItem.setSelected(false);
         }
     }
     // deselect all items when exit selection mode
     void selectAllItems(){
         for (int k = 0; k < listItems.size(); k++) {
-            listItems.get(k).setSelected(true);
+            RecyclerItem mRecycleItem = (RecyclerItem) listItems.get(k);
+            mRecycleItem.setSelected(true);
         }
     }
 
@@ -437,5 +521,72 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
         this.touchHelper = touchHelper;
     }
+
+    //=========== ads in RecycleView methods=======================================================
+    /**
+     * Adds banner ads to the items list.
+     */
+    private void addBannerAds() {
+        // Loop through the items array and place a new banner ad in every ith position in
+        // the items List.
+        for (int i = 0; i <= listItems.size(); i += ITEMS_PER_AD) {
+            final AdView adView = new AdView(mContext);
+            adView.setAdSize(AdSize.BANNER);
+            adView.setAdUnitId(AD_UNIT_ID);
+            listItems.add(i, adView);
+        }
+    }
+
+    /**
+     * Sets up and loads the banner ads.
+     */
+    private void loadBannerAds() {
+        // Load the first banner ad in the items list (subsequent ads will be loaded automatically
+        // in sequence).
+        loadBannerAd(0);
+    }
+
+    /**
+     * Loads the banner ads in the items list.
+     */
+    private void loadBannerAd(final int index) {
+
+        if (index >= listItems.size()) {
+            return;
+        }
+
+        Object item = listItems.get(index);
+        if (!(item instanceof AdView)) {
+            throw new ClassCastException("Expected item at index " + index + " to be a banner ad"
+                    + " ad.");
+        }
+
+        final AdView adView = (AdView) item;
+
+        // Set an AdListener on the AdView to wait for the previous banner ad
+        // to finish loading before loading the next ad in the items list.
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                // The previous banner ad loaded successfully, call this method again to
+                // load the next ad in the items list.
+                loadBannerAd(index + ITEMS_PER_AD);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // The previous banner ad failed to load. Call this method again to load
+                // the next ad in the items list.
+                Log.e("MainActivity", "The previous banner ad failed to load. Attempting to"
+                        + " load the next banner ad in the items list.");
+                loadBannerAd(index + ITEMS_PER_AD);
+            }
+        });
+
+        // Load the banner ad.
+        adView.loadAd(new AdRequest.Builder().build());
+    }
+
 }
 
