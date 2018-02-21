@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 
+import com.google.android.gms.ads.AdView;
+
 import unidesign.ussdsmscodes.MyAdapter;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
 import unidesign.ussdsmscodes.RecyclerItem;
@@ -33,7 +35,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     int dragFrom = -1;
     int dragTo = -1;
 
-    static final String LOG_TAG = "myLogs";
+    static final String LOG_TAG = "SimpleItemTouchHelper";
 
     public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
         mAdapter = adapter;
@@ -66,14 +68,20 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         return true;*/
         int fromPosition = source.getAdapterPosition();
         int toPosition = target.getAdapterPosition();
+        Log.d(LOG_TAG, "in onMove, fromPosition: " + fromPosition + ", toPosition: " + toPosition);
 
         if(dragFrom == -1) {
             dragFrom =  fromPosition;
+            dragTo = toPosition;
         }
-        dragTo = toPosition;
-
+//        if(target.getItemViewType() == MyAdapter.MENU_ITEM_VIEW_TYPE) {
+//            dragTo = toPosition;
+//        }
+//        else {
+//            toPosition = (fromPosition > toPosition) ? toPosition-- : toPosition++;
+//            dragTo = toPosition;
+//        }
         mAdapter.onItemMove(fromPosition, toPosition);
-
         return true;
     }
 
@@ -112,13 +120,18 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         Uri uri;
         ContentValues values = new ContentValues();
         MyAdapter adapter = (MyAdapter) mAdapter;
+        RecyclerItem mRecyclerItem;
+        Long templateId;
         //Log.d(LOG_TAG, "--- In reallyMoved updateDB(), adapter.mSectionNumber = " +  adapter.mSectionNumber );
 
         switch (adapter.mSectionNumber) {
             case 1:
+                //boolean change_occur = false;
                 for (int k  = 0 ; k < adapter.listItems.size(); k++){
-                    RecyclerItem mRecyclerItem = (RecyclerItem) adapter.listItems.get(k);
-                    if (mRecyclerItem.getID() != adapter.templates.get(k).getId()){
+                    mRecyclerItem = (RecyclerItem) adapter.listItems.get(k);
+                    templateId = adapter.templates.get(k).getId();
+
+                    if (mRecyclerItem != null && templateId != null && mRecyclerItem.getID() != templateId){
 
                         uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
                                 + adapter.templates.get(k).getId());
@@ -130,13 +143,18 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
                         adapter.mContext.getContentResolver().update(uri, values, null, null);
                         Log.d(LOG_TAG, "--- In reallyMoved update USSD, from = " + from + ", to = " + to );
+                       // change_occur = true;
                     }
                 }
+//                if (!change_occur){
+//                    uri = TempContentProvider.CONTENT_URI_USSD;
+//                    adapter.mContext.getContentResolver().notifyChange(uri, null);
+//                }
 
                 break;
             case 2:
                 for (int k  = 0 ; k < adapter.listItems.size(); k++){
-                    RecyclerItem mRecyclerItem = (RecyclerItem) adapter.listItems.get(k);
+                    mRecyclerItem = (RecyclerItem) adapter.listItems.get(k);
                     if (mRecyclerItem.getID() != adapter.templates.get(k).getId()){
 
                         uri = Uri.parse(TempContentProvider.CONTENT_URI_SMS + "/"
@@ -154,22 +172,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
                 }
                 break;
         };
-
-/*        for (int k  = 0 ; k < adapter.listItems.size(); k++){
-            if (adapter.listItems.get(k).getID() != adapter.templates.get(k).getId()){
-
-                uri = Uri.parse(TempContentProvider.CONTENT_URI_USSD + "/"
-                        + adapter.templates.get(k).getId());
-
-                values.put(USSDSQLiteHelper.COLUMN_NAME, adapter.listItems.get(k).getTitle());
-                values.put(USSDSQLiteHelper.COLUMN_COMMENT, adapter.listItems.get(k).getDescription());
-                values.put(USSDSQLiteHelper.COLUMN_TEMPLATE, adapter.listItems.get(k).getTemplate());
-
-                adapter.mContext.getContentResolver().update(uri, values, null, null);
-                Log.d(LOG_TAG, "--- In reallyMoved updateDB(), from = " + from + ", to = " + to );
-            }
-        }*/
-
     }
 }
 

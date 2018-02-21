@@ -20,6 +20,10 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -54,11 +58,18 @@ public class   ImportTemplateActivity extends AppCompatActivity
     private RecyclerView.LayoutManager mLayoutManager;
     public ImportTemplateAdapter mAdapter;
     ContentValues values = new ContentValues();
-    public List<ImportRecyclerItem> listItems = new ArrayList<>();
+    public List<Object> listItems = new ArrayList<>();
     public ParseTask AsyncImport;
     public Animation enterAnimation, exitAnimation;
     public TourGuide mTutorialHandler;
     TextView demo_item3;
+
+    // A banner ad is placed in every 8th position in the RecyclerView.
+    public static final int ITEMS_PER_AD = 8;
+//    Test Banner ID
+    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111";
+//    Real Banner ID
+//    private static final String AD_UNIT_ID = "ca-app-pub-3260829463635761/9200329067";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,12 +147,19 @@ public class   ImportTemplateActivity extends AppCompatActivity
             }
 
     @Override
-    public void processFinish(List<ImportRecyclerItem> output) {
+    public void processFinish(List<Object> output) {
+
         listItems.clear();
         listItems.addAll(output);
+
+        // add advertisment banners=================================================================
+        addBannerAds();
+        loadBannerAds();
+
         mAdapter.notifyDataSetChanged();
         try {
-            Log.d(LOG_TAG, "listItems.get(0).getTemplatename(): " + listItems.get(0).getTemplatename());
+            ImportRecyclerItem recyclerItem = (ImportRecyclerItem) listItems.get(1);
+            Log.d(LOG_TAG, "listItems.get(0).getTemplatename(): " + recyclerItem.getTemplatename());
 //        Log.d(LOG_TAG, "listItems.get(1).getTemplatename(): "+ listItems.get(1).getTemplatename());
         } catch (Exception e) {
             Toast.makeText(this, "Failed to download data: ", Toast.LENGTH_LONG).show();
@@ -259,4 +277,74 @@ public class   ImportTemplateActivity extends AppCompatActivity
                 }
                 return false;
             }
-}
+
+            //=========== ads in RecycleView methods=======================================================
+            /**
+             * Adds banner ads to the items list.
+             */
+            private void addBannerAds() {
+                // Loop through the items array and place a new banner ad in every ith position in
+                // the items List.
+                //listItems = listItems;
+                for (int i = 0; i <= listItems.size(); i += ITEMS_PER_AD) {
+                    final AdView adView = new AdView(ImportTemplateActivity.this);
+                    adView.setAdSize(AdSize.BANNER);
+                    adView.setAdUnitId(AD_UNIT_ID);
+                    listItems.add(i, adView);
+                    // templates.add(i, null);
+                }
+            }
+
+            /**
+             * Sets up and loads the banner ads.
+             */
+            private void loadBannerAds() {
+                // Load the first banner ad in the items list (subsequent ads will be loaded automatically
+                // in sequence).
+                loadBannerAd(0);
+            }
+
+            /**
+             * Loads the banner ads in the items list.
+             */
+            private void loadBannerAd(final int index) {
+
+                if (index >= listItems.size()) {
+                    return;
+                }
+
+                Object item = listItems.get(index);
+                if (!(item instanceof AdView)) {
+                    throw new ClassCastException("Expected item at index " + index + " to be a banner ad"
+                            + " ad.");
+                }
+
+                final AdView adView = (AdView) item;
+
+                // Set an AdListener on the AdView to wait for the previous banner ad
+                // to finish loading before loading the next ad in the items list.
+                adView.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        // The previous banner ad loaded successfully, call this method again to
+                        // load the next ad in the items list.
+                        loadBannerAd(index + ITEMS_PER_AD);
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(int errorCode) {
+                        // The previous banner ad failed to load. Call this method again to load
+                        // the next ad in the items list.
+                        Log.e("MainActivity", "The previous banner ad failed to load. Attempting to"
+                                + " load the next banner ad in the items list.");
+                        loadBannerAd(index + ITEMS_PER_AD);
+                    }
+                });
+
+                // Load the banner ad.
+                //adView.loadAd(new AdRequest.Builder().addTestDevice("B5F1C5518A85DFF1729ED74BEC3F62D7").build());
+                adView.loadAd(new AdRequest.Builder().build());
+            }
+
+        }

@@ -7,6 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -59,7 +60,11 @@ public class ScrollingFABBehavior extends FloatingActionButton.Behavior {
             ratio = (dependency.getY()/(float)(toolbarHeight/2));
             //else ratio = 10;
             //fab.setTranslatinY( - (distanceToScroll * ratio) + distanceToScroll/2 );
-            fab.setTranslationY( - (distanceToScroll * ratio));
+            if (ratio < -1.25)
+                fab.setTranslationY( - (2*distanceToScroll * ratio));
+            else
+                fab.setTranslationY( - (distanceToScroll * ratio));
+            //Log.d("ScrollingFABBehavior", "ratio = " + ratio);
         }
         return true;
     }

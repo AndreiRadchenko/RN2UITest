@@ -80,15 +80,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public int  selected_color;
     public int  normal_color;
 
-    // A banner ad is placed in every 8th position in the RecyclerView.
-    public static final int ITEMS_PER_AD = 5;
-
-    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111";
-    // A menu item view type.
-    private static final int MENU_ITEM_VIEW_TYPE = 0;
-
-    // The banner ad view type.
-    private static final int BANNER_AD_VIEW_TYPE = 1;
+//    // A banner ad is placed in every 8th position in the RecyclerView.
+//    public static final int ITEMS_PER_AD = 7;
+//
+//    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111";
+//    // A menu item view type.
+//    public static final int MENU_ITEM_VIEW_TYPE = 0;
+//
+//    // The banner ad view type.
+//    public static final int BANNER_AD_VIEW_TYPE = 1;
 
     public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener,
                      OnItemLongClickListener mLongClickListener) {
@@ -164,8 +164,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
             listItems.clear();
             listItems.addAll(mlistItems);
-            addBannerAds();
-            loadBannerAds();
+//            addBannerAds();
+//            loadBannerAds();
             notifyDataSetChanged();
         } else {
             notifyDataSetChanged();
@@ -188,8 +188,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
             listItems.clear();
             listItems.addAll(mlistItems);
-            addBannerAds();
-            loadBannerAds();
+//            addBannerAds();
+//            loadBannerAds();
             notifyDataSetChanged();
         } else {
             notifyDataSetChanged();
@@ -235,32 +235,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     //==========================================================================================================
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
-//        return new ViewHolder(v);
-
-        switch (viewType) {
-            case MENU_ITEM_VIEW_TYPE:
+                //Log.d(LOG_TAG, "in onCreateViewHolder, MENU_ITEM_VIEW_TYPE ");
                 final View v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.recycler_item, parent, false);
                 return new ViewHolder(v);
-            case BANNER_AD_VIEW_TYPE:
-                // fall through
-            default:
-                View bannerLayoutView = LayoutInflater.from(
-                        parent.getContext()).inflate(R.layout.banner_ad_container,
-                        parent, false);
-                return new AdViewHolder(bannerLayoutView);
-        }
-
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        int viewType = getItemViewType(position);
-        switch (viewType) {
-            case MENU_ITEM_VIEW_TYPE:
-
+                //Log.d(LOG_TAG, "in onBindViewHolder, MENU_ITEM_VIEW_TYPE ");
                 final RecyclerItem itemList = (RecyclerItem) listItems.get(position);
                 //final RecyclerItem itemList = listItems.get(holder.getAdapterPosition());
 
@@ -335,28 +319,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
                 // set background resource (target view ID: container)
                 final int dragState = holder.getDragStateFlags();
-                break;
-            case BANNER_AD_VIEW_TYPE:
-                // fall through
-            default:
-                AdViewHolder bannerHolder = (AdViewHolder) holder;
-                AdView adView = (AdView) listItems.get(position);
-                ViewGroup adCardView = (ViewGroup) bannerHolder.itemView;
-                // The AdViewHolder recycled by the RecyclerView may be a different
-                // instance than the one used previously for this position. Clear the
-                // AdViewHolder of any subviews in case it has a different
-                // AdView associated with it, and make sure the AdView for this position doesn't
-                // already have a parent of a different recycled AdViewHolder.
-                if (adCardView.getChildCount() > 0) {
-                    adCardView.removeAllViews();
-                }
-                if (adView.getParent() != null) {
-                    ((ViewGroup) adView.getParent()).removeView(adView);
-                }
-
-                // Add the banner ad to the ad view.
-                adCardView.addView(adView);
-        }
     }
 
     @Override
@@ -367,11 +329,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     /**
      * Determines the view type for the given position.
      */
-    @Override
-    public int getItemViewType(int position) {
-        return (position % ITEMS_PER_AD == 0) ? BANNER_AD_VIEW_TYPE
-                : MENU_ITEM_VIEW_TYPE;
-    }
+//    @Override
+//    public int getItemViewType(int position) {
+////        return (position % ITEMS_PER_AD == 0) ? BANNER_AD_VIEW_TYPE
+////                : MENU_ITEM_VIEW_TYPE;
+//        return (listItems.get(position) instanceof RecyclerItem) ? MENU_ITEM_VIEW_TYPE : BANNER_AD_VIEW_TYPE;
+//    }
 
     @Override
     public void onItemDismiss(int position) {
@@ -382,11 +345,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
-        RecyclerItem prev = (RecyclerItem) listItems.remove(fromPosition);
+        Log.d(LOG_TAG, "in onItemMove, fromPosition: " + fromPosition + ", toPosition: " + toPosition);
+        RecyclerItem prev;
+        prev = (RecyclerItem) listItems.remove(fromPosition);
         //listItems.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
         listItems.add(toPosition, prev);
         notifyItemMoved(fromPosition, toPosition);
-
     }
 
     public static class ViewHolder extends AbstractDraggableItemViewHolder implements
@@ -520,72 +484,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public void setTouchHelper(ItemTouchHelper touchHelper) {
 
         this.touchHelper = touchHelper;
-    }
-
-    //=========== ads in RecycleView methods=======================================================
-    /**
-     * Adds banner ads to the items list.
-     */
-    private void addBannerAds() {
-        // Loop through the items array and place a new banner ad in every ith position in
-        // the items List.
-        for (int i = 0; i <= listItems.size(); i += ITEMS_PER_AD) {
-            final AdView adView = new AdView(mContext);
-            adView.setAdSize(AdSize.BANNER);
-            adView.setAdUnitId(AD_UNIT_ID);
-            listItems.add(i, adView);
-        }
-    }
-
-    /**
-     * Sets up and loads the banner ads.
-     */
-    private void loadBannerAds() {
-        // Load the first banner ad in the items list (subsequent ads will be loaded automatically
-        // in sequence).
-        loadBannerAd(0);
-    }
-
-    /**
-     * Loads the banner ads in the items list.
-     */
-    private void loadBannerAd(final int index) {
-
-        if (index >= listItems.size()) {
-            return;
-        }
-
-        Object item = listItems.get(index);
-        if (!(item instanceof AdView)) {
-            throw new ClassCastException("Expected item at index " + index + " to be a banner ad"
-                    + " ad.");
-        }
-
-        final AdView adView = (AdView) item;
-
-        // Set an AdListener on the AdView to wait for the previous banner ad
-        // to finish loading before loading the next ad in the items list.
-        adView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                // The previous banner ad loaded successfully, call this method again to
-                // load the next ad in the items list.
-                loadBannerAd(index + ITEMS_PER_AD);
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // The previous banner ad failed to load. Call this method again to load
-                // the next ad in the items list.
-                Log.e("MainActivity", "The previous banner ad failed to load. Attempting to"
-                        + " load the next banner ad in the items list.");
-                loadBannerAd(index + ITEMS_PER_AD);
-            }
-        });
-
-        // Load the banner ad.
-        adView.loadAd(new AdRequest.Builder().build());
     }
 
 }

@@ -238,9 +238,9 @@ public class RN_USSD extends AppCompatActivity
         select_toolbar = (Toolbar) findViewById(R.id.select_toolbar);
         select_toolbar_title = (TextView) findViewById(R.id.toolbar_title);
         select_toolbar.inflateMenu(R.menu.selected_menu);//changed
-        select_toolbar_bottom = (Toolbar) findViewById(R.id.select_toolbar_bottom);
-        amvMenu = (ActionMenuView) select_toolbar_bottom.findViewById(R.id.amvMenu);
-        getMenuInflater().inflate(R.menu.selected_menu_bottom, amvMenu.getMenu());
+        //select_toolbar_bottom = (Toolbar) findViewById(R.id.select_toolbar_bottom);
+        //amvMenu = (ActionMenuView) select_toolbar_bottom.findViewById(R.id.amvMenu);
+        //getMenuInflater().inflate(R.menu.selected_menu_bottom, amvMenu.getMenu());
         myCount = new StaticCount();
         //select_toolbar_bottom.inflateMenu(R.menu.selected_menu_bottom);//changed
 //=========================set normal mode (selection gone)========================================================
@@ -350,22 +350,22 @@ public class RN_USSD extends AppCompatActivity
         });
 
         //toolbar2 menu items CallBack listener
-        amvMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem arg0) {
-
-                switch (arg0.getItemId()) {
-                    case R.id.action_delete_selection:
-                        // TODO: actually remove items
-
-                        return true;
-
-                    default:
-                        return false;
-                }
-            }
-        });
+//        amvMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+//
+//            @Override
+//            public boolean onMenuItemClick(MenuItem arg0) {
+//
+//                switch (arg0.getItemId()) {
+//                    case R.id.action_delete_selection:
+//                        // TODO: actually remove items
+//
+//                        return true;
+//
+//                    default:
+//                        return false;
+//                }
+//            }
+//        });
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
