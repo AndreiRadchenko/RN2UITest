@@ -218,7 +218,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
             pDialog.dismiss();
             if (RN_USSD.prefManager.isShowMainDemo() )
                 RN_USSD.prefManager.setShowMainDemo(false);
-            Toast.makeText(ITA, "No internet connection. Please, try late", Toast.LENGTH_LONG).show();
+            Toast.makeText(ITA, R.string.no_internet_connection, Toast.LENGTH_LONG).show();
             //RN_USSD.prefManager.setShowMainDemo(false);
         }
 

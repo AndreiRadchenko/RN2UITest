@@ -106,5 +106,6 @@
     <string name="share_link_subject">Play Store link for \"&app_name;\"</string>
     <string name="share_link_text">Open link to download the \"&app_name;\" application</string>
     <string name="share_via">Share via</string>
+    <string name="no_internet_connection">No internet connection. Please, try late</string>
 
 </resources>

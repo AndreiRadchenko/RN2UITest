@@ -109,5 +109,6 @@
     <string name="share_link_subject">Посилання для завантаження додатка \"&app_name;\"</string>
     <string name="share_link_text">Відкрийте посилання та встановіть \"&app_name;\"</string>
     <string name="share_via">Поділитися через</string>
+    <string name="no_internet_connection">Відсутнє інтернет з\'єднання. Будь ласка, повторіть спробу пізніше</string>
 
 </resources>
