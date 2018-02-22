@@ -208,6 +208,13 @@ public class RN_USSD extends AppCompatActivity
         MobileAds.initialize(this, ADMOB_APP_ID);
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                mAdView.setVisibility(View.VISIBLE);
+            }
+        });
         mAdView.loadAd(adRequest);
 
         demo_item1 = findViewById(R.id.demo_item1);
