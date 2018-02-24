@@ -181,8 +181,10 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                                 TempContentProvider.CONTENT_URI_USSD, values);
                     }
 
+                    RN_USSD.current_tab = RN_USSD.USSD_TAB;
                     pDialog.dismiss();
                     ITA.finish();
+
                 } else if (data_fild.compareTo("SMS") == 0) {
 
                     JSONArray sms = dataJsonObj.getJSONArray("SMS");
@@ -206,6 +208,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                                 TempContentProvider.CONTENT_URI_SMS, values);
                     }
 
+                    RN_USSD.current_tab = RN_USSD.SMS_TAB;
                     pDialog.dismiss();
                     ITA.finish();
                 }

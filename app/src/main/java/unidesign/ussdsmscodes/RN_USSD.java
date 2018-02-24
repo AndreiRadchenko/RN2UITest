@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -107,7 +108,7 @@ public class RN_USSD extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         BackupDialog.NoticeDialogListener, setupTemplateDialog.mDialogListener {
 
-    static final String LOG_TAG = "myLogs";
+    static final String LOG_TAG = "RN_USSD";
     static final String TAG = "Observer";
     static final int DISPOSE_OBSERVER = -100;
     static final int PERMISSION_REQUEST_CODE = 1;
@@ -127,7 +128,8 @@ public class RN_USSD extends AppCompatActivity
     static Toolbar toolbar;
     static Toolbar select_toolbar;
     Toolbar select_toolbar_bottom;
-    AppBarLayout appbar;
+    static AppBarLayout appbar;
+    static CoordinatorLayout nested_CoordinatorLayout;
     AppBarLayout.LayoutParams scroll_params;
     FloatingActionButton fab;
     TabLayout tabLayout;
@@ -160,6 +162,10 @@ public class RN_USSD extends AppCompatActivity
     //public static int selected_items_count = 0;
     public static StaticCount myCount;
     public TourGuide mTutorialHandler;
+    public static final int USSD_TAB = 0;
+    public static final int SMS_TAB = 1;
+    public static int current_tab = USSD_TAB;
+    static AppBarLayout mAppBar;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -233,6 +239,7 @@ public class RN_USSD extends AppCompatActivity
         registerReceiver(screenOffReceiver, filter);
 
         appbar = (AppBarLayout) findViewById(R.id.appbar);
+        nested_CoordinatorLayout = (CoordinatorLayout) findViewById(R.id.nested_CoordinatorLayout);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         relativeLayout = (RelativeLayout)  findViewById(R.id.dummy_relative);
@@ -385,7 +392,7 @@ public class RN_USSD extends AppCompatActivity
         //FragmentPagerAdapter - detect a swipe or a tab click when user goes to a new tab
         //and expand appbar
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        final AppBarLayout mAppBar = (AppBarLayout) findViewById(R.id.appbar);
+        mAppBar = (AppBarLayout) findViewById(R.id.appbar);
         ActionBar actionBar = getActionBar();
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -817,6 +824,11 @@ public class RN_USSD extends AppCompatActivity
             Log.d(LOG_TAG, "--- In onResume() sectionNumber: ---" + sectionNumber);
             //currentTabAdapter = adapter;
             currentTabAdapter = this.getAdapter();
+
+//            mAppBar.setExpanded(false, true);
+//            recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+
+            //recyclerView.smoothScrollToPosition(6);
             //getLoaderManager().initLoader(0, null, this);
 
         }
@@ -1075,11 +1087,13 @@ public class RN_USSD extends AppCompatActivity
                 startActivityForResult(j, PIN_REQUEST);
             }
         }
+        mViewPager.setCurrentItem(current_tab);
         super.onResume();
     }
 
     @Override
     public void onPause(){
+        current_tab = mViewPager.getCurrentItem();
         super.onPause();
         //pinCheckComplete = false;
     }
@@ -1190,7 +1204,6 @@ public class RN_USSD extends AppCompatActivity
                 case PIN_REQUEST:
                     //pinCheckComplete = true;
                     break;
-
             }
         }
         // если вернулось не ОК

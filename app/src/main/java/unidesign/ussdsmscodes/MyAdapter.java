@@ -368,7 +368,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         public ViewHolder(View itemView) {
             super(itemView);
             try {
-                mContainer = (RelativeLayout) itemView.findViewById(R.id.container);
+                //mContainer = (RelativeLayout) itemView.findViewById(R.id.container);
                 mContainer = (RelativeLayout) itemView.findViewById(R.id.container);
                 //mDragHandle = itemView.findViewById(R.id.drag_handle);
                 txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
