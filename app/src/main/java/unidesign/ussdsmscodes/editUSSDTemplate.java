@@ -160,6 +160,7 @@ public class editUSSDTemplate extends AppCompatActivity{
                             TempContentProvider.CONTENT_URI_USSD, values);
 
                 //dbHelper.close();
+                RN_USSD.setRecycleViewToBottom = true;
                 Toast.makeText(getApplication(), R.string.new_template_aded, Toast.LENGTH_LONG).show();
                 finish();
 

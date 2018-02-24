@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.SparseBooleanArray;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -130,6 +131,20 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
         implementRecyclerViewClickListeners();
 
     };
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(menuItem);
+    }
+
+    @Override
+    public void onBackPressed() {
+            super.onBackPressed();
+    }
 
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {

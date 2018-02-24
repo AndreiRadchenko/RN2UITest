@@ -166,6 +166,7 @@ public class RN_USSD extends AppCompatActivity
     public static final int SMS_TAB = 1;
     public static int current_tab = USSD_TAB;
     static AppBarLayout mAppBar;
+    public static boolean setRecycleViewToBottom = false;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -262,7 +263,8 @@ public class RN_USSD extends AppCompatActivity
         select_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (toolbar.getVisibility() == View.GONE)
+                //if (toolbar.getVisibility() == View.GONE)
+                if (!toolbar.isShown())
                     setNormalMode();
                 else
                     setSelectionMode();
@@ -821,7 +823,7 @@ public class RN_USSD extends AppCompatActivity
         public void onResume() {
             super.onResume();
             int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
-            Log.d(LOG_TAG, "--- In onResume() sectionNumber: ---" + sectionNumber);
+            Log.d(LOG_TAG, "--- In PlaceholderFragment onResume() sectionNumber: ---" + sectionNumber);
             //currentTabAdapter = adapter;
             currentTabAdapter = this.getAdapter();
 
@@ -856,6 +858,11 @@ public class RN_USSD extends AppCompatActivity
                         adapter.swapCursorSMS(data);
                     break;
 
+            }
+            if (RN_USSD.setRecycleViewToBottom) {
+                recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+                mAppBar.setExpanded(false, true);
+                RN_USSD.setRecycleViewToBottom = false;
             }
         }
         public void onLoaderReset(Loader<Cursor> loader) {
@@ -1069,14 +1076,7 @@ public class RN_USSD extends AppCompatActivity
 
     @Override
     public void onResume() {
-        //sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        boolean PINCountAlive = false;
-//        try {
-//            PINCountAlive = Pin_lock_activity.PINCountThread.isAlive();
-//        }
-//        catch (NullPointerException e) {
-//
-//        }
+        Log.d(LOG_TAG, "--- In RN_USSD onResume() sectionNumber: ---" );
         Date currDate = new Date(System.currentTimeMillis());
 //        if (!PINCountAlive) {
             if (currDate.getTime() > mLockTime) {

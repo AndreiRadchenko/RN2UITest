@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -83,6 +84,7 @@ public class   ImportTemplateActivity extends AppCompatActivity
 
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
+        //ab.setDisplayShowHomeEnabled(true);
 
         try {
             URL templates_url = new URL(Import_Templates_URL);
@@ -135,6 +137,15 @@ public class   ImportTemplateActivity extends AppCompatActivity
         touchHelper.attachToRecyclerView(recyclerView);
 
     };
+
+            @Override
+            public boolean onOptionsItemSelected(MenuItem menuItem) {
+                if (menuItem.getItemId() == android.R.id.home) {
+                    onBackPressed();
+                    return true;
+                }
+                return super.onOptionsItemSelected(menuItem);
+            }
 
             @Override
             public void onBackPressed() {

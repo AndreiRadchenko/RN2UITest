@@ -182,6 +182,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                     }
 
                     RN_USSD.current_tab = RN_USSD.USSD_TAB;
+                    RN_USSD.setRecycleViewToBottom = true;
                     pDialog.dismiss();
                     ITA.finish();
 
@@ -209,6 +210,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                     }
 
                     RN_USSD.current_tab = RN_USSD.SMS_TAB;
+                    RN_USSD.setRecycleViewToBottom = true;
                     pDialog.dismiss();
                     ITA.finish();
                 }
