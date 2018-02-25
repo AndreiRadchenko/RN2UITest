@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.ActionMode;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -185,6 +186,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                     RN_USSD.setRecycleViewToBottom = true;
                     pDialog.dismiss();
                     ITA.finish();
+//                    RN_USSD.drawer.closeDrawer(Gravity.START);
 
                 } else if (data_fild.compareTo("SMS") == 0) {
 
@@ -213,6 +215,7 @@ public class ParseTask extends AsyncTask<String, Void, String> {
                     RN_USSD.setRecycleViewToBottom = true;
                     pDialog.dismiss();
                     ITA.finish();
+                    //RN_USSD.drawer.closeDrawer(Gravity.START);
                 }
 
             } catch (JSONException e) {

@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import unidesign.ussdsmscodes.R;
+import unidesign.ussdsmscodes.RN_USSD;
 
 /**
  * Created by United on 12/20/2017.
@@ -68,6 +70,7 @@ public class BackupDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // sign in the user ...
+                        //RN_USSD.drawer.closeDrawer(Gravity.LEFT, false);
                         mListener.onDialogPositiveClick(BackupDialog.this, backup_name,
                                 eComment.getText().toString());
                     }

@@ -19,6 +19,7 @@ import java.util.List;
 
 import unidesign.ussdsmscodes.ImportActivity.ImportRecyclerItem;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
+import unidesign.ussdsmscodes.RN_USSD;
 import unidesign.ussdsmscodes.TempContentProvider.TempContentProvider;
 
 /**
@@ -85,6 +86,8 @@ public class RestoreTask extends AsyncTask<RestoreRecyclerItem, Void, String> {
     protected void onPostExecute(String strJson) {
         super.onPostExecute(strJson);
         listener.processFinish(strJson);
+        //RN_USSD.closeDriwer = true;
+        RN_USSD.setRecycleViewToBottom = true;
         RA.finish();
     }
 

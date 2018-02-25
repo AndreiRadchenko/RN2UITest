@@ -134,7 +134,7 @@ public class RN_USSD extends AppCompatActivity
     FloatingActionButton fab;
     TabLayout tabLayout;
     NavigationView navigationView;
-    DrawerLayout drawer;
+    public static DrawerLayout drawer;
     static MyAdapter currentTabAdapter;
     static MyAdapter USSDTabAdapter;
     private ActionMenuView amvMenu;
@@ -167,6 +167,7 @@ public class RN_USSD extends AppCompatActivity
     public static int current_tab = USSD_TAB;
     static AppBarLayout mAppBar;
     public static boolean setRecycleViewToBottom = false;
+    public static boolean closeDriwer = false;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -241,6 +242,7 @@ public class RN_USSD extends AppCompatActivity
 
         appbar = (AppBarLayout) findViewById(R.id.appbar);
         nested_CoordinatorLayout = (CoordinatorLayout) findViewById(R.id.nested_CoordinatorLayout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         relativeLayout = (RelativeLayout)  findViewById(R.id.dummy_relative);
@@ -650,8 +652,8 @@ public class RN_USSD extends AppCompatActivity
             }
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -860,9 +862,11 @@ public class RN_USSD extends AppCompatActivity
 
             }
             if (RN_USSD.setRecycleViewToBottom) {
+                RN_USSD.drawer.closeDrawer(Gravity.LEFT, false);
+                mAppBar.setExpanded(false, false);
                 recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
-                mAppBar.setExpanded(false, true);
                 RN_USSD.setRecycleViewToBottom = false;
+
             }
         }
         public void onLoaderReset(Loader<Cursor> loader) {
@@ -1087,7 +1091,13 @@ public class RN_USSD extends AppCompatActivity
                 startActivityForResult(j, PIN_REQUEST);
             }
         }
+
         mViewPager.setCurrentItem(current_tab);
+
+//        if (closeDriwer) {
+//            drawer.closeDrawer(GravityCompat.START);
+//            closeDriwer = false;
+//        }
         super.onResume();
     }
 
@@ -1161,6 +1171,7 @@ public class RN_USSD extends AppCompatActivity
         // User touched the dialog's positive button
         BackupTask AsyncBackup = new BackupTask(this);
         AsyncBackup.execute(name, comment);
+        RN_USSD.drawer.closeDrawer(Gravity.LEFT, false);
     }
 
     @Override
