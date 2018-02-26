@@ -15,6 +15,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -58,6 +59,7 @@ public class Pin_lock_activity extends AppCompatActivity{
     private PinLockView mPinLockView;
     private IndicatorDots mIndicatorDots;
     TextView profile_hint_text;
+    TextView profile_name;
     String lanchMode;
     String IntermediatePIN;
     int enterPINattemption;
@@ -262,6 +264,16 @@ public class Pin_lock_activity extends AppCompatActivity{
         setContentView(R.layout.pin_lock_layout);
         //getWindow().setStatusBarColor(getResources().getColor(R.color.mine_shaft));
         ImageView fingerprint_btn = findViewById(R.id.profile_fingerprint_image);
+        profile_name = findViewById(R.id.profile_name);
+
+        // pixels, dpi
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int heightPixels = metrics.heightPixels;
+        //Log.d(TAG, "onCreate: DisplayMetrics heightPixels = " + heightPixels);
+        if (heightPixels < 1280)
+            profile_name.setVisibility(View.GONE);
+
         profile_hint_text = findViewById(R.id.profile_hint_text);
         mPinLockView = (PinLockView) findViewById(R.id.pin_lock_view);
         mIndicatorDots = (IndicatorDots) findViewById(R.id.indicator_dots);
