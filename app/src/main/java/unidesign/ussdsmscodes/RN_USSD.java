@@ -131,7 +131,7 @@ public class RN_USSD extends AppCompatActivity
     static AppBarLayout appbar;
     static CoordinatorLayout nested_CoordinatorLayout;
     AppBarLayout.LayoutParams scroll_params;
-    FloatingActionButton fab;
+    static FloatingActionButton fab;
     TabLayout tabLayout;
     NavigationView navigationView;
     public static DrawerLayout drawer;
@@ -172,7 +172,7 @@ public class RN_USSD extends AppCompatActivity
      * The {@link ViewPager} that will host the section contents.
      */
     //rrtyuuyty
-    public CustomViewPager mViewPager;
+    public static CustomViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -862,9 +862,11 @@ public class RN_USSD extends AppCompatActivity
 
             }
             if (RN_USSD.setRecycleViewToBottom) {
+                mViewPager.setCurrentItem(current_tab, false);
                 RN_USSD.drawer.closeDrawer(Gravity.LEFT, false);
                 mAppBar.setExpanded(false, false);
                 recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+
                 RN_USSD.setRecycleViewToBottom = false;
 
             }
@@ -1092,12 +1094,6 @@ public class RN_USSD extends AppCompatActivity
             }
         }
 
-        mViewPager.setCurrentItem(current_tab);
-
-//        if (closeDriwer) {
-//            drawer.closeDrawer(GravityCompat.START);
-//            closeDriwer = false;
-//        }
         super.onResume();
     }
 

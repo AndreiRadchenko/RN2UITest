@@ -189,7 +189,7 @@ public class FingerPrintDialog extends DialogFragment {
             if (!fingerprintManager.isHardwareDetected()) {
                 rBundle.putString(FAIL_STRING, mContext.getString(R.string.not_support_fingerprint));
                 rBundle.putBoolean(FINGER_FEATURES_ENABLE, false);
-
+                return rBundle;
                 }
 
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {

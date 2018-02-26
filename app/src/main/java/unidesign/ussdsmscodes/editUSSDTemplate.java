@@ -30,6 +30,7 @@ public class editUSSDTemplate extends AppCompatActivity{
     Button btnAdd, btnRead, btnCancel;
     EditText etName, etComment, etTemplate;
     String image_file = "";
+    boolean newussd;
 
     TemplatesDataSource dbHelper;
    // String[] projection = TemplatesDataSource.allUSSDColumns;
@@ -56,6 +57,8 @@ public class editUSSDTemplate extends AppCompatActivity{
         etTemplate = (EditText) findViewById(R.id.etTemplate);
 
         Bundle extras = getIntent().getExtras();
+        String action = getIntent().getAction();
+        newussd = action.equals("intent.action.newussd");
 
         // check from the saved Instance
         todoUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState
@@ -134,6 +137,8 @@ public class editUSSDTemplate extends AppCompatActivity{
                 }
 
                 //dbHelper.close();
+                if (newussd)
+                    RN_USSD.setRecycleViewToBottom = true;
                 Toast.makeText(getApplication(), R.string.template_saved, Toast.LENGTH_LONG).show();
                 finish();
 

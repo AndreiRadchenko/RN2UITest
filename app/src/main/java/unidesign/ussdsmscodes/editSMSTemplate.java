@@ -28,6 +28,7 @@ public class editSMSTemplate extends AppCompatActivity {
 
     EditText etName, etComment, etPhone, etTemplate;
     String image_file = "";
+    boolean newsms;
 
     private Uri todoUri;
     USSD_Template template = new USSD_Template();
@@ -51,7 +52,8 @@ public class editSMSTemplate extends AppCompatActivity {
         etTemplate = (EditText) findViewById(R.id.etTemplate);
 
         Bundle extras = getIntent().getExtras();
-
+        String action = getIntent().getAction();
+        newsms = action.equals("intent.action.newsms");
         // check from the saved Instance
         todoUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState
                 .getParcelable(TempContentProvider.CONTENT_ITEM_TYPE_SMS);
@@ -137,6 +139,8 @@ public class editSMSTemplate extends AppCompatActivity {
                 }
 
                 //dbHelper.close();
+                if (newsms)
+                    RN_USSD.setRecycleViewToBottom = true;
                 Toast.makeText(getApplication(), R.string.template_saved, Toast.LENGTH_LONG).show();
                 finish();
 
