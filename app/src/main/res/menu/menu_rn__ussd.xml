@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_done_black_24dp"
         android:title="@string/select_templates"
         app:showAsAction="never"
-        android:visible="false"/>
+        android:visible="true"/>
 
     <item
         android:id="@+id/action_settings"

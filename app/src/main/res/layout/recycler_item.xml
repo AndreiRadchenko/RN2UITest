@@ -3,11 +3,11 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="111dp"
+    android:layout_height="116dp"
+    android:animateLayoutChanges="true"
     card_view:cardBackgroundColor="#aaaaaa"
     card_view:cardElevation="@dimen/cardview_default_elevation"
-    card_view:cardUseCompatPadding="true"
-    android:animateLayoutChanges="true">
+    card_view:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:id="@+id/container"
@@ -72,13 +72,17 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="30dp"
                 android:layout_marginRight="30dp"
+                android:ellipsize="end"
                 android:gravity="left"
+                android:lines="2"
+                android:maxLines="2"
                 android:paddingBottom="0dp"
                 android:paddingEnd="5dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="5dp"
                 android:paddingStart="10dp"
                 android:paddingTop="3dp"
+                android:singleLine="false"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
@@ -86,9 +90,9 @@
                 android:id="@+id/EditButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/checkBox"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignLeft="@+id/checkBox"
                 android:layout_alignParentTop="true"
                 android:layout_alignStart="@+id/checkBox"
                 android:gravity="center"
@@ -119,14 +123,18 @@
             style="@style/RegularMonoSerif"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-
             android:layout_alignLeft="@+id/title"
             android:layout_alignStart="@+id/title"
             android:layout_below="@+id/title"
             android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:lines="2"
+            android:maxLines="2"
             android:paddingBottom="7dp"
             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:paddingStart="10dp"
+            android:singleLine="false"
             android:textColor="?android:attr/textColorSecondary" />
 
     </RelativeLayout>
