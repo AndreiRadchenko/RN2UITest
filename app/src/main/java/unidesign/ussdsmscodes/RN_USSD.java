@@ -569,7 +569,10 @@ public class RN_USSD extends AppCompatActivity
                 //actionMode = startActionMode(actionModeCallback);
             return true;
         }
-
+        if (id == R.id.action_help) {
+            startActivity(new Intent("intent.action.help"));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 //===================================================================================================
@@ -1140,9 +1143,9 @@ public class RN_USSD extends AppCompatActivity
                     }, 0);
 
                 } else {
-
-                    Snackbar.make(tabLayout, getResources().getString(R.string.ext_stor_perm_denied),
-                            Snackbar.LENGTH_LONG).show();
+//                    Snackbar.make(tabLayout, getResources().getString(R.string.ext_stor_perm_denied),
+//                            Snackbar.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.ext_stor_perm_denied, Toast.LENGTH_LONG).show();
                 }
                 break;
             case PERMISSION_READ_SD:
@@ -1153,8 +1156,9 @@ public class RN_USSD extends AppCompatActivity
                     startActivity(new Intent("intent.action.restore_templates"));
                 }
                 else {
-                    Snackbar.make(tabLayout, getResources().getString(R.string.ext_stor_perm_denied),
-                            Snackbar.LENGTH_LONG).show();
+//                    Snackbar.make(tabLayout, getResources().getString(R.string.ext_stor_perm_denied),
+//                            Snackbar.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.ext_stor_perm_denied, Toast.LENGTH_LONG).show();
                 }
         }
     }

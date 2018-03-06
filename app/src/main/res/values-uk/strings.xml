@@ -7,6 +7,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="app_name">&app_name;</string>
     <string name="action_settings">Налаштування</string>
+    <string name="action_help">Допомога</string>
     <string name="action_done">Зберегти</string>
     <string name="action_copy">Копіювати</string>
     <string name="ussd_edit_form">Редагувати USSD</string>
@@ -110,5 +111,6 @@
     <string name="share_link_text">Відкрийте посилання та встановіть \"&app_name;\"</string>
     <string name="share_via">Поділитися через</string>
     <string name="no_internet_connection">Відсутнє інтернет з\'єднання. Будь ласка, повторіть спробу пізніше</string>
+    <string name="help_locale">ua</string>
 
 </resources>

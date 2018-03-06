@@ -7,6 +7,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="app_name">&app_name;</string>
     <string name="action_settings">Настройки</string>
+    <string name="action_help">Помощь</string>
     <string name="action_done">Сохранить</string>
     <string name="action_copy">Копировать</string>
     <string name="ussd_edit_form">Редактирование USSD</string>
@@ -110,5 +111,6 @@
     <string name="share_link_text">Откройте ссылку и установите \"&app_name;\"</string>
     <string name="share_via">Поделиться через</string>
     <string name="no_internet_connection">Отсутствует интернет соединение. Пожалуйста, повторите попытку позже</string>
+    <string name="help_locale">ru</string>
 
 </resources>

@@ -7,6 +7,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="app_name">&app_name;</string>
     <string name="action_settings">Settings</string>
+    <string name="action_help">Help</string>
     <string name="action_done">Done</string>
     <string name="action_copy">Copy</string>
     <string name="ussd_edit_form">USSD Edit</string>
@@ -107,5 +108,6 @@
     <string name="share_link_text">Open link to download the \"&app_name;\" application</string>
     <string name="share_via">Share via</string>
     <string name="no_internet_connection">No internet connection. Please, try late</string>
+    <string name="help_locale">en</string>
 
 </resources>

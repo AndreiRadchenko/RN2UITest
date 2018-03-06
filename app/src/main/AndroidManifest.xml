@@ -146,6 +146,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".HelpActivity.HelpActivity"
+            android:screenOrientation="nosensor">
+            <intent-filter>
+                <action android:name="intent.action.help" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
