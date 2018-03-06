@@ -41,9 +41,20 @@ public class HelpActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
+            helpWebView.clearHistory();
             onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(menuItem);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (helpWebView.canGoBack() ){
+            helpWebView.goBack();
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 }

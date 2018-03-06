@@ -39,8 +39,14 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	height:30pt;
 	width:30pt;}
 .partimg{
-    width:20;
-    height:20;
+    width:25;
+    height:25;
+    align:left;
+    vertical-align:bottom;
+    }
+.saveimg{
+    width:30;
+    height:30;
     align:left;
     vertical-align:bottom;
     }
@@ -96,35 +102,35 @@ DIV будут заменены.-->
   <td height=30 class=xl6314453 >
    <img class=partimg src="../images/ic_help_part.png">
   </td>
-  <td class=part_name_css>Додавання власних код╕в</td>
+  <td class=part_name_css><a href="#newcode_part">Додавання власних код╕в</a></td>
  </tr>
 
  <tr height=30 style='height:30pt'>
   <td height=20 class=xl6314453 >
    <img class=partimg src="../images/ic_help_part.png">
   </td>
-  <td class=part_name_css>Редагування код╕в</td>
+  <td class=part_name_css><a href="#editcode_part">Редагування код╕в</a></td>
  </tr>
 
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl6314453>
    <img class=partimg src="../images/ic_help_part.png">
   </td>
-  <td class=part_name_css>Видалення та сортування код╕в</td>
+  <td class=part_name_css><a href="#deletecode_part">Видалення та сортування код╕в</a></td>
  </tr>
 
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl6314453>
    <img class=partimg src="../images/ic_help_part.png">
   </td>
-  <td class=part_name_css>Створення резервно╖ коп╕╖</td>
+  <td class=part_name_css><a href="#backupcode_part">Створення резервно╖ коп╕╖</a></td>
  </tr>
 
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl6314453>
    <img class=partimg src="../images/ic_help_part.png">
   </td>
-  <td class=part_name_css>Захист п╕н-кодом чи в╕дбитком пальця</td>
+  <td class=part_name_css><a href="#pin-code_part">Захист п╕н-кодом чи в╕дбитком пальця</a></td>
  </tr>
 
  <![if supportMisalignedColumns]>
@@ -140,26 +146,79 @@ DIV будут заменены.-->
 <div id="Help_import" align=left>
 
  <h2 id="Help_begin_header" class=part_header><a id="begin_part"></a>Початок роботи</h2>
- <p class=part_p >Додаток призначений для збер╕гання ╕ надсилання USSD ╕ SMS команд. Головний ╓кран
+ <p class=part_p >Додаток призначений для збер╕гання ╕ надсилання USSD ╕ SMS команд. Головний екран
   м╕стить дв╕ вкладки для USSD ╕ SMS код╕в в╕дпов╕дно. Кл╕к по елементу списку призводить до передач╕
   коду в номеронабирач, чи програму в╕дправки SMS пов╕домлень. Додати коди можна через
-  <a href="#import_part">╕мпорт код╕в </a>, <a href="#import_part">додавання власних код╕в </a>, чи
-  <a href="#import_part">редагування код╕в </a> з╕ збереженням коп╕╖.
+  <a href="#import_part">╕мпорт код╕в </a>, <a href="#newcode_part">додавання власних код╕в </a>, чи
+  <a href="#editcode_part">редагування код╕в </a> з╕ збереженням коп╕╖.
  </p>
 
  <h2 id="Help_import_header" class=part_header><a id="import_part"></a>╤мпорт код╕в</h2>
  <p class=part_p >Для ╕мпорту USSD код╕в оператор╕в зв'язку чи SMS команд моб╕льного банк╕нгу, в╕дкрийте б╕чну
-  панель ╕ натисн╕ть "╕мпорт код╕в"
-  <img src="../images/ic_action_import.png" class=partimg />.
+  панель ╕ натисн╕ть <img src="../images/ic_action_import.png" class=partimg /> ╕мпорт код╕в.
   Вам буде запропоновано список з наборами код╕в для завантаження. У списку представлен╕ т╕льки т╕
   банки, як╕ пропонують сво╖м кл╕╓нтам керування послугами за допомогою SMS команд. При натисненн╕
   на елемент списку, USSD коди завантажуються у вкладку USSD додатка, команди SMS
   банк╕нга - у вкладку SMS.
  </p>
+
+ <h2 id="Help_newcode_header" class=part_header><a id="newcode_part"></a>Додавання власних код╕в</h2>
+ <p class=part_p >Щоб додати власний код USSD, перейд╕ть на вкладку USSD ╕ кл╕кн╕ть по спливаюч╕й кнопц╕
+  <img src="../images/ic_html_add.png" class=partimg /> в правому нижньому кут╕ екрану. Заповн╕ть форму
+  редагування USSD. Поле "код" повинно м╕стити USSD код. Натисн╕ть кнопку
+  <img src="../images/ic_html_save.png" class=saveimg /> для збереження коду в список.
+ </p>
+ <p class=part_p >Щоб додати SMS команду, перейд╕ть на вкладку SMS ╕ кл╕кн╕ть на кнопку
+  <img src="../images/ic_html_add.png" class=partimg />. Заповн╕ть форму редагування SMS. Поле "код"
+  повинно м╕стити SMS команду, поле "номер телефону" - номер, на який буде над╕слана команда. Для
+  збереження коду натисн╕ть <img src="../images/ic_html_save.png" class=saveimg />
+ </p>
+
+ <h2 id="Help_editcode_header" class=part_header><a id="editcode_part"></a>Редагування код╕в</h2>
+ <p class=part_p >Для того, щоб, зм╕нити код чи його назву кл╕кн╕ть по ╕конц╕
+  <img src="../images/ic_menu_info_details.png" class=partimg />, розташован╕й справа на кожному
+  елемент╕ списку. У в╕кн╕ редагування зроб╕ть правки. Натисн╕ть
+  на кнопку <img src="../images/ic_html_save.png" class=saveimg /> для збереження зм╕н, чи на кнопку
+  <img src="../images/ic_html_copy.png" class=saveimg /> для збереження коп╕╖ як нового коду.
+ </p>
+
+ <h2 id="Help_deletecode_header" class=part_header><a id="deletecode_part"></a>Видалення та сортування код╕в</h2>
+ <p class=part_p >Щоб видалити елемент списку, натисн╕ть ╕ утримуйте його. Ви перейдете в режим вид╕лення.
+  Якщо необх╕дно, вид╕л╕ть ╕нш╕ елементи, кл╕каючи по ним, або вид╕л╕ть вс╕ елементи натиснувши кнопку
+  <img src="../images/ic_html_selectall.png" class=partimg />. Для видалення обраних код╕в кл╕кн╕ть по ╕конц╕
+  <img src="../images/ic_menu_delete.png" class=partimg />.
+ </p>
+ <p class=part_p >Елементи списку можна перетягувати вгору ╕ вниз утримуючи за значок
+  <img src="../images/ic_action_move.png" class=partimg /> чи ╕конку коду.
+ </p>
+
+ <h2 id="Help_backupcode_header" class=part_header><a id="backupcode_part"></a>Створення резервно╖ коп╕╖</h2>
+ <p class=part_p >Для збереження резервно╖ коп╕╖ набора код╕в, в╕дкрийте б╕чну панель ╕ кл╕кн╕ть пункт
+  <img src="../images/ic_backup.png" class=partimg /> резервна коп╕я. За бажанням, додайте коментар
+  у д╕алоговому в╕кн╕ ╕ натисн╕ть ОК. Резервна коп╕я буде збережена у зовн╕шн╕й пам'ят╕ телефону.
+ </p>
+ <p class=part_p >Щоб в╕дновити наб╕р код╕в ╕з резервно╖ коп╕╖, в╕дкрийте б╕чну панель ╕ кл╕кн╕ть пункт
+  <img src="../images/ic_restore.png" class=partimg /> в╕дновити коп╕ю. У в╕кн╕ що з'явилося
+  обер╕ть резервну коп╕ю для в╕дновлення ╕ кл╕кн╕ть по н╕й. В╕дновлен╕ коди додаються в к╕нець списк╕в
+  у в╕дпов╕дних вкладках - USSD коди у вкладку USSD, SMS команди - у вкладку SMS.
+ </p>
+
+ <h2 id="Help_pin-code_header" class=part_header><a id="pin-code_part"></a>Захист п╕н-кодом чи в╕дбитком пальця</h2>
+ <p class=part_p >Додаток може м╕стити коди що керують вашими моб╕льними чи банк╕вськими рахунками.
+  Для захисту в╕д несанкц╕онованого доступу скористайтесь блокуванням входу п╕н-кодом чи в╕дбитком пальця
+ </p>
+ <p class=part_p >Щоб ув╕мкнути функц╕ю захисту, в╕дкрийте б╕чну панель ╕ обер╕ть пункт
+  <img src="../images/ic_settings.png" class=partimg /> налаштування. Встанов╕ть п╕н-код та розблокування
+  в╕дбитком пальця, якщо така функц╕я п╕дтриму╓ться вашим телефоном.
+ </p>
+
+ <p class=part_p >
+  &nbsp;
+ </p>
+
+
 </div>
-<!----------------------------->
-<!--КОНЕЦ ФРАГМЕНТА ПУБЛИКАЦИИ МАСТЕРА ВЕБ-СТРАНИЦ EXCEL-->
-<!----------------------------->
+
 </body>
 
 </html>
