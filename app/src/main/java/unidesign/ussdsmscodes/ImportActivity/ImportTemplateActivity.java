@@ -39,6 +39,7 @@ import tourguide.tourguide.Overlay;
 import tourguide.tourguide.Pointer;
 import tourguide.tourguide.ToolTip;
 import tourguide.tourguide.TourGuide;
+import unidesign.ussdsmscodes.BuildConfig;
 import unidesign.ussdsmscodes.IntroSlider.WelcomeActivity;
 import unidesign.ussdsmscodes.R;
 import unidesign.ussdsmscodes.RN_USSD;
@@ -53,7 +54,8 @@ public class   ImportTemplateActivity extends AppCompatActivity
         {
 
     static final String LOG_TAG = "ImportTemplateActivity";
-    static final String Import_Templates_URL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjUDlxTGRPUHZrRmc";
+ // static final String Import_Templates_URL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjUDlxTGRPUHZrRmc"; //0B6DUrz2vzeEjUDlxTGRPUHZrRmc
+    static final String Import_Templates_URL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjUDlxTGRPUHZrRmc"; //0B6DUrz2vzeEjUDlxTGRPUHZrRmc
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -300,7 +302,12 @@ public class   ImportTemplateActivity extends AppCompatActivity
                 for (int i = 0; i <= listItems.size(); i += ITEMS_PER_AD) {
                     final AdView adView = new AdView(ImportTemplateActivity.this);
                     adView.setAdSize(AdSize.BANNER);
-                    adView.setAdUnitId(AD_UNIT_ID);
+                    if (BuildConfig.BUILD_TYPE.contentEquals("release")) {
+                        adView.setAdUnitId(RN_USSD.ADMOB_IMPORT_ACTIVITY_BANNER);
+                    }
+                    else {
+                        adView.setAdUnitId(AD_UNIT_ID);
+                    }
                     listItems.add(i, adView);
                     // templates.add(i, null);
                 }

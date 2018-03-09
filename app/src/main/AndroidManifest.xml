@@ -148,8 +148,7 @@
         </activity>
 
         <activity
-            android:name=".HelpActivity.HelpActivity"
-            android:screenOrientation="nosensor">
+            android:name=".HelpActivity.HelpActivity">
             <intent-filter>
                 <action android:name="intent.action.help" />
                 <category android:name="android.intent.category.DEFAULT" />

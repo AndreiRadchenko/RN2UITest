@@ -80,6 +80,7 @@ import tourguide.tourguide.Overlay;
 import tourguide.tourguide.Pointer;
 import tourguide.tourguide.ToolTip;
 import tourguide.tourguide.TourGuide;
+import unidesign.ussdsmscodes.HelpActivity.HelpActivity;
 import unidesign.ussdsmscodes.IntroSlider.WelcomeActivity;
 import unidesign.ussdsmscodes.MySQLight.TemplatesDataSource;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
@@ -95,6 +96,7 @@ import unidesign.ussdsmscodes.helper.SimpleItemTouchHelperCallback;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
+import static unidesign.ussdsmscodes.HelpActivity.HelpActivity.HELP_REQUEST;
 import static unidesign.ussdsmscodes.Preferences.SettingsPrefActivity.PIN_REQUEST;
 import static unidesign.ussdsmscodes.Preferences.pref_items.pref_Autorization;
 
@@ -157,6 +159,9 @@ public class RN_USSD extends AppCompatActivity
     public Animation enterAnimation, exitAnimation;
 
     public static final String ADMOB_APP_ID = "ca-app-pub-3260829463635761~1132663635";
+    public static final String ADMOB_MAIN_SCREEN_BANNER = "ca-app-pub-3260829463635761/9200329067";
+    public static final String ADMOB_IMPORT_ACTIVITY_BANNER = "ca-app-pub-3260829463635761/2930920251";
+    public static final String ADMOB_TEST_UNIT_ID = "ca-app-pub-3940256099942544/6300978111";
     private AdView mAdView;
     public boolean select_all_checked = false;
     //public static int selected_items_count = 0;
@@ -214,7 +219,14 @@ public class RN_USSD extends AppCompatActivity
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         MobileAds.initialize(this, ADMOB_APP_ID);
-        mAdView = findViewById(R.id.adView);
+//        mAdView.setAdSize(AdSize.BANNER);
+        if (BuildConfig.BUILD_TYPE.contentEquals("release")) {
+            // Do things related to the admin build type.
+            mAdView = findViewById(R.id.adView);
+        }
+        else {
+            mAdView = findViewById(R.id.adViewTest);
+        };
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.setAdListener(new AdListener() {
             @Override
@@ -570,7 +582,9 @@ public class RN_USSD extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_help) {
-            startActivity(new Intent("intent.action.help"));
+            Intent j = new Intent(this, HelpActivity.class);
+            startActivityForResult(j, HELP_REQUEST);
+            //startActivity(new Intent("intent.action.help"));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -1205,6 +1219,7 @@ public class RN_USSD extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("RN_USSD: ", "onActivityResult ============================================");
         String message = "";
         Bundle extras = data.getExtras();
         if (extras != null)
@@ -1220,9 +1235,16 @@ public class RN_USSD extends AppCompatActivity
         // если вернулось не ОК
         else {
             switch (message){
-                //onBackPressed() pin deleted
+                //onBackPressed() pin deleted finishRN_USSD
                 case "":
                       finish();
+//                    editor.putBoolean(pref_Autorization, authorization_switch_old_value);
+//                    editor.commit();
+//                    authorization_switch.setChecked(authorization_switch_old_value);
+                    break;
+                case "finishRN_USSD":
+                    Log.d("RN_USSD", "onActivityResult finishRN_USSD");
+                    finish();
 //                    editor.putBoolean(pref_Autorization, authorization_switch_old_value);
 //                    editor.commit();
 //                    authorization_switch.setChecked(authorization_switch_old_value);

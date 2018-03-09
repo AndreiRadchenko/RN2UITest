@@ -12,11 +12,11 @@
     <string name="action_copy">Copy</string>
     <string name="ussd_edit_form">USSD Edit</string>
     <string name="sms_edit_form">SMS Edit</string>
-    <string name="import_template_form">Import Templates</string>
+    <string name="import_template_form">Import codes</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="phone_number">Phone number</string>
     <string name="sms_template_name">Name</string>
-    <string name="sms_template_template">Template</string>
+    <string name="sms_template_template">Code</string>
     <string name="sms_template_comment">Comment</string>
     <string name="select_templates">Show Intro</string>
     <string name="select_all">Select all</string>
@@ -27,8 +27,8 @@
     <string name="items"> items</string>
 
     <plurals name="Deleted_message">
-        <item quantity="one">Deleted %1$d template</item>
-        <item quantity="other">Deleted %1$d templates</item>
+        <item quantity="one">Deleted %1$d code</item>
+        <item quantity="other">Deleted %1$d codes</item>
     </plurals>
 
     <plurals name="Deleted_backup_message">
@@ -56,11 +56,11 @@
     <string name="naw_rate">Rate app</string>
     <string name="naw_share">Share</string>
 
-    <string name="snackbar_fill_form">Please, fill form for save template</string>
+    <string name="snackbar_fill_form">Please, fill form for save a code</string>
     <string name="ext_stor_perm_denied">Permission Denied, You cannot access External storage.</string>
     <string name="restore_select_title">selected </string>
-    <string name="template_saved">Template saved</string>
-    <string name="new_template_aded">New Template aded</string>
+    <string name="template_saved">Code saved</string>
+    <string name="new_template_aded">New code aded</string>
     <!--Strings for intro slider  ============================================================== -->
     <string name="title_activity_welcome">Home Screen</string>
     <string name="next">NEXT</string>
