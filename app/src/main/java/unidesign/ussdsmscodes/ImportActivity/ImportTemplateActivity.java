@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -55,7 +56,9 @@ public class   ImportTemplateActivity extends AppCompatActivity
 
     static final String LOG_TAG = "ImportTemplateActivity";
  // static final String Import_Templates_URL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjUDlxTGRPUHZrRmc"; //0B6DUrz2vzeEjUDlxTGRPUHZrRmc
-    static final String Import_Templates_URL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjUDlxTGRPUHZrRmc"; //0B6DUrz2vzeEjUDlxTGRPUHZrRmc
+    static final String Import_Templates_URL_ua = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjUDlxTGRPUHZrRmc";
+    static final String Import_Templates_URL_ru = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1RUAKE8PKPPU4gq4JRljCqftudMZv4n89";
+    static final String Import_Templates_URL_uz = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1SfQLe-oQ89QRpvzHmPSDD0-TK3DGwLIb";
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -66,9 +69,10 @@ public class   ImportTemplateActivity extends AppCompatActivity
     public Animation enterAnimation, exitAnimation;
     public TourGuide mTutorialHandler;
     TextView demo_item3;
+    URL templates_url;
 
     // A banner ad is placed in every 8th position in the RecyclerView.
-    public static final int ITEMS_PER_AD = 8;
+    public static final int ITEMS_PER_AD = 15;
 //    Test Banner ID
     private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111";
 //    Real Banner ID
@@ -88,8 +92,29 @@ public class   ImportTemplateActivity extends AppCompatActivity
         ab.setDisplayHomeAsUpEnabled(true);
         //ab.setDisplayShowHomeEnabled(true);
 
+        TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        String countryCodeValue = tm.getNetworkCountryIso();
+        countryCodeValue = "uz";
+        Log.d("ImportTemplateActivity", "TelephonyManager.getNetworkCountryIso(): " + countryCodeValue);
+
         try {
-            URL templates_url = new URL(Import_Templates_URL);
+            switch (countryCodeValue) {
+                case "ua":
+                    templates_url = new URL(Import_Templates_URL_ua);
+                    break;
+                case "ru":
+                    templates_url = new URL(Import_Templates_URL_ru);
+                    break;
+                case "uz":
+                    templates_url = new URL(Import_Templates_URL_uz);
+                    break;
+                default:
+                    if (RN_USSD.prefManager.isShowMainDemo() )
+                        RN_USSD.prefManager.setShowMainDemo(false);
+                    Toast.makeText(this, "Sorry, I have no codes for you country", Toast.LENGTH_LONG).show();
+                    return;
+            }
+//            URL templates_url = new URL(Import_Templates_URL);
             AsyncImport = new ParseTask(getApplicationContext(), this, templates_url);
 
         } catch (IOException e) {
