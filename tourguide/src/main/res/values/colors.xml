@@ -15,7 +15,7 @@
  <color name="PapayaWhip">#FFEFD5</color>
  <color name="BlanchedAlmond">#FFEBCD</color>
  <color name="MistyRose">#FFE4E1</color>
- <color name="Bisque">#FFE4C4</color>
+ <color name="Bisque">#ffe4c4</color>
  <color name="Moccasin">#FFE4B5</color>
  <color name="NavajoWhite">#FFDEAD</color>
  <color name="PeachPuff">#FFDAB9</color>
@@ -54,7 +54,7 @@
  <color name="DarkSalmon">#E9967A</color>
  <color name="Lavender">#E6E6FA</color>
  <color name="LightCyan">#E0FFFF</color>
- <color name="BurlyWood">#DEB887</color>
+ <color name="BurlyWood">#deb887</color>
  <color name="Plum">#DDA0DD</color>
  <color name="Gainsboro">#DCDCDC</color>
  <color name="Crimson">#DC143C</color>
@@ -94,7 +94,7 @@
  <color name="SaddleBrown">#8B4513</color>
  <color name="DarkMagenta">#8B008B</color>
  <color name="DarkRed">#8B0000</color>
- <color name="BlueViolet">#8A2BE2</color>
+ <color name="BlueViolet">#8a2be2</color>
  <color name="LightSkyBlue">#87CEFA</color>
  <color name="SkyBlue">#87CEEB</color>
  <color name="Gray">#808080</color>

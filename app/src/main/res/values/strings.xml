@@ -109,5 +109,7 @@
     <string name="share_via">Share via</string>
     <string name="no_internet_connection">No internet connection. Please, try late</string>
     <string name="help_locale">en</string>
+    <string name="invitation">Sorry, I have no codes for you country. \n\nIf you
+        ready to help me fill out the code templates, write to email: app.unidesign@gmail.com</string>
 
 </resources>

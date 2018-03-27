@@ -37,4 +37,14 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Appearance">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="theme_switch"
+            android:title="Toggle to dark theme">
+        </SwitchPreference>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

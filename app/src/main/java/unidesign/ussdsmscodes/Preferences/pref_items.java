@@ -10,4 +10,5 @@ public class pref_items {
     public static final String pref_useFingerPrint = "useFingerPrint";
     public static final String pref_enterPINattemption = "enterPINattemption";
     public static final String pref_firsLanchAfterPinSet = "firsLanchAfterPinSet";
+    public static final String pref_DarkTheme = "DarkTheme";
 }

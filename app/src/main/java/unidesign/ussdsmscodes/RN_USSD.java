@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -115,6 +116,7 @@ public class RN_USSD extends AppCompatActivity
     static final int DISPOSE_OBSERVER = -100;
     static final int PERMISSION_REQUEST_CODE = 1;
     public static final int PERMISSION_READ_SD = 2;
+    public static int norm_color;
     //public static Pin_lock_activity.CountThread PINCountThread = null;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -181,6 +183,21 @@ public class RN_USSD extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Use the chosen theme
+        sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useDarkTheme = sharedPrefs.getBoolean(pref_items.pref_DarkTheme, false);
+
+        if(useDarkTheme) {
+            setTheme(R.style.Theme_Dark);
+        }
+
+        int[] attrs = {R.attr.recyclerItemStyle};
+        Log.d("RN_USSD", "attrs.length = " + attrs.length);
+        TypedArray ta = this.obtainStyledAttributes(attrs);
+        norm_color = ta.getResourceId(1, R.color.bg_item_normal_state);
+        ta.recycle();
+
         super.onCreate(savedInstanceState);
 
         prefManager = new unidesign.ussdsmscodes.IntroSlider.PreferenceManager(this);
@@ -213,7 +230,7 @@ public class RN_USSD extends AppCompatActivity
                     );
         }
         //mLockTime =
-        sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        //sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.activity_main);
 
@@ -736,7 +753,7 @@ public class RN_USSD extends AppCompatActivity
                     break;
             }
 
-            final MyAdapter mAdapter = new MyAdapter(getActivity(), sectionNumber, new MyAdapter.OnItemClickListener() {
+            final MyAdapter mAdapter = new MyAdapter(getActivity(), sectionNumber, norm_color, new MyAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(RecyclerItem item, int mSecNumber) {
                     Log.d(LOG_TAG, "--- onItemClick in section --- " + mSecNumber);

@@ -112,5 +112,7 @@
     <string name="share_via">Поделиться через</string>
     <string name="no_internet_connection">Отсутствует интернет соединение. Пожалуйста, повторите попытку позже</string>
     <string name="help_locale">ru</string>
+    <string name="invitation">К сожалению у меня нет кодов для операторов Вашей страны. \n\nЕсли Вы
+        готовы помочь мне в наполнении шаблонов кодов, пишите на email: app.unidesign@gmail.com</string>
 
 </resources>

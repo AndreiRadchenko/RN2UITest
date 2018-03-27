@@ -16,6 +16,20 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <TextView
+        android:id="@+id/invitation_txt"
+        style="@style/DescriptionTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/import_toolbar"
+        android:paddingTop="10dp"
+        android:autoLink="email"
+        android:textSize="15sp"
+        android:text="@string/invitation"
+        android:visibility="invisible" />
+    <!-- Будьласка, надішліть мені посилання на сторінки з описом USSD команд операторів зв'язку
+             і SMS команд банків Вашої країни, і я додам можливість завантажити їх у додаток -->
+
+    <TextView
         android:id="@+id/demo_item3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

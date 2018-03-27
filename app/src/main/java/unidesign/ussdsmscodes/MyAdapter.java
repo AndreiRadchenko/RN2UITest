@@ -9,6 +9,7 @@ import android.content.Context;
 //import android.support.v7.widget.PopupMenu;
 //import android.support.v7.widget.DrawableUtils;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
@@ -90,7 +91,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
 //    // The banner ad view type.
 //    public static final int BANNER_AD_VIEW_TYPE = 1;
 
-    public MyAdapter(Context mContext, int sectionNumber, OnItemClickListener mListener,
+    public MyAdapter(Context mContext, int sectionNumber, int norm_color, OnItemClickListener mListener,
                      OnItemLongClickListener mLongClickListener) {
         //setHasStableIds(true); // this is required for D&D feature.
         this.mSectionNumber = sectionNumber;
@@ -98,7 +99,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         this.listener = mListener;
         this.LongClicklistener = mLongClickListener;
         selected_color = ContextCompat.getColor(mContext, R.color.bg_item_selected_state);
-        normal_color = ContextCompat.getColor(mContext, R.color.bg_item_normal_state);
+        //normal_color = ContextCompat.getColor(mContext, R.color.bg_item_normal_state);
+        normal_color = norm_color;
+
     }
 
     public void setOnClickListener(OnItemClickListener mListener){

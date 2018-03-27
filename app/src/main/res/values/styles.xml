@@ -12,7 +12,7 @@
         <!--  For Custom Action Mode Background Color/Drawable -->
         <item name="actionModeBackground">@color/select_toolbar_background</item>
         <item name="android:popupMenuStyle">@style/popupMenuStyle</item>
-
+        <item name="recyclerItemStyle">@style/AppTheme.recycler_item_style</item>
     </style>
 
     <!-- Base application theme. -->
@@ -88,4 +88,32 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="DescriptionTextStyle" parent="RegularMonoSerif">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="AppTheme" />
+
+    <style name="Theme.Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="recyclerItemStyle">@style/Theme.Dark.recycler_item_style</item>
+
+    </style>
+
+    <style name="Theme.Dark.recycler_item_style">
+        <item name="android:background">@color/bg_slider_screen1</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="AppTheme.recycler_item_style">
+        <item name="android:background">@color/Aquamarine</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:padding">8dp</item>
+    </style>
 </resources>

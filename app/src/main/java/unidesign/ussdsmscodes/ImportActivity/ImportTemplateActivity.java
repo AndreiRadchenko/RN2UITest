@@ -2,10 +2,12 @@ package unidesign.ussdsmscodes.ImportActivity;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.Preference;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +44,7 @@ import tourguide.tourguide.ToolTip;
 import tourguide.tourguide.TourGuide;
 import unidesign.ussdsmscodes.BuildConfig;
 import unidesign.ussdsmscodes.IntroSlider.WelcomeActivity;
+import unidesign.ussdsmscodes.Preferences.pref_items;
 import unidesign.ussdsmscodes.R;
 import unidesign.ussdsmscodes.RN_USSD;
 
@@ -80,10 +83,21 @@ public class   ImportTemplateActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Use the chosen theme
+        SharedPreferences sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useDarkTheme = sharedPrefs.getBoolean(pref_items.pref_DarkTheme, false);
+
+        if(useDarkTheme) {
+            setTheme(R.style.Theme_Dark);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.import_activity);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.import_toolbar);
+        TextView invitation_txt = findViewById(R.id.invitation_txt);
+        recyclerView=(RecyclerView)findViewById(R.id.import_layout);
         setSupportActionBar(myToolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
@@ -111,7 +125,9 @@ public class   ImportTemplateActivity extends AppCompatActivity
                 default:
                     if (RN_USSD.prefManager.isShowMainDemo() )
                         RN_USSD.prefManager.setShowMainDemo(false);
-                    Toast.makeText(this, "Sorry, I have no codes for you country", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(this, "Sorry, I have no codes for you country", Toast.LENGTH_LONG).show();
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    invitation_txt.setVisibility(View.VISIBLE);
                     return;
             }
 //            URL templates_url = new URL(Import_Templates_URL);
@@ -127,8 +143,6 @@ public class   ImportTemplateActivity extends AppCompatActivity
 //        AsyncImport.delegate = this;
 
        // setContentView(R.layout.import_activity);
-
-        recyclerView=(RecyclerView)findViewById(R.id.import_layout);
 
         mLayoutManager = new LinearLayoutManager(this);
 

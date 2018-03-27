@@ -30,8 +30,8 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
       static SharedPreferences.Editor editor;
       public static Context mContext;
       static Context activityContext;
-      static SwitchPreference authorization_switch;
-      static SwitchPreference fingerprint_switch;
+      static SwitchPreference authorization_switch, fingerprint_switch, theme_switch;
+      //static SwitchPreference fingerprint_switch;
       public final static int PIN_REQUEST = 1;
       static boolean authorization_switch_old_value;
 
@@ -48,6 +48,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPrefs.edit();
         authorization_switch_old_value = sharedPrefs.getBoolean(pref_items.pref_Autorization, false);
+
     }
 
     public static class MainPreferenceFragment extends PreferenceFragment {
@@ -123,6 +124,45 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                             return true;
                         }
                     });
+
+            theme_switch = (SwitchPreference) getPreferenceManager()
+                    .findPreference("theme_switch");
+
+            if (sharedPrefs.getBoolean(pref_items.pref_DarkTheme, true)) {
+                theme_switch.setTitle("Toggle to light theme");
+            }
+            else {
+                theme_switch.setTitle("Toggle to dark theme");
+            }
+
+            theme_switch
+                    .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
+                            //set PIN check at start application
+                            if (newValue.toString().equals("true")) {
+                                editor.putBoolean(pref_items.pref_DarkTheme, true);
+                                editor.commit();
+                                theme_switch.setTitle("Toggle to light theme");
+                                Intent i = mContext.getPackageManager()
+                                        .getLaunchIntentForPackage( mContext.getPackageName() );
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                            }
+                            //delete PIN check at start application
+                            else {
+                                editor.putBoolean(pref_items.pref_DarkTheme, false);
+                                editor.commit();
+                                theme_switch.setTitle("Toggle to dark theme");
+                                Intent i = mContext.getPackageManager()
+                                        .getLaunchIntentForPackage( mContext.getPackageName() );
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                            }
+                            return true;
+                        }
+
+                    });
+
         }
 
         @Override
