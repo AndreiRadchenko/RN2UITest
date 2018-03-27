@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,6 +16,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -50,6 +52,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -175,6 +178,8 @@ public class RN_USSD extends AppCompatActivity
     static AppBarLayout mAppBar;
     public static boolean setRecycleViewToBottom = false;
     public static boolean closeDriwer = false;
+    public static int toolbar_color;
+    public static int toolbar_color_dark;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -190,13 +195,17 @@ public class RN_USSD extends AppCompatActivity
 
         if(useDarkTheme) {
             setTheme(R.style.Theme_Dark);
+            norm_color = getResources().getColor(R.color.select_mod_status_bar);
+        }
+        else {
+            norm_color = getResources().getColor(R.color.bg_item_normal_state);
         }
 
-        int[] attrs = {R.attr.recyclerItemStyle};
-        Log.d("RN_USSD", "attrs.length = " + attrs.length);
-        TypedArray ta = this.obtainStyledAttributes(attrs);
-        norm_color = ta.getResourceId(1, R.color.bg_item_normal_state);
-        ta.recycle();
+        TypedValue value = new TypedValue();
+        boolean success = getTheme().resolveAttribute(android.R.attr.colorPrimary, value, true);
+        toolbar_color = value.data;
+        getTheme().resolveAttribute(android.R.attr.colorPrimaryDark, value, true);
+        toolbar_color_dark = value.data;
 
         super.onCreate(savedInstanceState);
 
@@ -270,6 +279,7 @@ public class RN_USSD extends AppCompatActivity
         registerReceiver(screenOffReceiver, filter);
 
         appbar = (AppBarLayout) findViewById(R.id.appbar);
+        appbar.setBackgroundColor(toolbar_color);
         nested_CoordinatorLayout = (CoordinatorLayout) findViewById(R.id.nested_CoordinatorLayout);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -449,6 +459,7 @@ public class RN_USSD extends AppCompatActivity
         });
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setBackgroundColor(toolbar_color);
         tabLayout.setupWithViewPager(mViewPager);
 
         //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -1030,7 +1041,15 @@ public class RN_USSD extends AppCompatActivity
     void setNormalMode() {
 
         myCount.setCount(DISPOSE_OBSERVER);
-        appbar.setBackgroundColor(this.getResources().getColor(R.color.colorPrimary));
+        //appbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+        TypedValue value = new TypedValue();
+        boolean success = getTheme().resolveAttribute(android.R.attr.colorPrimary, value, true);
+        int toolbar_color = value.data;
+        getTheme().resolveAttribute(android.R.attr.colorPrimaryDark, value, true);
+        int toolbar_color_dark = value.data;
+        appbar.setBackgroundColor(toolbar_color);
+
         //toolbar.setVisibility(toolbar.VISIBLE);
         relativeLayout.setVisibility(toolbar.VISIBLE);
         toolbar.setAlpha(0);
@@ -1046,7 +1065,8 @@ public class RN_USSD extends AppCompatActivity
             tabLayout.setVisibility(tabLayout.VISIBLE);
         }
         else {
-            tabLayout.setBackgroundColor(this.getResources().getColor(R.color.colorPrimary));
+            //tabLayout.setBackgroundColor(this.getResources().getColor(R.color.colorPrimary));
+            tabLayout.setBackgroundColor(toolbar_color);
             LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
             for(int i = 0; i < tabStrip.getChildCount(); i++) {
                 tabStrip.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
@@ -1064,8 +1084,9 @@ public class RN_USSD extends AppCompatActivity
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-           // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
+           // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);color_dark
+//            window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
+            window.setStatusBarColor(toolbar_color_dark);
         }
         //RN_USSD.selected_items_count = 0;
     }

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import java.util.List;
 
 import unidesign.ussdsmscodes.R;
+import unidesign.ussdsmscodes.RN_USSD;
 
 /**
  * Created by United on 12/27/2017.
@@ -81,9 +82,13 @@ public class Toolbar_ActionMode_Callback implements ActionMode.Callback {
 //            window.setStatusBarColor(context.getResources().getColor(R.color.colorPrimaryDark));
 //        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            StatusbarColorAnimator anim = new StatusbarColorAnimator(context,
+//                    context.getResources().getColor(R.color.select_mod_status_bar),
+//                    context.getResources().getColor(R.color.colorPrimaryDark));
+//            anim.setDuration(250).start();
             StatusbarColorAnimator anim = new StatusbarColorAnimator(context,
                     context.getResources().getColor(R.color.select_mod_status_bar),
-                    context.getResources().getColor(R.color.colorPrimaryDark));
+                    RN_USSD.toolbar_color);
             anim.setDuration(250).start();
         }
     }

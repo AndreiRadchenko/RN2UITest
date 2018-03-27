@@ -14,10 +14,11 @@
         android:id="@+id/restore_item_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_item_normal_state"
+        style="?recyclerItemStyle"
         android:clickable="true"
-        android:foreground="?attr/selectableItemBackground"
         android:padding="@dimen/activity_vertical_margin">
+<!--    android:background="@drawable/bg_item_normal_state"
+        android:foreground="?attr/selectableItemBackground"  -->
 
         <TextView
             android:id="@+id/txtName"

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import unidesign.ussdsmscodes.R;
+import unidesign.ussdsmscodes.RN_USSD;
 
 /**
  * Created by United on 12/26/2017.
@@ -67,7 +68,8 @@ public class RestoreTemplateAdapter extends RecyclerView.Adapter<RestoreTemplate
 //                        : Color.TRANSPARENT);
         holder.restore_item_container.setBackgroundColor(mSelectedItemsIds.get(position) ?
                     context.getResources().getColor(R.color.bg_item_selected_state)
-                    : Color.TRANSPARENT);
+//                    : Color.TRANSPARENT);
+                : RN_USSD.norm_color);
     }
 
     @Override

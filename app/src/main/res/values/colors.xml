@@ -57,5 +57,6 @@
     <color name="bg_item_selected_state">#c9c9c9</color>
 
     <color name="overlay_transparent">#b0222222</color>
+    <color name="background_material_dark">#303030</color>
 
 </resources>

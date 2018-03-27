@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import unidesign.ussdsmscodes.R;
@@ -34,6 +35,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
       //static SwitchPreference fingerprint_switch;
       public final static int PIN_REQUEST = 1;
       static boolean authorization_switch_old_value;
+      static View back_arrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
         activityContext = this;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.setTitle(R.string.settings);
+        back_arrow = findViewById(android.R.id.home);
         // load settings fragment
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
 
@@ -146,6 +149,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                                 Intent i = mContext.getPackageManager()
                                         .getLaunchIntentForPackage( mContext.getPackageName() );
                                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                back_arrow.performClick();
                                 startActivity(i);
                             }
                             //delete PIN check at start application
@@ -156,6 +160,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                                 Intent i = mContext.getPackageManager()
                                         .getLaunchIntentForPackage( mContext.getPackageName() );
                                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                back_arrow.performClick();
                                 startActivity(i);
                             }
                             return true;
@@ -170,6 +175,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
             super.onResume();
             authorization_switch.setChecked(sharedPrefs.getBoolean(pref_items.pref_Autorization, false));
             fingerprint_switch.setChecked(sharedPrefs.getBoolean(pref_items.pref_useFingerPrint, false));
+            theme_switch.setChecked(sharedPrefs.getBoolean(pref_items.pref_DarkTheme, false));
         }
     }
 

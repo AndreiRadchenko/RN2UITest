@@ -1,6 +1,7 @@
 package unidesign.ussdsmscodes.SettingsTools;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,7 +31,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import unidesign.ussdsmscodes.Preferences.pref_items;
 import unidesign.ussdsmscodes.R;
+import unidesign.ussdsmscodes.RN_USSD;
 
 /**
  * Created by United on 12/26/2017.
@@ -52,13 +55,23 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
     File sdPath;
     public ActionMode mActionMode;
     public RestoreTask AsyncRestore;
+    Toolbar myToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Use the chosen theme
+        SharedPreferences sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useDarkTheme = sharedPrefs.getBoolean(pref_items.pref_DarkTheme, false);
+
+        if(useDarkTheme) {
+            setTheme(R.style.Theme_Dark);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.restore_activity);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.restore_toolbar);
+        myToolbar = (Toolbar) findViewById(R.id.restore_toolbar);
         setSupportActionBar(myToolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
@@ -245,10 +258,15 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
             // there are some selected items, start the actionMode
             mActionMode = startSupportActionMode(new Toolbar_ActionMode_Callback(this,
                     mAdapter, listItems, false));
+            //myToolbar.setVisibility(View.INVISIBLE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                StatusbarColorAnimator anim = new StatusbarColorAnimator(this,
+//                        getResources().getColor(R.color.colorPrimaryDark),
+//                        getResources().getColor(R.color.select_mod_status_bar));
+//                anim.setDuration(250).start();
                 StatusbarColorAnimator anim = new StatusbarColorAnimator(this,
-                        getResources().getColor(R.color.colorPrimaryDark),
+                        RN_USSD.toolbar_color,
                         getResources().getColor(R.color.select_mod_status_bar));
                 anim.setDuration(250).start();
             }
@@ -256,6 +274,7 @@ public class RestoreActivity extends AppCompatActivity implements RestoreTask.As
         else if (!hasCheckedItems && mActionMode != null) {
             // there no selected items, finish the actionMode
             mActionMode.finish();
+            //myToolbar.setVisibility(View.VISIBLE);
         }
 
         if (mActionMode != null)

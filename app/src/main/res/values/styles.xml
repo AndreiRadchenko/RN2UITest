@@ -13,6 +13,7 @@
         <item name="actionModeBackground">@color/select_toolbar_background</item>
         <item name="android:popupMenuStyle">@style/popupMenuStyle</item>
         <item name="recyclerItemStyle">@style/AppTheme.recycler_item_style</item>
+        <item name="TitleStyle">@style/DarkTitle</item>
     </style>
 
     <!-- Base application theme. -->
@@ -102,18 +103,34 @@
 
     <style name="Theme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="recyclerItemStyle">@style/Theme.Dark.recycler_item_style</item>
+        <item name="TitleStyle">@style/LightTitle</item>
+        <item name="android:colorBackground">@color/background_material_dark</item>
+        <!--  It should be true otherwise action mode will not overlay toolbar -->
+        <item name="windowActionModeOverlay">true</item>
+        <!--  For Custom Action Mode Background Color/Drawable -->
+        <item name="actionModeBackground">@color/select_toolbar_background</item>
 
     </style>
 
     <style name="Theme.Dark.recycler_item_style">
-        <item name="android:background">@color/bg_slider_screen1</item>
+        <item name="android:background">@color/select_mod_status_bar</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:padding">8dp</item>
     </style>
 
     <style name="AppTheme.recycler_item_style">
-        <item name="android:background">@color/Aquamarine</item>
+        <item name="android:background">@color/bg_item_normal_state</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="DarkTitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+    <style name="LightTitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#ffffffff</item>
     </style>
 </resources>
