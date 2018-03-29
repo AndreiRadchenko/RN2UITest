@@ -151,7 +151,10 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
             theme_switch
                     .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                         public boolean onPreferenceChange(Preference preference, Object newValue) {
-                            //set PIN check at start application
+
+                            editor.putBoolean(pref_items.pref_Theme_Change_Restart, true);
+                            editor.commit();
+
                             if (newValue.toString().equals("true")) {
                                 editor.putBoolean(pref_items.pref_DarkTheme, true);
                                 editor.commit();
@@ -162,7 +165,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                                 back_arrow.performClick();
                                 startActivity(i);
                             }
-                            //delete PIN check at start application
+
                             else {
                                 editor.putBoolean(pref_items.pref_DarkTheme, false);
                                 editor.commit();

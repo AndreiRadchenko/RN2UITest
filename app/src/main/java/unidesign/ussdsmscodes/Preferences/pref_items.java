@@ -11,4 +11,5 @@ public class pref_items {
     public static final String pref_enterPINattemption = "enterPINattemption";
     public static final String pref_firsLanchAfterPinSet = "firsLanchAfterPinSet";
     public static final String pref_DarkTheme = "DarkTheme";
+    public static final String pref_Theme_Change_Restart = "Theme_Change_Restart";
 }

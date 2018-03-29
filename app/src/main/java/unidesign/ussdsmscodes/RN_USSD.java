@@ -1142,10 +1142,19 @@ public class RN_USSD extends AppCompatActivity
 //        if (!PINCountAlive) {
             if (currDate.getTime() > mLockTime) {
             //PINCountThread = new Pin_lock_activity.CountThread();
-            if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false)) {
-                Intent j = new Intent(this, Pin_lock_activity.class);
-                j.putExtra("lanchMode", "checkin");
-                startActivityForResult(j, PIN_REQUEST);
+                Log.d("RN_USSD onResume", "--- pref_Theme_Change_Restart: ---" +
+                        sharedPrefs.getBoolean(pref_items.pref_Theme_Change_Restart, false));
+
+            if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false) ) {
+                if ( !(sharedPrefs.getBoolean(pref_items.pref_Theme_Change_Restart, false))) {
+                    Intent j = new Intent(this, Pin_lock_activity.class);
+                    j.putExtra("lanchMode", "checkin");
+                    startActivityForResult(j, PIN_REQUEST);
+                }
+                else {
+                    editor.putBoolean(pref_items.pref_Theme_Change_Restart, false);
+                    editor.commit();
+                }
             }
         }
 

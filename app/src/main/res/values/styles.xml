@@ -120,6 +120,11 @@
         <item name="android:padding">8dp</item>
     </style>
 
+    <style name="Theme.Dark.PINWindow" parent ="Theme.Dark">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="AppTheme.recycler_item_style">
         <item name="android:background">@color/bg_item_normal_state</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>

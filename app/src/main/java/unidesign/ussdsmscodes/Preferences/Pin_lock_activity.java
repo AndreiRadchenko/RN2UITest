@@ -257,6 +257,15 @@ public class Pin_lock_activity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Use the chosen theme
+        sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useDarkTheme = sharedPrefs.getBoolean(pref_items.pref_DarkTheme, false);
+
+        if(useDarkTheme) {
+            setTheme(R.style.Theme_Dark_PINWindow);
+        }
+
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
