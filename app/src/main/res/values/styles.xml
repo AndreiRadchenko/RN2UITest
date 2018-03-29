@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -29,6 +29,8 @@
         <!--  For Custom Action Mode Background Color/Drawable -->
         <item name="actionModeBackground">@color/select_toolbar_background</item>
     </style>
+
+    <style name="AppTheme.Settings.Dark" parent="Theme.AppCompat">  </style>
 
     <style name="popupMenuStyle" parent="Theme.AppCompat.Light">
         <item name="android:popupBackground">@android:color/white</item>

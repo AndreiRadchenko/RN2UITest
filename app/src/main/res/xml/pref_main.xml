@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="settings_screen"
     android:title="@string/settings"
-    android:theme="@android:style/Theme.Light">
+    >
+    <!-- android:theme="@android:style/Theme.Light"-->
 
     <PreferenceCategory android:title="@string/security">
 

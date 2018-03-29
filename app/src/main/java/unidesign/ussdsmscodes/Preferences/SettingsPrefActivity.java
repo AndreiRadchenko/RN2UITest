@@ -39,6 +39,15 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Use the chosen theme
+        sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useDarkTheme = sharedPrefs.getBoolean(pref_items.pref_DarkTheme, false);
+
+        if(useDarkTheme) {
+            setTheme(R.style.AppTheme_Settings_Dark);
+        }
+
         super.onCreate(savedInstanceState);
         mContext = getApplicationContext();
         activityContext = this;
@@ -48,7 +57,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
         // load settings fragment
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
 
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPrefs.edit();
         authorization_switch_old_value = sharedPrefs.getBoolean(pref_items.pref_Autorization, false);
 
@@ -57,6 +66,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
     public static class MainPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(final Bundle savedInstanceState) {
+
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_main);
 
