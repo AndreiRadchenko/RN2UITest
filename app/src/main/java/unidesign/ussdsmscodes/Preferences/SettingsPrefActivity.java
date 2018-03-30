@@ -36,6 +36,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
       public final static int PIN_REQUEST = 1;
       static boolean authorization_switch_old_value;
       static View back_arrow;
+      public static Intent prefActivityIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
         //sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPrefs.edit();
         authorization_switch_old_value = sharedPrefs.getBoolean(pref_items.pref_Autorization, false);
+        prefActivityIntent = getIntent();
 
     }
 
@@ -159,22 +161,31 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                                 editor.putBoolean(pref_items.pref_DarkTheme, true);
                                 editor.commit();
                                 theme_switch.setTitle("Toggle to light theme");
-                                Intent i = mContext.getPackageManager()
-                                        .getLaunchIntentForPackage( mContext.getPackageName() );
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                back_arrow.performClick();
-                                startActivity(i);
+//                                Intent i = mContext.getPackageManager()
+//                                        .getLaunchIntentForPackage( mContext.getPackageName() );
+//                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                back_arrow.performClick();
+//                                startActivity(i);
+
+                                //back_arrow.performClick();
+                                prefActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(prefActivityIntent);
+                                //recreate();
                             }
 
                             else {
                                 editor.putBoolean(pref_items.pref_DarkTheme, false);
                                 editor.commit();
                                 theme_switch.setTitle("Toggle to dark theme");
-                                Intent i = mContext.getPackageManager()
-                                        .getLaunchIntentForPackage( mContext.getPackageName() );
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                back_arrow.performClick();
-                                startActivity(i);
+//                                Intent i = mContext.getPackageManager()
+//                                        .getLaunchIntentForPackage( mContext.getPackageName() );
+//                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                back_arrow.performClick();
+//                                startActivity(i);
+
+                                //back_arrow.performClick();
+                                prefActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(prefActivityIntent);
                             }
                             return true;
                         }

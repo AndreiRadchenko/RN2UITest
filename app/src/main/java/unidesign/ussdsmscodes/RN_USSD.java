@@ -1138,27 +1138,42 @@ public class RN_USSD extends AppCompatActivity
     @Override
     public void onResume() {
         Log.d(LOG_TAG, "--- In RN_USSD onResume() sectionNumber: ---" );
+        Log.d("RN_USSD onResume", "--- pref_Theme_Change_Restart: ---" +
+                sharedPrefs.getBoolean(pref_items.pref_Theme_Change_Restart, false));
+        if  (sharedPrefs.getBoolean(pref_items.pref_Theme_Change_Restart, false)){
+            super.onResume();
+            editor.putBoolean(pref_items.pref_Theme_Change_Restart, false);
+            editor.commit();
+
+            recreate();
+            //recreateActivity();
+        }
         Date currDate = new Date(System.currentTimeMillis());
 //        if (!PINCountAlive) {
             if (currDate.getTime() > mLockTime) {
             //PINCountThread = new Pin_lock_activity.CountThread();
-                Log.d("RN_USSD onResume", "--- pref_Theme_Change_Restart: ---" +
-                        sharedPrefs.getBoolean(pref_items.pref_Theme_Change_Restart, false));
 
             if (sharedPrefs.getBoolean(pref_items.pref_Autorization, false) ) {
-                if ( !(sharedPrefs.getBoolean(pref_items.pref_Theme_Change_Restart, false))) {
+
                     Intent j = new Intent(this, Pin_lock_activity.class);
                     j.putExtra("lanchMode", "checkin");
                     startActivityForResult(j, PIN_REQUEST);
-                }
-                else {
-                    editor.putBoolean(pref_items.pref_Theme_Change_Restart, false);
-                    editor.commit();
-                }
             }
         }
 
         super.onResume();
+    }
+
+    private void recreateActivity() {
+        //Delaying activity recreate by 1 millisecond. If the recreate is not delayed and is done
+        // immediately in onResume() you will get RuntimeException: Performing pause of activity that is not resumed
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                recreate();
+            }
+        }, 0);
     }
 
     @Override
