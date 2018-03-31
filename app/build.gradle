@@ -14,8 +14,8 @@ android {
         applicationId "unidesign.ussdsmscodes"
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 8
-        versionName "release 1.1"
+        versionCode 9
+        versionName "release 1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

@@ -115,7 +115,7 @@
     <string name="invitation">К сожалению у меня нет кодов для операторов Вашей страны. \n\nЕсли Вы
         готовы помочь мне в наполнении шаблонов кодов, пишите на email: app.unidesign@gmail.com</string>
     <!-- Appearance =============================================================================-->
-    <string name="toggleToLightTheme">Переключится на светлую тему</string>
+    <string name="toggleToLightTheme">Переключиться на светлую тему</string>
     <string name="toggleToDarkTheme">Переключится на темную тему</string>
     <string name="appearance">Внешний вид</string>
 

@@ -108,7 +108,7 @@ public class   ImportTemplateActivity extends AppCompatActivity
 
         TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
         String countryCodeValue = tm.getNetworkCountryIso();
-        countryCodeValue = "uz";
+        //countryCodeValue = "by";
         Log.d("ImportTemplateActivity", "TelephonyManager.getNetworkCountryIso(): " + countryCodeValue);
 
         try {

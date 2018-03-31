@@ -143,7 +143,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
             theme_switch = (SwitchPreference) getPreferenceManager()
                     .findPreference("theme_switch");
 
-            if (sharedPrefs.getBoolean(pref_items.pref_DarkTheme, true)) {
+            if (sharedPrefs.getBoolean(pref_items.pref_DarkTheme, false)) {
                 theme_switch.setTitle(R.string.toggleToLightTheme);
             }
             else {
