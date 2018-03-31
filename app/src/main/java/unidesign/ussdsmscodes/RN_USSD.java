@@ -1138,8 +1138,8 @@ public class RN_USSD extends AppCompatActivity
     @Override
     public void onResume() {
         Log.d(LOG_TAG, "--- In RN_USSD onResume() sectionNumber: ---" );
-        Log.d("RN_USSD onResume", "--- pref_Theme_Change_Restart: ---" +
-                sharedPrefs.getBoolean(pref_items.pref_Theme_Change_Restart, false));
+//        Log.d("RN_USSD onResume", "--- pref_Theme_Change_Restart: ---" +
+//                sharedPrefs.getBoolean(pref_items.pref_Theme_Change_Restart, false));
         if  (sharedPrefs.getBoolean(pref_items.pref_Theme_Change_Restart, false)){
             super.onResume();
             editor.putBoolean(pref_items.pref_Theme_Change_Restart, false);

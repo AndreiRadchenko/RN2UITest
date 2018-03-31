@@ -1,5 +1,6 @@
 package unidesign.ussdsmscodes;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import unidesign.ussdsmscodes.MySQLight.TemplatesDataSource;
 import unidesign.ussdsmscodes.MySQLight.USSDSQLiteHelper;
 import unidesign.ussdsmscodes.MySQLight.USSD_Template;
+import unidesign.ussdsmscodes.Preferences.pref_items;
 import unidesign.ussdsmscodes.TempContentProvider.TempContentProvider;
 
 /**
@@ -40,6 +42,15 @@ public class editUSSDTemplate extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Use the chosen theme
+        SharedPreferences sharedPrefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useDarkTheme = sharedPrefs.getBoolean(pref_items.pref_DarkTheme, false);
+
+        if(useDarkTheme) {
+            setTheme(R.style.Theme_Dark);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ussd_template);
 
