@@ -83,7 +83,7 @@
         Пожалуйста, зарегистрируйте хотя бы один отпечаток пальца в настройках вашего устройства</string>
     <string name="enable_lockscreen">Пожалуйста, включите экран блокировки в настройках защиты вашего устройства</string>
     <string name="incompatible_android_version">Версия вашего ПО не поддерживает аутентификацию отпечатком пальца</string>
-    <string name="authentication_failed">Отпечаток не распознан</string>
+    <string name="authentication_failed">Отпечаток не распознан \n</string>
     <string name="confirm_fail">Неверный PIN-код, повторите попытку</string>
     <string name="warning_data_lost">Если вы снова введете неверный PIN-код, данные приложения будут удалены</string>
     <string name="enter_pin">Введите PIN</string>
@@ -114,5 +114,9 @@
     <string name="help_locale">ru</string>
     <string name="invitation">К сожалению у меня нет кодов для операторов Вашей страны. \n\nЕсли Вы
         готовы помочь мне в наполнении шаблонов кодов, пишите на email: app.unidesign@gmail.com</string>
+    <!-- Appearance =============================================================================-->
+    <string name="toggleToLightTheme">Переключится на светлую тему</string>
+    <string name="toggleToDarkTheme">Переключится на темную тему</string>
+    <string name="appearance">Внешний вид</string>
 
 </resources>

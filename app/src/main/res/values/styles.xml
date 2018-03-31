@@ -7,6 +7,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
         <!--  It should be true otherwise action mode will not overlay toolbar -->
         <item name="windowActionModeOverlay">true</item>
         <!--  For Custom Action Mode Background Color/Drawable -->
@@ -14,6 +15,7 @@
         <item name="android:popupMenuStyle">@style/popupMenuStyle</item>
         <item name="recyclerItemStyle">@style/AppTheme.recycler_item_style</item>
         <item name="TitleStyle">@style/DarkTitle</item>
+        <item name="styledFingerprintIcon">@drawable/ic_fingerprint_accent</item>
     </style>
 
     <!-- Base application theme. -->
@@ -46,13 +48,16 @@
     <style name="AppTheme.PINWindow" parent ="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
         <item name="popupMenuStyle">@style/popupMenuStyle</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+
+    </style>
 
     <style name="myRecyclerViewStyle">
         <!-- NOTE: clipChildren should be true on API level 10 -->
@@ -106,11 +111,13 @@
     <style name="Theme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="recyclerItemStyle">@style/Theme.Dark.recycler_item_style</item>
         <item name="TitleStyle">@style/LightTitle</item>
+
         <item name="android:colorBackground">@color/background_material_dark</item>
         <!--  It should be true otherwise action mode will not overlay toolbar -->
         <item name="windowActionModeOverlay">true</item>
         <!--  For Custom Action Mode Background Color/Drawable -->
         <item name="actionModeBackground">@color/select_toolbar_background</item>
+        <item name="styledFingerprintIcon">@drawable/ic_fingerprint_accent_dark</item>
 
     </style>
 
@@ -123,6 +130,7 @@
     <style name="Theme.Dark.PINWindow" parent ="Theme.Dark">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
     </style>
 
     <style name="AppTheme.recycler_item_style">

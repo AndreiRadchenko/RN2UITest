@@ -144,10 +144,10 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                     .findPreference("theme_switch");
 
             if (sharedPrefs.getBoolean(pref_items.pref_DarkTheme, true)) {
-                theme_switch.setTitle("Toggle to light theme");
+                theme_switch.setTitle(R.string.toggleToLightTheme);
             }
             else {
-                theme_switch.setTitle("Toggle to dark theme");
+                theme_switch.setTitle(R.string.toggleToDarkTheme);
             }
 
             theme_switch
@@ -160,7 +160,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                             if (newValue.toString().equals("true")) {
                                 editor.putBoolean(pref_items.pref_DarkTheme, true);
                                 editor.commit();
-                                theme_switch.setTitle("Toggle to light theme");
+                                theme_switch.setTitle(R.string.toggleToLightTheme);
 //                                Intent i = mContext.getPackageManager()
 //                                        .getLaunchIntentForPackage( mContext.getPackageName() );
 //                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -176,7 +176,7 @@ public class SettingsPrefActivity extends AppCompatPreferenceActivity {
                             else {
                                 editor.putBoolean(pref_items.pref_DarkTheme, false);
                                 editor.commit();
-                                theme_switch.setTitle("Toggle to dark theme");
+                                theme_switch.setTitle(R.string.toggleToDarkTheme);
 //                                Intent i = mContext.getPackageManager()
 //                                        .getLaunchIntentForPackage( mContext.getPackageName() );
 //                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

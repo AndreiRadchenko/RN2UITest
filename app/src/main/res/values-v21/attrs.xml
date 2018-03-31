@@ -2,4 +2,5 @@
 <resources>
     <attr name="recyclerItemStyle" format="reference"/>
     <attr name="TitleStyle" format="reference"/>
+    <attr name="styledFingerprintIcon" format="reference"/>
 </resources>

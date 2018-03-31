@@ -111,5 +111,9 @@
     <string name="help_locale">en</string>
     <string name="invitation">Sorry, I have no codes for you country. \n\nIf you
         ready to help me fill out the code templates, write to email: app.unidesign@gmail.com</string>
+    <!-- Appearance =============================================================================-->
+    <string name="toggleToLightTheme">Toggle to light theme</string>
+    <string name="toggleToDarkTheme">Toggle to dark theme</string>
+    <string name="appearance">Appearance</string>
 
 </resources>

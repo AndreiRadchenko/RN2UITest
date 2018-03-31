@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,8 +19,10 @@ import android.security.keystore.KeyProperties;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -101,10 +104,14 @@ public class FingerPrintDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setView(dialogView);
+        //get styled icon
+        TypedValue FingerprintIconValue = new TypedValue();
+        boolean styledIconObtained = getActivity().getTheme().resolveAttribute(R.attr.styledFingerprintIcon, FingerprintIconValue, true);
 
         builder.setTitle(R.string.dialog_title)
 //                .setMessage("Use your fingerprint to verify your identity")
-                .setIcon(R.drawable.ic_fingerprint_accent)
+                //.setIcon(R.drawable.ic_fingerprint_accent)
+                .setIcon(FingerprintIconValue.resourceId)
                 // Add action buttons
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
@@ -163,15 +170,22 @@ public class FingerPrintDialog extends DialogFragment {
     }
 
     void setMessage(String message){
-//        TextView msg = (TextView) this.getDialog().findViewById(android.R.id.message);
         msg.setText(message);
-        msg.setTextColor(getResources().getColor(R.color.colorAccent));
+        TypedValue typedValue = new TypedValue();
+        boolean colorObtained = getActivity().getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
+//        Log.d("Dialog setMessage()", "boolean colorObtained = " + colorObtained);
+//        Log.d("Dialog setMessage()", "typedValue.type = " + typedValue.type);
+//        Log.d("Dialog setMessage()", "typedValue.data = " + typedValue.data);
+//        Log.d("Dialog setMessage()", "typedValue.string = " + typedValue.string);
+        msg.setTextColor(typedValue.data);
+        //msg.setTextColor(getResources().getColor(R.color.colorAccent));
     }
 
     void resetMessage(){
-//        TextView msg = (TextView) this.getDialog().findViewById(android.R.id.message);
         msg.setText(R.string.dialog_def_msg);
-        msg.setTextColor(getResources().getColor(android.R.color.black));
+        TypedValue typedValue = new TypedValue();
+        getActivity().getTheme().resolveAttribute(android.R.attr.colorForeground, typedValue, true);
+        msg.setTextColor(typedValue.data);
     }
 
     public static Bundle checkFingerFeatures(Context mContext) {

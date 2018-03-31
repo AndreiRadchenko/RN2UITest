@@ -77,7 +77,7 @@
     <string name="slide_3_desc">Захистіть конфіденційність PIN-кодом чи відбитком пальця</string>
     <!--Strings for authentication activity's ================================================== -->
     <string name="dialog_def_msg">Скористайтесь відбитком пальця для підтвердження особистості</string>
-    <string name="dialog_title">Торкнітся сенсора</string>
+    <string name="dialog_title">Торкніться сенсора</string>
     <string name="not_support_fingerprint">Ваш телефон не підтримує автентифікацію відбитком пальця</string>
     <string name="enable_fingerprint">Будь ласка, увімкніть дозвіл розпізнавання відбитка пальця</string>
     <string name="register_fingerprint">Функція відбитку пальця не налаштована. Будьласка, додайте хочаб один відбиток в налаштуваннях вашого телефону</string>
@@ -114,5 +114,9 @@
     <string name="help_locale">ua</string>
     <string name="invitation">Нажаль у мене немає кодів для операторів Вашої країни. \n\nЯкщо Ви
         готові допомогти мені у наповненні шаблонів кодів, пишіть на email: app.unidesign@gmail.com</string>
+    <!-- Appearance =============================================================================-->
+    <string name="toggleToLightTheme">Переключитись на світлу тему</string>
+    <string name="toggleToDarkTheme">Переключитись на темну тему</string>
+    <string name="appearance">Зовнішній вигляд</string>
 
 </resources>

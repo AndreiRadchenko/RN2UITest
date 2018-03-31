@@ -59,4 +59,8 @@
     <color name="overlay_transparent">#b0222222</color>
     <color name="background_material_dark">#303030</color>
 
+    <color name="dialog_text_color_white">#ffffffff</color>
+    <color name="dialog_text_color_black">#ff000000</color>
+    <color name="accent_material_dark">#80cbc4</color>
+
 </resources>
