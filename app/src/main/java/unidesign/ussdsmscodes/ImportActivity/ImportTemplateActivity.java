@@ -61,7 +61,7 @@ public class   ImportTemplateActivity extends AppCompatActivity
  // static final String Import_Templates_URL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjUDlxTGRPUHZrRmc"; //0B6DUrz2vzeEjUDlxTGRPUHZrRmc
     static final String Import_Templates_URL_ua = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=0B6DUrz2vzeEjUDlxTGRPUHZrRmc";
     static final String Import_Templates_URL_ru = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1RUAKE8PKPPU4gq4JRljCqftudMZv4n89";
-    static final String Import_Templates_URL_uz = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1SfQLe-oQ89QRpvzHmPSDD0-TK3DGwLIb";
+    static final String Import_Templates_URL_uz = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1SfQLe-oQ89QRpvzHmPSDD0-TK3DGwLIb";//1SfQLe-oQ89QRpvzHmPSDD0-TK3DGwLIb
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -128,6 +128,9 @@ public class   ImportTemplateActivity extends AppCompatActivity
                     //Toast.makeText(this, "Sorry, I have no codes for you country", Toast.LENGTH_LONG).show();
                     recyclerView.setVisibility(View.INVISIBLE);
                     invitation_txt.setVisibility(View.VISIBLE);
+                    String text = invitation_txt.getText().toString();
+                    text = text + "\n" + "country code: " + countryCodeValue;
+                    invitation_txt.setText(text);
                     return;
             }
 //            URL templates_url = new URL(Import_Templates_URL);

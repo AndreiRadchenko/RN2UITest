@@ -80,7 +80,7 @@
     <string name="register_fingerprint">No fingerprint configured. Please register at least one fingerprint in your device\'s Settings</string>
     <string name="enable_lockscreen">Please enable lock screen security in your device\'s Settings</string>
     <string name="incompatible_android_version">Your android version doesn\'t support fingerprint authentication</string>
-    <string name="authentication_failed">Authentication failed</string>
+    <string name="authentication_failed">Authentication failed \n</string>
     <string name="confirm_fail">Confirmation fail, try again</string>
     <string name="warning_data_lost">If you enter incorrect PIN again, application data will be lost</string>
     <string name="enter_pin">Enter PIN</string>
